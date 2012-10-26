@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+<class entity-name="InvoiceClasses.InvoiceClass" table="celinvoice_invoice">
+  <id name="id" type="integer" unsaved-value="undefined">
+    <column name="CINV_ID" not-null="true" />
+    <generator class="assigned" />
+  </id>
+  <property name="invoiceNumber" type="string">
+    <column name="CINV_INVOICE_NUMBER" length="30"/>
+  </property>
+  <property name="subject" type="string">
+    <column name="CINV_SUBJECT" length="256"/>
+  </property>
+  <property name="comment" type="text">
+    <column name="CINV_COMMENT"/>
+  </property>
+  <property name="invoiceDate" type="timestamp">
+    <column name="CINV_INVOICE_DATE" />
+  </property>
+</class>
+</hibernate-mapping>

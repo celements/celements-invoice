@@ -39,7 +39,7 @@ public class InvoiceClassCollection extends AbstractClassCollection {
   public static final String INVOICE_SUBSCRIPTION_ITEM_CLASS_DOC =
     "SubscriptionItemClass";
 
-  private static final String INVOICE_ITEM_CLASS_DOC = "InvoiceItemClass";
+  public static final String INVOICE_ITEM_CLASS_DOC = "InvoiceItemClass";
 
   private static Log LOGGER = LogFactory.getFactory().getInstance(
       InvoiceClassCollection.class);

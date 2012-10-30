@@ -3,94 +3,137 @@
         "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
 
-<class entity-name="InvoiceClasses.InvoiceClass" table="celinvoice_invoice">
-  <id name="id" type="integer" unsaved-value="undefined">
-    <column name="CINV_ID" not-null="true" />
-    <generator class="assigned" />
-  </id>
-  <property name="invoiceNumber" type="string">
-    <column name="CINV_INVOICE_NUMBER" length="30"/>
-  </property>
-  <property name="orderNumber" type="string">
-    <column name="CINV_ORDER_NUMBER" />
-  </property>
-  <property name="subject" type="string">
-    <column name="CINV_SUBJECT" length="256"/>
-  </property>
-  <property name="comment" type="text">
-    <column name="CINV_COMMENT"/>
-  </property>
-  <property name="invoiceDate" type="timestamp">
-    <column name="CINV_INVOICE_DATE" />
-  </property>
-  <property name="currency" type="string">
-    <column name="CINV_CURRENCY" />
-  </property>
-  <property name="totalPrice" type="integer">
-    <column name="CII_TOTAL_PRICE" />
-  </property>
-  <property name="totalVATfree" type="integer">
-    <column name="CII_TOTAL_VAT_FREE" />
-  </property>
-  <property name="totalVATreduced" type="integer">
-    <column name="CII_TOTAL_VAT_REDUCED" />
-  </property>
-  <property name="totalVATfull" type="integer">
-    <column name="CII_TOTAL_VAT_FULL" />
-  </property>
-</class>
+	<class entity-name="InvoiceClasses.InvoiceClass" table="celinvoice_invoice">
+		<id name="id" type="integer" unsaved-value="undefined">
+			<column name="CINV_ID" not-null="true" />
+			<generator class="assigned" />
+		</id>
+		<property name="invoiceNumber" type="string">
+			<column name="CINV_INVOICE_NUMBER" length="30" />
+		</property>
+		<property name="orderNumber" type="string">
+			<column name="CINV_ORDER_NUMBER" />
+		</property>
+		<property name="subject" type="string">
+			<column name="CINV_SUBJECT" length="256" />
+		</property>
+		<property name="comment" type="text">
+			<column name="CINV_COMMENT" />
+		</property>
+		<property name="invoiceDate" type="timestamp">
+			<column name="CINV_INVOICE_DATE" />
+		</property>
+		<property name="currency" type="string">
+			<column name="CINV_CURRENCY" />
+		</property>
+		<property name="totalPrice" type="integer">
+			<column name="CII_TOTAL_PRICE" />
+		</property>
+		<property name="totalVATfree" type="integer">
+			<column name="CII_TOTAL_VAT_FREE" />
+		</property>
+		<property name="totalVATreduced" type="integer">
+			<column name="CII_TOTAL_VAT_REDUCED" />
+		</property>
+		<property name="totalVATfull" type="integer">
+			<column name="CII_TOTAL_VAT_FULL" />
+		</property>
+	</class>
 
-<class entity-name="InvoiceClasses.SubscriptionItemClass" table="celinvoice_subscription_item">
-  <id name="id" type="integer" unsaved-value="undefined">
-    <column name="CISP_ID" not-null="true" />
-    <generator class="assigned" />
-  </id>
-  <property name="subscrRef" type="string">
-    <column name="CISP_SUBSCR_REF" length="128"/>
-  </property>
-  <property name="from" type="timestamp">
-    <column name="CISP_SUBSCR_FROM" />
-  </property>
-  <property name="to" type="timestamp">
-    <column name="CISP_SUBSCR_TO" />
-  </property>
-</class>
+	<class entity-name="InvoiceClasses.SubscriptionItemClass" table="celinvoice_subscription_item">
+		<id name="id" type="integer" unsaved-value="undefined">
+			<column name="CISP_ID" not-null="true" />
+			<generator class="assigned" />
+		</id>
+		<property name="subscrRef" type="string">
+			<column name="CISP_SUBSCR_REF" length="128" />
+		</property>
+		<property name="from" type="timestamp">
+			<column name="CISP_SUBSCR_FROM" />
+		</property>
+		<property name="to" type="timestamp">
+			<column name="CISP_SUBSCR_TO" />
+		</property>
+	</class>
 
-  <class entity-name="InvoiceClasses.InvoiceItemClass" table="celinvoice_item">
-  <id name="id" type="integer" unsaved-value="undefined">
-    <column name="CII_ID" not-null="true" />
-    <generator class="assigned" />
-  </id>
-  <property name="amount" type="integer">
-    <column name="CII_AMOUNT" />
-  </property>
-  <property name="unitOfMeasure" type="string">
-    <column name="CII_AMOUNT_UNIT" />
-  </property>
-  <property name="unitPrice" type="integer">
-    <column name="CII_UNIT_PRICE" />
-  </property>
-  <property name="unitOfPrice" type="integer">
-    <column name="CII_UNIT_OF_PRICE" />
-  </property>
-  <property name="vatCode" type="integer">
-    <column name="CII_VAT_CODE" />
-  </property>
-  <property name="vatValue" type="float">
-    <column name="CII_VAT_VALUE" />
-  </property>
-  <property name="description" type="string">
-    <column name="CII_DESCR" />
-  </property>
-  <property name="articleNr" type="string">
-    <column name="CII_ARTICLE_NR" />
-  </property>
-  <property name="orderNumber" type="string">
-    <column name="CII_ORDER_NUMBER" />
-  </property>
-  <property name="position" type="integer">
-    <column name="CII_POSITION" />
-  </property>
-</class>
+	<class entity-name="InvoiceClasses.InvoiceItemClass" table="celinvoice_item">
+		<id name="id" type="integer" unsaved-value="undefined">
+			<column name="CII_ID" not-null="true" />
+			<generator class="assigned" />
+		</id>
+		<property name="amount" type="integer">
+			<column name="CII_AMOUNT" />
+		</property>
+		<property name="unitOfMeasure" type="string">
+			<column name="CII_AMOUNT_UNIT" />
+		</property>
+		<property name="unitPrice" type="integer">
+			<column name="CII_UNIT_PRICE" />
+		</property>
+		<property name="unitOfPrice" type="integer">
+			<column name="CII_UNIT_OF_PRICE" />
+		</property>
+		<property name="vatCode" type="integer">
+			<column name="CII_VAT_CODE" />
+		</property>
+		<property name="vatValue" type="float">
+			<column name="CII_VAT_VALUE" />
+		</property>
+		<property name="description" type="string">
+			<column name="CII_DESCR" />
+		</property>
+		<property name="articleNr" type="string">
+			<column name="CII_ARTICLE_NR" />
+		</property>
+		<property name="orderNumber" type="string">
+			<column name="CII_ORDER_NUMBER" />
+		</property>
+		<property name="position" type="integer">
+			<column name="CII_POSITION" />
+		</property>
+	</class>
+
+	<class entity-name="InvoiceClasses.AddressClass" table="celinvoice_address">
+		<id name="id" type="integer" unsaved-value="undefined">
+			<column name="CIA_ID" not-null="true" />
+			<generator class="assigned" />
+		</id>
+		<property name="name" type="string">
+			<column name="CIA_NAME" length="256" />
+		</property>
+		<property name="address" type="text">
+			<column name="CIA_ADDRESS" />
+		</property>
+		<property name="zip" type="string">
+			<column name="CIA_ZIP" length="32" />
+		</property>
+		<property name="city" type="string">
+			<column name="CIA_CITY" length="128" />
+		</property>
+		<property name="country" type="string">
+			<column name="CIA_COUNTRY" length="64" />
+		</property>
+		<property name="email" type="string">
+			<column name="CIA_EMAIL" length="256" />
+		</property>
+		<property name="phone" type="string">
+			<column name="CIA_PHONE" length="64" />
+		</property>
+		<property name="address_type" type="string">
+			<column name="CIA_ADDRESS_TYPE" length="16" />
+		</property>
+		<property name="title" type="string">
+			<column name="CIA_TITLE" length="64" />
+		</property>
+		<property name="first_name" type="string">
+			<column name="CIA_FIRST_NAME" length="128" />
+		</property>
+		<property name="company" type="string">
+			<column name="CIA_COMPANY" length="128" />
+		</property>
+		<property name="streetnumber" type="string">
+			<column name="CIA_STREET_NR" length="64" />
+		</property>
+	</class>
 
 </hibernate-mapping>

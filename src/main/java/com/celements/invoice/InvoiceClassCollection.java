@@ -41,6 +41,8 @@ public class InvoiceClassCollection extends AbstractClassCollection {
 
   public static final String INVOICE_ITEM_CLASS_DOC = "InvoiceItemClass";
 
+  public static final String INVOICE_ADDRESS_CLASS_DOC = "AddressClass";
+
   private static Log LOGGER = LogFactory.getFactory().getInstance(
       InvoiceClassCollection.class);
 
@@ -60,6 +62,7 @@ public class InvoiceClassCollection extends AbstractClassCollection {
     getInvoiceClass();
     getInvoiceSubscriptionItemClass();
     getInvoiceItemClass();
+    getInoviceAddressClass();
   }
 
   public DocumentReference getInvoiceClassRef(String wikiName) {
@@ -193,4 +196,45 @@ public class InvoiceClassCollection extends AbstractClassCollection {
     return bclass;
   }
 
+  public DocumentReference getInoviceAddressClassRef(String wikiName) {
+    return new DocumentReference(wikiName, INVOICE_CLASSES_SPACE,
+        INVOICE_ADDRESS_CLASS_DOC);
+  }
+
+  BaseClass getInoviceAddressClass() throws XWikiException {
+    XWikiDocument doc;
+    boolean needsUpdate = false;
+    DocumentReference classRef = getInoviceAddressClassRef(getContext().getDatabase());
+    
+    try {
+      doc = getContext().getWiki().getDocument(classRef, getContext());
+    } catch (XWikiException e) {
+      LOGGER.error(e);
+      doc = new XWikiDocument(classRef);
+      needsUpdate = true;
+    }
+    
+    BaseClass bclass = doc.getXClass();
+    bclass.setXClassReference(classRef);
+    needsUpdate |= bclass.addTextField("company", "Company", 30);
+    needsUpdate |= bclass.addTextField("title", "Title", 30);
+    needsUpdate |= bclass.addTextField("first_name", "First Name", 30);
+    needsUpdate |= bclass.addTextField("name", "Name", 30);
+    needsUpdate |= bclass.addTextAreaField("address", "Address", 80, 15);
+    needsUpdate |= bclass.addTextField("zip", "Zip", 30);
+    needsUpdate |= bclass.addTextField("city", "City", 30);
+    needsUpdate |= bclass.addTextField("country", "Country", 30);
+    needsUpdate |= bclass.addTextField("email", "Email", 30);
+    needsUpdate |= bclass.addTextField("phone", "Phone", 30);
+    needsUpdate |= bclass.addStaticListField("address_type", "Address Type", 
+        "Shipping|Billing");
+    
+    if(!"internal".equals(bclass.getCustomMapping())){
+      needsUpdate = true;
+      bclass.setCustomMapping("internal");
+    }
+    
+    setContentAndSaveClassDocument(doc, needsUpdate);
+    return bclass;
+  }
 }

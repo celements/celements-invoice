@@ -41,7 +41,7 @@
   </property>
 </class>
 
-  <class entity-name="InvoiceClasses.InvoiceItemClass" table="cel_cxml_item">
+  <class entity-name="InvoiceClasses.InvoiceItemClass" table="celinvoice_item">
   <id name="id" type="integer" unsaved-value="undefined">
     <column name="CII_ID" not-null="true" />
     <generator class="assigned" />

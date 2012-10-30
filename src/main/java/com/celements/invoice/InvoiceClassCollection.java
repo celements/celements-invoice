@@ -85,9 +85,20 @@ public class InvoiceClassCollection extends AbstractClassCollection {
     
     needsUpdate |= bclass.addTextField("invoiceNumber", "Invoice Number", 30);
     needsUpdate |= bclass.addTextField("subject", "Subject", 30);
-    needsUpdate |= bclass.addTextField("currency", "Currency", 30);
+    needsUpdate |= bclass.addTextField("currency", "Currency (iso4217)", 30);
     needsUpdate |= bclass.addTextAreaField("comment", "Comment", 80, 15);
     needsUpdate |= bclass.addDateField("invoiceDate" , "Invoice Date", "dd.MM.yyyy", 0);
+    needsUpdate |= bclass.addTextField("orderNumber", "Order number (use for single"
+        + " invoice)", 30);
+    needsUpdate |= bclass.addNumberField("totalPrice", "Total of Invoice (in smallest"
+        + " unit of currency)", 5, "integer");
+    needsUpdate |= bclass.addNumberField("totalVATfree", "Total VAT free of Invoice (in"
+        + " smallest unit of currency)", 5, "integer");
+    needsUpdate |= bclass.addNumberField("totalVATreduced", "Total VAT reduced of Invoice"
+        + " (in smallest unit of currency)", 5, "integer");
+    needsUpdate |= bclass.addNumberField("totalVATfull", "Total VAT full of Invoice (in"
+        + " smallest unit of currency)", 5, "integer");
+    needsUpdate |= bclass.addStaticListField("status", "Status", "new|printed|finance");
     
     if(!"internal".equals(bclass.getCustomMapping())){
       needsUpdate = true;
@@ -159,15 +170,19 @@ public class InvoiceClassCollection extends AbstractClassCollection {
     bclass.setDocumentReference(classRef);
     
     needsUpdate |= bclass.addNumberField("amount", "Amount", 5, "integer");
-    needsUpdate |= bclass.addTextField("unitOfMeasure", "Unit of measure (UNSPSC-CODE)", 30);
+    needsUpdate |= bclass.addTextField("unitOfMeasure", "Unit of measure (UNSPSC-CODE)",
+        30);
     needsUpdate |= bclass.addNumberField("unitPrice", "Price Unit (in smallest unit of"
         + " currency)", 5, "integer");
-    needsUpdate |= bclass.addTextField("currency", "Currency (iso4217)", 30);
+    needsUpdate |= bclass.addNumberField("unitOfPrice", "amount per unit-price", 5,
+        "integer");
     needsUpdate |= bclass.addNumberField("vatCode", "VAT Code", 5, "integer");
     needsUpdate |= bclass.addNumberField("vatValue", "VAT Value", 5, "float");
     needsUpdate |= bclass.addTextField("description", "Description", 30);
     needsUpdate |= bclass.addNumberField("position", "Position on invoice", 5, "integer");
     needsUpdate |= bclass.addTextField("articleNr", "Article number", 30);
+    needsUpdate |= bclass.addTextField("orderNumber", "Order number (use for collective"
+        + " billing)", 30);
     
     if(!"internal".equals(bclass.getCustomMapping())){
       needsUpdate = true;

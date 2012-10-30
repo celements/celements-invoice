@@ -11,6 +11,9 @@
   <property name="invoiceNumber" type="string">
     <column name="CINV_INVOICE_NUMBER" length="30"/>
   </property>
+  <property name="orderNumber" type="string">
+    <column name="CINV_ORDER_NUMBER" />
+  </property>
   <property name="subject" type="string">
     <column name="CINV_SUBJECT" length="256"/>
   </property>
@@ -22,6 +25,18 @@
   </property>
   <property name="currency" type="string">
     <column name="CINV_CURRENCY" />
+  </property>
+  <property name="totalPrice" type="integer">
+    <column name="CII_TOTAL_PRICE" />
+  </property>
+  <property name="totalVATfree" type="integer">
+    <column name="CII_TOTAL_VAT_FREE" />
+  </property>
+  <property name="totalVATreduced" type="integer">
+    <column name="CII_TOTAL_VAT_REDUCED" />
+  </property>
+  <property name="totalVATfull" type="integer">
+    <column name="CII_TOTAL_VAT_FULL" />
   </property>
 </class>
 
@@ -55,8 +70,8 @@
   <property name="unitPrice" type="integer">
     <column name="CII_UNIT_PRICE" />
   </property>
-  <property name="currency" type="string">
-    <column name="CII_CURRENCY" />
+  <property name="unitOfPrice" type="integer">
+    <column name="CII_UNIT_OF_PRICE" />
   </property>
   <property name="vatCode" type="integer">
     <column name="CII_VAT_CODE" />
@@ -69,6 +84,9 @@
   </property>
   <property name="articleNr" type="string">
     <column name="CII_ARTICLE_NR" />
+  </property>
+  <property name="orderNumber" type="string">
+    <column name="CII_ORDER_NUMBER" />
   </property>
   <property name="position" type="integer">
     <column name="CII_POSITION" />

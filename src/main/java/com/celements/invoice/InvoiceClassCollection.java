@@ -166,6 +166,7 @@ public class InvoiceClassCollection extends AbstractClassCollection {
     needsUpdate |= bclass.addNumberField("vatCode", "VAT Code", 5, "integer");
     needsUpdate |= bclass.addNumberField("vatValue", "VAT Value", 5, "float");
     needsUpdate |= bclass.addTextField("description", "Description", 30);
+    needsUpdate |= bclass.addNumberField("position", "Position on invoice", 5, "integer");
     needsUpdate |= bclass.addTextField("articleNr", "Article number", 30);
     
     if(!"internal".equals(bclass.getCustomMapping())){

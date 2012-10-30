@@ -47,7 +47,7 @@
     <generator class="assigned" />
   </id>
   <property name="amount" type="integer">
-    <column name="CII_MENGE" />
+    <column name="CII_AMOUNT" />
   </property>
   <property name="unitOfMeasure" type="string">
     <column name="CII_AMOUNT_UNIT" />
@@ -69,6 +69,9 @@
   </property>
   <property name="articleNr" type="string">
     <column name="CII_ARTICLE_NR" />
+  </property>
+  <property name="position" type="integer">
+    <column name="CII_POSITION" />
   </property>
 </class>
 

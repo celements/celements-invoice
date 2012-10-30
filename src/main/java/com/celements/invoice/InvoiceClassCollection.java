@@ -135,7 +135,7 @@ public class InvoiceClassCollection extends AbstractClassCollection {
         + " (wiki docRef)", 30);
     needsUpdate |= bclass.addDateField("from" , "Invoice Subscription From Date",
         "dd.MM.yyyy", 0);
-    needsUpdate |= bclass.addDateField("to" , "Invoice Subscription From Date",
+    needsUpdate |= bclass.addDateField("to" , "Invoice Subscription To Date",
         "dd.MM.yyyy", 0);
     
     if(!"internal".equals(bclass.getCustomMapping())){

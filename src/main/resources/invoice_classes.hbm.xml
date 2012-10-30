@@ -20,5 +20,56 @@
   <property name="invoiceDate" type="timestamp">
     <column name="CINV_INVOICE_DATE" />
   </property>
+  <property name="currency" type="string">
+    <column name="CINV_CURRENCY" />
+  </property>
 </class>
+
+<class entity-name="InvoiceClasses.SubscriptionItemClass" table="celinvoice_subscription_item">
+  <id name="id" type="integer" unsaved-value="undefined">
+    <column name="CISP_ID" not-null="true" />
+    <generator class="assigned" />
+  </id>
+  <property name="subscrRef" type="string">
+    <column name="CISP_SUBSCR_REF" length="128"/>
+  </property>
+  <property name="from" type="timestamp">
+    <column name="CISP_SUBSCR_FROM" />
+  </property>
+  <property name="to" type="timestamp">
+    <column name="CISP_SUBSCR_TO" />
+  </property>
+</class>
+
+  <class entity-name="InvoiceClasses.InvoiceItemClass" table="cel_cxml_item">
+  <id name="id" type="integer" unsaved-value="undefined">
+    <column name="CII_ID" not-null="true" />
+    <generator class="assigned" />
+  </id>
+  <property name="amount" type="integer">
+    <column name="CII_MENGE" />
+  </property>
+  <property name="unitOfMeasure" type="string">
+    <column name="CII_AMOUNT_UNIT" />
+  </property>
+  <property name="unitPrice" type="integer">
+    <column name="CII_UNIT_PRICE" />
+  </property>
+  <property name="currency" type="string">
+    <column name="CII_CURRENCY" />
+  </property>
+  <property name="vatCode" type="integer">
+    <column name="CII_VAT_CODE" />
+  </property>
+  <property name="vatValue" type="float">
+    <column name="CII_VAT_VALUE" />
+  </property>
+  <property name="description" type="string">
+    <column name="CII_DESCR" />
+  </property>
+  <property name="articleNr" type="string">
+    <column name="CII_ARTICLE_NR" />
+  </property>
+</class>
+
 </hibernate-mapping>

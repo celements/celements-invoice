@@ -36,6 +36,11 @@ public class InvoiceClassCollection extends AbstractClassCollection {
   public static final String INVOICE_CLASS_DOC = "InvoiceClass";
   public static final String INVOICE_CLASSES_SPACE = "InvoiceClasses";
 
+  public static final String INVOICE_SUBSCRIPTION_ITEM_CLASS_DOC =
+    "SubscriptionItemClass";
+
+  private static final String INVOICE_ITEM_CLASS_DOC = "InvoiceItemClass";
+
   private static Log LOGGER = LogFactory.getFactory().getInstance(
       InvoiceClassCollection.class);
 
@@ -46,13 +51,15 @@ public class InvoiceClassCollection extends AbstractClassCollection {
 
   public InvoiceClassCollection() {}
 
+  public String getConfigName() {
+    return "celInvoice";
+  }
+
   @Override
   protected void initClasses() throws XWikiException {
     getInvoiceClass();
-  }
-
-  public String getConfigName() {
-    return "celInvoice";
+    getInvoiceSubscriptionItemClass();
+    getInvoiceItemClass();
   }
 
   public DocumentReference getInvoiceClassRef(String wikiName) {
@@ -78,8 +85,88 @@ public class InvoiceClassCollection extends AbstractClassCollection {
     
     needsUpdate |= bclass.addTextField("invoiceNumber", "Invoice Number", 30);
     needsUpdate |= bclass.addTextField("subject", "Subject", 30);
+    needsUpdate |= bclass.addTextField("currency", "Currency", 30);
     needsUpdate |= bclass.addTextAreaField("comment", "Comment", 80, 15);
     needsUpdate |= bclass.addDateField("invoiceDate" , "Invoice Date", "dd.MM.yyyy", 0);
+    
+    if(!"internal".equals(bclass.getCustomMapping())){
+      needsUpdate = true;
+      bclass.setCustomMapping("internal");
+    }
+    
+    setContentAndSaveClassDocument(doc, needsUpdate);
+    return bclass;
+  }
+
+  public DocumentReference getSubscriptionItemClassRef(String wikiName) {
+    return new DocumentReference(wikiName, INVOICE_CLASSES_SPACE,
+        INVOICE_SUBSCRIPTION_ITEM_CLASS_DOC);
+  }
+
+  BaseClass getInvoiceSubscriptionItemClass() throws XWikiException {
+    DocumentReference classRef = getSubscriptionItemClassRef(getContext().getDatabase());
+    XWikiDocument doc;
+    XWiki xwiki = getContext().getWiki();
+    boolean needsUpdate = false;
+    
+    try {
+      doc = xwiki.getDocument(classRef, getContext());
+    } catch (XWikiException exp) {
+      LOGGER.error("Failed to get xClass document for [" + classRef + "].", exp);
+      doc = new XWikiDocument(classRef);
+      needsUpdate = true;
+    }
+    
+    BaseClass bclass = doc.getXClass();
+    bclass.setDocumentReference(classRef);
+    
+    needsUpdate |= bclass.addTextField("subscrRef", "Subscription Reference"
+        + " (wiki docRef)", 30);
+    needsUpdate |= bclass.addDateField("from" , "Invoice Subscription From Date",
+        "dd.MM.yyyy", 0);
+    needsUpdate |= bclass.addDateField("to" , "Invoice Subscription From Date",
+        "dd.MM.yyyy", 0);
+    
+    if(!"internal".equals(bclass.getCustomMapping())){
+      needsUpdate = true;
+      bclass.setCustomMapping("internal");
+    }
+    
+    setContentAndSaveClassDocument(doc, needsUpdate);
+    return bclass;
+  }
+
+  public DocumentReference getInoviceItemClassRef(String wikiName) {
+    return new DocumentReference(wikiName, INVOICE_CLASSES_SPACE,
+        INVOICE_ITEM_CLASS_DOC);
+  }
+
+  BaseClass getInvoiceItemClass() throws XWikiException {
+    DocumentReference classRef = getInoviceItemClassRef(getContext().getDatabase());
+    XWikiDocument doc;
+    XWiki xwiki = getContext().getWiki();
+    boolean needsUpdate = false;
+    
+    try {
+      doc = xwiki.getDocument(classRef, getContext());
+    } catch (XWikiException exp) {
+      LOGGER.error("Failed to get xClass document for [" + classRef + "].", exp);
+      doc = new XWikiDocument(classRef);
+      needsUpdate = true;
+    }
+    
+    BaseClass bclass = doc.getXClass();
+    bclass.setDocumentReference(classRef);
+    
+    needsUpdate |= bclass.addNumberField("amount", "Amount", 5, "integer");
+    needsUpdate |= bclass.addTextField("unitOfMeasure", "Unit of measure (UNSPSC-CODE)", 30);
+    needsUpdate |= bclass.addNumberField("unitPrice", "Price Unit (in smallest unit of"
+        + " currency)", 5, "integer");
+    needsUpdate |= bclass.addTextField("currency", "Currency (iso4217)", 30);
+    needsUpdate |= bclass.addNumberField("vatCode", "VAT Code", 5, "integer");
+    needsUpdate |= bclass.addNumberField("vatValue", "VAT Value", 5, "float");
+    needsUpdate |= bclass.addTextField("description", "Description", 30);
+    needsUpdate |= bclass.addTextField("articleNr", "Article number", 30);
     
     if(!"internal".equals(bclass.getCustomMapping())){
       needsUpdate = true;

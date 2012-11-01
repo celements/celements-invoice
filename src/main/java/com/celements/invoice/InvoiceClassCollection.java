@@ -62,7 +62,7 @@ public class InvoiceClassCollection extends AbstractClassCollection {
     getInvoiceClass();
     getInvoiceSubscriptionItemClass();
     getInvoiceItemClass();
-    getInoviceAddressClass();
+    getInvoiceAddressClass();
   }
 
   public DocumentReference getInvoiceClassRef(String wikiName) {
@@ -150,13 +150,13 @@ public class InvoiceClassCollection extends AbstractClassCollection {
     return bclass;
   }
 
-  public DocumentReference getInoviceItemClassRef(String wikiName) {
+  public DocumentReference getInvoiceItemClassRef(String wikiName) {
     return new DocumentReference(wikiName, INVOICE_CLASSES_SPACE,
         INVOICE_ITEM_CLASS_DOC);
   }
 
   BaseClass getInvoiceItemClass() throws XWikiException {
-    DocumentReference classRef = getInoviceItemClassRef(getContext().getDatabase());
+    DocumentReference classRef = getInvoiceItemClassRef(getContext().getDatabase());
     XWikiDocument doc;
     XWiki xwiki = getContext().getWiki();
     boolean needsUpdate = false;
@@ -201,7 +201,7 @@ public class InvoiceClassCollection extends AbstractClassCollection {
         INVOICE_ADDRESS_CLASS_DOC);
   }
 
-  BaseClass getInoviceAddressClass() throws XWikiException {
+  BaseClass getInvoiceAddressClass() throws XWikiException {
     XWikiDocument doc;
     boolean needsUpdate = false;
     DocumentReference classRef = getInoviceAddressClassRef(getContext().getDatabase());

@@ -76,10 +76,10 @@ public class InvoiceService implements IInvoiceServiceRole {
 
   private Integer getLatestInvoiceNumberFromDb() {
     try {
-      List<Integer> result = query.createQuery(getLatestInvoiceNumberXWQL(), Query.XWQL
+      List<String> result = query.createQuery(getLatestInvoiceNumberXWQL(), Query.XWQL
           ).execute();
       if (!result.isEmpty()) {
-        return result.get(0);
+        return Integer.parseInt(result.get(0)); 
       }
     } catch (QueryException exp) {
       LOGGER.error("Failed to get latest invoice number from db.", exp);

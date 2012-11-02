@@ -98,15 +98,30 @@
 			<column name="CIA_ID" not-null="true" />
 			<generator class="assigned" />
 		</id>
+    <property name="company" type="string">
+      <column name="CIA_COMPANY" length="128" />
+    </property>
+    <property name="title" type="string">
+      <column name="CIA_TITLE" length="64" />
+    </property>
+    <property name="first_name" type="string">
+      <column name="CIA_FIRST_NAME" length="128" />
+    </property>
 		<property name="name" type="string">
 			<column name="CIA_NAME" length="256" />
 		</property>
-		<property name="address" type="text">
-			<column name="CIA_ADDRESS" />
-		</property>
-		<property name="zip" type="string">
-			<column name="CIA_ZIP" length="32" />
-		</property>
+    <property name="address" type="string">
+      <column name="CIA_ADDRESS"  length="128"/>
+    </property>
+    <property name="addressAddition" type="string">
+      <column name="CIA_ADDRESS_ADDITION"  length="128"/>
+    </property>
+    <property name="pobox" type="string">
+      <column name="CIA_PO_BOX" length="128" />
+    </property>
+    <property name="zip" type="string">
+      <column name="CIA_ZIP" length="32" />
+    </property>
 		<property name="city" type="string">
 			<column name="CIA_CITY" length="128" />
 		</property>
@@ -121,18 +136,6 @@
 		</property>
 		<property name="address_type" type="string">
 			<column name="CIA_ADDRESS_TYPE" length="16" />
-		</property>
-		<property name="title" type="string">
-			<column name="CIA_TITLE" length="64" />
-		</property>
-		<property name="first_name" type="string">
-			<column name="CIA_FIRST_NAME" length="128" />
-		</property>
-		<property name="company" type="string">
-			<column name="CIA_COMPANY" length="128" />
-		</property>
-		<property name="streetnumber" type="string">
-			<column name="CIA_STREET_NR" length="64" />
 		</property>
 	</class>
 

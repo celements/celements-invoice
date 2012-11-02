@@ -220,7 +220,9 @@ public class InvoiceClassCollection extends AbstractClassCollection {
     needsUpdate |= bclass.addTextField("title", "Title", 30);
     needsUpdate |= bclass.addTextField("first_name", "First Name", 30);
     needsUpdate |= bclass.addTextField("name", "Name", 30);
-    needsUpdate |= bclass.addTextAreaField("address", "Address", 80, 15);
+    needsUpdate |= bclass.addTextField("address", "Address", 30);
+    needsUpdate |= bclass.addTextField("addressAddition", "Address Addition", 30);
+    needsUpdate |= bclass.addTextField("pobox", "PO Box", 30);
     needsUpdate |= bclass.addTextField("zip", "Zip", 30);
     needsUpdate |= bclass.addTextField("city", "City", 30);
     needsUpdate |= bclass.addTextField("country", "Country", 30);

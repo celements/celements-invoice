@@ -1,1 +1,2 @@
 com.celements.invoice.InvoiceClassCollection
+com.celements.invoice.service.InvoiceService

@@ -71,7 +71,7 @@ public class InvoiceService implements IInvoiceServiceRole {
   private String getLatestInvoiceNumberXWQL() {
     return "select max(invoice.invoiceNumber) from "
       + InvoiceClassCollection.INVOICE_CLASSES_SPACE + "."
-      + InvoiceClassCollection.INVOICE_CLASS_DOC;
+      + InvoiceClassCollection.INVOICE_CLASS_DOC + " as invoice";
   }
 
   private Integer getLatestInvoiceNumberFromDb() {

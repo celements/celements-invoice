@@ -113,7 +113,7 @@ public class InvoiceService implements IInvoiceServiceRole {
     return "select invoice.invoiceNumber from "
       + InvoiceClassCollection.INVOICE_CLASSES_SPACE + "."
       + InvoiceClassCollection.INVOICE_CLASS_DOC + " as invoice"
-      + "order by length(invoice.invoiceNumber) desc, invoice.invoiceNumber desc";
+      + " order by length(invoice.invoiceNumber) desc, invoice.invoiceNumber desc";
   }
 
 }

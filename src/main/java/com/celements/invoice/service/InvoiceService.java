@@ -85,7 +85,7 @@ public class InvoiceService implements IInvoiceServiceRole {
         } catch (NumberFormatException nFE) {
           LOGGER.info("Failed to parse max invoice number [" + maxInvoiceNumberStr
               + "]. Counting down instead.");
-          return getHighestInvoiceNumberByCountingDone();
+          return getHighestInvoiceNumberByCountingDown();
         }
       }
     } catch (QueryException exp) {
@@ -94,8 +94,8 @@ public class InvoiceService implements IInvoiceServiceRole {
     return null;
   }
 
-  private Integer getHighestInvoiceNumberByCountingDone() throws QueryException {
-    List<String> resultDesc = query.createQuery(getInvoiceNumbersDescHQL(), Query.XWQL
+  private Integer getHighestInvoiceNumberByCountingDown() throws QueryException {
+    List<String> resultDesc = query.createQuery(getInvoiceNumbersDescHQL(), Query.HQL
         ).execute();
     for (String invoiceNumberStr : resultDesc) {
       try {

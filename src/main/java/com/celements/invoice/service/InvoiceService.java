@@ -68,7 +68,7 @@ public class InvoiceService implements IInvoiceServiceRole {
     }
   }
 
-  private String getLatestInvoiceNumberXWQL() {
+  private String getMaxInvoiceNumberHQL() {
     return "select max(invoice.invoiceNumber) from "
       + InvoiceClassCollection.INVOICE_CLASSES_SPACE + "."
       + InvoiceClassCollection.INVOICE_CLASS_DOC + " as invoice";
@@ -76,15 +76,44 @@ public class InvoiceService implements IInvoiceServiceRole {
 
   private Integer getLatestInvoiceNumberFromDb() {
     try {
-      List<String> result = query.createQuery(getLatestInvoiceNumberXWQL(), Query.XWQL
+      List<String> result = query.createQuery(getMaxInvoiceNumberHQL(), Query.HQL
           ).execute();
       if (!result.isEmpty()) {
-        return Integer.parseInt(result.get(0)); 
+        String maxInvoiceNumberStr = result.get(0);
+        try {
+          return Integer.parseInt(maxInvoiceNumberStr);
+        } catch (NumberFormatException nFE) {
+          LOGGER.info("Failed to parse max invoice number [" + maxInvoiceNumberStr
+              + "]. Counting down instead.");
+          return getHighestInvoiceNumberByCountingDone();
+        }
       }
     } catch (QueryException exp) {
       LOGGER.error("Failed to get latest invoice number from db.", exp);
     }
     return null;
+  }
+
+  private Integer getHighestInvoiceNumberByCountingDone() throws QueryException {
+    List<String> resultDesc = query.createQuery(getInvoiceNumbersDescHQL(), Query.XWQL
+        ).execute();
+    for (String invoiceNumberStr : resultDesc) {
+      try {
+        return Integer.parseInt(invoiceNumberStr);
+      } catch (NumberFormatException nFE) {
+        LOGGER.debug("Failed to parse invoice number [" + invoiceNumberStr
+            + "]. Skipping");
+      }
+    }
+    LOGGER.info("now invoice number found by counting down.");
+    return null;
+  }
+
+  private String getInvoiceNumbersDescHQL() {
+    return "select invoice.invoiceNumber from "
+      + InvoiceClassCollection.INVOICE_CLASSES_SPACE + "."
+      + InvoiceClassCollection.INVOICE_CLASS_DOC + " as invoice"
+      + "order by length(invoice.invoiceNumber) desc, invoice.invoiceNumber desc";
   }
 
 }

@@ -28,11 +28,13 @@ import org.apache.commons.logging.LogFactory;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.component.annotation.Requirement;
 import org.xwiki.context.Execution;
+import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.query.Query;
 import org.xwiki.query.QueryException;
 import org.xwiki.query.QueryManager;
 
 import com.celements.invoice.InvoiceClassCollection;
+import com.celements.web.service.IWebUtilsService;
 import com.xpn.xwiki.XWikiContext;
 
 @Component
@@ -46,6 +48,9 @@ public class InvoiceService implements IInvoiceServiceRole {
 
   @Requirement
   Execution execution;
+
+  @Requirement
+  IWebUtilsService webUtilsService;
 
   private XWikiContext getContext() {
     return (XWikiContext)execution.getContext().getProperty("xwikicontext");
@@ -114,6 +119,28 @@ public class InvoiceService implements IInvoiceServiceRole {
       + InvoiceClassCollection.INVOICE_CLASSES_SPACE + "."
       + InvoiceClassCollection.INVOICE_CLASS_DOC + " as invoice"
       + " order by length(invoice.invoiceNumber) desc, invoice.invoiceNumber desc";
+  }
+
+  public DocumentReference getInvoiceDocRefForInvoiceNumber(String invoiceNumber) {
+    DocumentReference invoiceDocRef = null;
+    try {
+      Query theQuery = query.createQuery(getInvoiceForInvoiceNumberXWQL(), Query.XWQL);
+      theQuery.bindValue("invoiceNumber", invoiceNumber);
+      List<Object> result = theQuery.execute();
+      if (result.size() > 0) {
+        return webUtilsService.resolveDocumentReference(result.get(0).toString());
+      }
+    } catch (QueryException queryExp) {
+      LOGGER.error("Failed to execute getInvoiceForInvoiceNumber query ["
+          + invoiceNumber + "].", queryExp);
+    }
+    return invoiceDocRef;
+  }
+
+  private String getInvoiceForInvoiceNumberXWQL() {
+    return "from doc.object(" + InvoiceClassCollection.INVOICE_CLASSES_SPACE + "."
+      + InvoiceClassCollection.INVOICE_CLASS_DOC + ") as invoice"
+      + " where invoice.invoiceNumber = :invoiceNumber";
   }
 
 }

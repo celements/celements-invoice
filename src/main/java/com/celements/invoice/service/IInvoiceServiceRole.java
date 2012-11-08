@@ -20,10 +20,13 @@
 package com.celements.invoice.service;
 
 import org.xwiki.component.annotation.ComponentRole;
+import org.xwiki.model.reference.DocumentReference;
 
 @ComponentRole
 public interface IInvoiceServiceRole {
 
   public String getNewInvoiceNumber();
+
+  public DocumentReference getInvoiceDocRefForInvoiceNumber(String invoiceNumber);
 
 }

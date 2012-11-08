@@ -64,7 +64,7 @@ public class InvoiceService implements IInvoiceServiceRole {
   private int getLatestInvoiceNumber() {
     Integer latestInvoiceNumberFromDb = getLatestInvoiceNumberFromDb();
     LOGGER.trace("getLatestInvoiceNumber got [" + latestInvoiceNumberFromDb + "].");
-    if (isValidInvoiceNumber(latestInvoiceNumberFromDb)) {
+    if (!isValidInvoiceNumber(latestInvoiceNumberFromDb)) {
       int minInvoiceNumberFromConfig = getMinInvoiceNumberFromConfig();
       LOGGER.debug("getLatestInvoiceNumber invalid invoice number found ["
           + latestInvoiceNumberFromDb + "] returning min from config [" +
@@ -83,8 +83,8 @@ public class InvoiceService implements IInvoiceServiceRole {
   }
 
   private boolean isValidInvoiceNumber(Integer latestInvoiceNumberFromDb) {
-    return (latestInvoiceNumberFromDb == null)
-        || (latestInvoiceNumberFromDb < getMinInvoiceNumberFromConfig());
+    return (latestInvoiceNumberFromDb != null)
+        && (latestInvoiceNumberFromDb >= getMinInvoiceNumberFromConfig());
   }
 
   private String getMaxInvoiceNumberHQL() {

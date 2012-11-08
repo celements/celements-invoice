@@ -121,17 +121,26 @@ public class InvoiceService implements IInvoiceServiceRole {
   }
 
   private Integer getHighestInvoiceNumberByCountingDown() throws QueryException {
+    LOGGER.trace("getHighestInvoiceNumberByCountingDown: counting down.");
     List<String> resultDesc = query.createQuery(getInvoiceNumbersDescHQL(), Query.HQL
         ).execute();
     for (String invoiceNumberStr : resultDesc) {
       try {
-        return Integer.parseInt(invoiceNumberStr);
+        int highestInvoiceNumber = Integer.parseInt(invoiceNumberStr);
+        if (isValidInvoiceNumber(highestInvoiceNumber)) {
+          LOGGER.info("getHighestInvoiceNumberByCountingDown: invoice number found by"
+              + " counting [" + highestInvoiceNumber + "]");
+          return highestInvoiceNumber;
+        } else {
+          LOGGER.trace("getHighestInvoiceNumberByCountingDown: skip ["
+              + highestInvoiceNumber + "]");
+        }
       } catch (NumberFormatException nFE) {
         LOGGER.debug("Failed to parse invoice number [" + invoiceNumberStr
             + "]. Skipping");
       }
     }
-    LOGGER.info("now invoice number found by counting down.");
+    LOGGER.info("no invoice number found by counting down.");
     return null;
   }
 

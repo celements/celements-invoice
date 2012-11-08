@@ -124,16 +124,22 @@ public class InvoiceService implements IInvoiceServiceRole {
   public DocumentReference getInvoiceDocRefForInvoiceNumber(String invoiceNumber) {
     DocumentReference invoiceDocRef = null;
     try {
-      Query theQuery = query.createQuery(getInvoiceForInvoiceNumberXWQL(), Query.XWQL);
+      LOGGER.debug("getInvoiceDocRefForInvoiceNumber for [" + invoiceNumber + "].");
+      String docForInvoiceNumberXWQL = getInvoiceForInvoiceNumberXWQL();
+      LOGGER.trace("getInvoiceDocRefForInvoiceNumber: " + docForInvoiceNumberXWQL);
+      Query theQuery = query.createQuery(docForInvoiceNumberXWQL, Query.XWQL);
       theQuery.bindValue("invoiceNumber", invoiceNumber);
       List<Object> result = theQuery.execute();
       if (result.size() > 0) {
-        return webUtilsService.resolveDocumentReference(result.get(0).toString());
+        invoiceDocRef = webUtilsService.resolveDocumentReference(result.get(0).toString()
+            );
       }
     } catch (QueryException queryExp) {
       LOGGER.error("Failed to execute getInvoiceForInvoiceNumber query ["
           + invoiceNumber + "].", queryExp);
     }
+    LOGGER.info("getInvoiceDocRefForInvoiceNumber for [" + invoiceNumber + "] returning ["
+        + invoiceDocRef + "].");
     return invoiceDocRef;
   }
 

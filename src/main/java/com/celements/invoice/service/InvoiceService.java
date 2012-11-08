@@ -63,14 +63,21 @@ public class InvoiceService implements IInvoiceServiceRole {
 
   private int getLatestInvoiceNumber() {
     Integer latestInvoiceNumberFromDb = getLatestInvoiceNumberFromDb();
-    int minInvoiceNumberFromConfig = getContext().getWiki().getXWikiPreferenceAsInt(
-        "minInvoiceNumber", "com.celements.invoice.minInvoiceNumber", 1, getContext());
-    if ((latestInvoiceNumberFromDb == null)
-        || (latestInvoiceNumberFromDb < minInvoiceNumberFromConfig)) {
-      return minInvoiceNumberFromConfig;
+    if (isValidInvoiceNumber(latestInvoiceNumberFromDb)) {
+      return getMinInvoiceNumberFromConfig();
     } else {
       return latestInvoiceNumberFromDb;
     }
+  }
+
+  private int getMinInvoiceNumberFromConfig() {
+    return getContext().getWiki().getXWikiPreferenceAsInt("minInvoiceNumber",
+        "com.celements.invoice.minInvoiceNumber", 1, getContext());
+  }
+
+  private boolean isValidInvoiceNumber(Integer latestInvoiceNumberFromDb) {
+    return (latestInvoiceNumberFromDb == null)
+        || (latestInvoiceNumberFromDb < getMinInvoiceNumberFromConfig());
   }
 
   private String getMaxInvoiceNumberHQL() {
@@ -86,12 +93,15 @@ public class InvoiceService implements IInvoiceServiceRole {
       if (!result.isEmpty()) {
         String maxInvoiceNumberStr = result.get(0);
         try {
-          return Integer.parseInt(maxInvoiceNumberStr);
+          int latestInvoiceNumberFromDb = Integer.parseInt(maxInvoiceNumberStr);
+          if (isValidInvoiceNumber(latestInvoiceNumberFromDb)) {
+            return latestInvoiceNumberFromDb;
+          }
         } catch (NumberFormatException nFE) {
           LOGGER.info("Failed to parse max invoice number [" + maxInvoiceNumberStr
               + "]. Counting down instead.");
-          return getHighestInvoiceNumberByCountingDown();
         }
+        return getHighestInvoiceNumberByCountingDown();
       }
     } catch (QueryException exp) {
       LOGGER.error("Failed to get latest invoice number from db.", exp);

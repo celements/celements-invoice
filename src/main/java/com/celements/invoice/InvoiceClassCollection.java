@@ -102,6 +102,7 @@ public class InvoiceClassCollection extends AbstractClassCollection {
     needsUpdate |= bclass.addNumberField("totalVATfull", "Total VAT full of Invoice (in"
         + " smallest unit of currency)", 5, "integer");
     needsUpdate |= bclass.addStaticListField("status", "Status", "new|printed|finance");
+    needsUpdate |= bclass.addBooleanField("cancelled", "Cancelled", "yesno");
     
     if(!"internal".equals(bclass.getCustomMapping())){
       needsUpdate = true;

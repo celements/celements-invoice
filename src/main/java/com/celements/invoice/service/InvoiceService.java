@@ -63,9 +63,16 @@ public class InvoiceService implements IInvoiceServiceRole {
 
   private int getLatestInvoiceNumber() {
     Integer latestInvoiceNumberFromDb = getLatestInvoiceNumberFromDb();
+    LOGGER.trace("getLatestInvoiceNumber got [" + latestInvoiceNumberFromDb + "].");
     if (isValidInvoiceNumber(latestInvoiceNumberFromDb)) {
-      return getMinInvoiceNumberFromConfig();
+      int minInvoiceNumberFromConfig = getMinInvoiceNumberFromConfig();
+      LOGGER.debug("getLatestInvoiceNumber invalid invoice number found ["
+          + latestInvoiceNumberFromDb + "] returning min from config [" +
+          minInvoiceNumberFromConfig + "].");
+      return minInvoiceNumberFromConfig;
     } else {
+      LOGGER.debug("getLatestInvoiceNumber returning [" + latestInvoiceNumberFromDb
+          + "].");
       return latestInvoiceNumberFromDb;
     }
   }
@@ -87,6 +94,8 @@ public class InvoiceService implements IInvoiceServiceRole {
   }
 
   private Integer getLatestInvoiceNumberFromDb() {
+    LOGGER.trace("getLatestInvoiceNumberFromDb: looking for latest invoice number in db."
+        );
     try {
       List<String> result = query.createQuery(getMaxInvoiceNumberHQL(), Query.HQL
           ).execute();
@@ -97,6 +106,8 @@ public class InvoiceService implements IInvoiceServiceRole {
           if (isValidInvoiceNumber(latestInvoiceNumberFromDb)) {
             return latestInvoiceNumberFromDb;
           }
+          LOGGER.trace("getLatestInvoiceNumberFromDb: no valid invoice number found ["
+              + latestInvoiceNumberFromDb + "].");
         } catch (NumberFormatException nFE) {
           LOGGER.info("Failed to parse max invoice number [" + maxInvoiceNumberStr
               + "]. Counting down instead.");

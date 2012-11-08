@@ -1,2 +1,3 @@
 com.celements.invoice.InvoiceClassCollection
 com.celements.invoice.service.InvoiceService
+com.celements.invoice.service.InvoiceScriptService

@@ -63,14 +63,28 @@ public class InvoiceService implements IInvoiceServiceRole {
 
   private int getLatestInvoiceNumber() {
     Integer latestInvoiceNumberFromDb = getLatestInvoiceNumberFromDb();
-    int minInvoiceNumberFromConfig = getContext().getWiki().getXWikiPreferenceAsInt(
-        "minInvoiceNumber", "com.celements.invoice.minInvoiceNumber", 1, getContext());
-    if ((latestInvoiceNumberFromDb == null)
-        || (latestInvoiceNumberFromDb < minInvoiceNumberFromConfig)) {
+    LOGGER.trace("getLatestInvoiceNumber got [" + latestInvoiceNumberFromDb + "].");
+    if (!isValidInvoiceNumber(latestInvoiceNumberFromDb)) {
+      int minInvoiceNumberFromConfig = getMinInvoiceNumberFromConfig();
+      LOGGER.debug("getLatestInvoiceNumber invalid invoice number found ["
+          + latestInvoiceNumberFromDb + "] returning min from config [" +
+          minInvoiceNumberFromConfig + "].");
       return minInvoiceNumberFromConfig;
     } else {
+      LOGGER.debug("getLatestInvoiceNumber returning [" + latestInvoiceNumberFromDb
+          + "].");
       return latestInvoiceNumberFromDb;
     }
+  }
+
+  private int getMinInvoiceNumberFromConfig() {
+    return getContext().getWiki().getXWikiPreferenceAsInt("minInvoiceNumber",
+        "com.celements.invoice.minInvoiceNumber", 1, getContext());
+  }
+
+  private boolean isValidInvoiceNumber(Integer latestInvoiceNumberFromDb) {
+    return (latestInvoiceNumberFromDb != null)
+        && (latestInvoiceNumberFromDb >= getMinInvoiceNumberFromConfig());
   }
 
   private String getMaxInvoiceNumberHQL() {
@@ -80,18 +94,25 @@ public class InvoiceService implements IInvoiceServiceRole {
   }
 
   private Integer getLatestInvoiceNumberFromDb() {
+    LOGGER.trace("getLatestInvoiceNumberFromDb: looking for latest invoice number in db."
+        );
     try {
       List<String> result = query.createQuery(getMaxInvoiceNumberHQL(), Query.HQL
           ).execute();
       if (!result.isEmpty()) {
         String maxInvoiceNumberStr = result.get(0);
         try {
-          return Integer.parseInt(maxInvoiceNumberStr);
+          int latestInvoiceNumberFromDb = Integer.parseInt(maxInvoiceNumberStr);
+          if (isValidInvoiceNumber(latestInvoiceNumberFromDb)) {
+            return latestInvoiceNumberFromDb;
+          }
+          LOGGER.trace("getLatestInvoiceNumberFromDb: no valid invoice number found ["
+              + latestInvoiceNumberFromDb + "].");
         } catch (NumberFormatException nFE) {
           LOGGER.info("Failed to parse max invoice number [" + maxInvoiceNumberStr
               + "]. Counting down instead.");
-          return getHighestInvoiceNumberByCountingDown();
         }
+        return getHighestInvoiceNumberByCountingDown();
       }
     } catch (QueryException exp) {
       LOGGER.error("Failed to get latest invoice number from db.", exp);
@@ -100,17 +121,26 @@ public class InvoiceService implements IInvoiceServiceRole {
   }
 
   private Integer getHighestInvoiceNumberByCountingDown() throws QueryException {
+    LOGGER.trace("getHighestInvoiceNumberByCountingDown: counting down.");
     List<String> resultDesc = query.createQuery(getInvoiceNumbersDescHQL(), Query.HQL
         ).execute();
     for (String invoiceNumberStr : resultDesc) {
       try {
-        return Integer.parseInt(invoiceNumberStr);
+        int highestInvoiceNumber = Integer.parseInt(invoiceNumberStr);
+        if (isValidInvoiceNumber(highestInvoiceNumber)) {
+          LOGGER.info("getHighestInvoiceNumberByCountingDown: invoice number found by"
+              + " counting [" + highestInvoiceNumber + "]");
+          return highestInvoiceNumber;
+        } else {
+          LOGGER.trace("getHighestInvoiceNumberByCountingDown: skip ["
+              + highestInvoiceNumber + "]");
+        }
       } catch (NumberFormatException nFE) {
         LOGGER.debug("Failed to parse invoice number [" + invoiceNumberStr
             + "]. Skipping");
       }
     }
-    LOGGER.info("now invoice number found by counting down.");
+    LOGGER.info("no invoice number found by counting down.");
     return null;
   }
 

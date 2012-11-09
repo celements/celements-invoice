@@ -31,7 +31,7 @@
   <modelVersion>4.0.0</modelVersion>  
   <groupId>com.celements</groupId>
   <artifactId>celements-invoice</artifactId>
-  <version>0.2</version>
+  <version>0.3-SNAPSHOT</version>
   <description>Celements invoice</description> 
   <dependencies>    
     <!-- Add here all your dependencies -->
@@ -46,6 +46,6 @@
     <connection>scm:git:git@github.com:celements/celements-invoice.git</connection>
     <developerConnection>scm:git:git@github.com:celements/celements-invoice.git</developerConnection>
     <url>https://github.com/celements/celements-invoice</url>
-    <tag>celements-invoice-0.2</tag>
+    <tag>HEAD</tag>
   </scm>
 </project>

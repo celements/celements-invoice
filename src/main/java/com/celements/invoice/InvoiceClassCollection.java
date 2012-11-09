@@ -29,6 +29,7 @@ import com.xpn.xwiki.XWiki;
 import com.xpn.xwiki.XWikiException;
 import com.xpn.xwiki.doc.XWikiDocument;
 import com.xpn.xwiki.objects.classes.BaseClass;
+import com.xpn.xwiki.objects.classes.BooleanClass;
 
 @Component("com.celements.invoice.classcollection")
 public class InvoiceClassCollection extends AbstractClassCollection {
@@ -102,7 +103,15 @@ public class InvoiceClassCollection extends AbstractClassCollection {
     needsUpdate |= bclass.addNumberField("totalVATfull", "Total VAT full of Invoice (in"
         + " smallest unit of currency)", 5, "integer");
     needsUpdate |= bclass.addStaticListField("status", "Status", "new|printed|finance");
-    needsUpdate |= bclass.addBooleanField("cancelled", "Cancelled", "yesno");
+    if(bclass.get("cancelled") == null) {
+      BooleanClass element = new BooleanClass();
+      element.setDisplayType("yesno");
+      element.setName("cancelled");
+      element.setPrettyName("Cancelled");
+      element.setDefaultValue(0);
+      bclass.addField("cancelled", element);
+      needsUpdate = true;
+    }
     
     if(!"internal".equals(bclass.getCustomMapping())){
       needsUpdate = true;

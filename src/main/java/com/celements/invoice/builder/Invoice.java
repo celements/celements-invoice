@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.xwiki.component.annotation.Component;
+import org.xwiki.component.annotation.InstantiationStrategy;
+import org.xwiki.component.descriptor.ComponentInstantiationStrategy;
 
 @Component
+@InstantiationStrategy(ComponentInstantiationStrategy.PER_LOOKUP)
 public class Invoice implements IInvoice {
   private String name;
   private int price;

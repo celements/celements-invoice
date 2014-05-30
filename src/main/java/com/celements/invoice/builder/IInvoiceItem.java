@@ -4,6 +4,9 @@ import org.xwiki.component.annotation.ComponentRole;
 
 @ComponentRole
 public interface IInvoiceItem {
+  public String getId();
+  public void setId(String id);
+  
   public String getName();
   public void setName(String name);
   

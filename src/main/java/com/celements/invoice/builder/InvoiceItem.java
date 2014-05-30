@@ -4,6 +4,7 @@ import org.xwiki.component.annotation.Component;
 
 @Component
 public class InvoiceItem implements IInvoiceItem {
+  private String id;
   private String name;
   private int price;
   private int amount;
@@ -21,6 +22,14 @@ public class InvoiceItem implements IInvoiceItem {
     setAmount(item.getAmount());
     setCurrency(item.getCurrency());
     setVATCode(item.getVATCode());
+  }
+  
+  public String getId() {
+    return id;
+  }
+  
+  public void setId(String id) {
+    this.id = id;
   }
   
   public String getName() {

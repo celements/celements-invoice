@@ -5,7 +5,10 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-public class InvoiceItemTest {
+import com.celements.common.test.AbstractBridgedComponentTestCase;
+import com.xpn.xwiki.web.Utils;
+
+public class InvoiceItemTest extends AbstractBridgedComponentTestCase {
   private final String NAME = "item name";
   private final int PRICE_PER_PIECE = 1320;
   private final int AMOUNT = 3;
@@ -15,13 +18,23 @@ public class InvoiceItemTest {
   InvoiceItem item;
   
   @Before
-  public void setUp() throws Exception {
+  public void setUp_InvoiceItemTest() throws Exception {
     item = new InvoiceItem();
     item.setName(NAME);
     item.setPricePerPiece(PRICE_PER_PIECE);
     item.setAmount(AMOUNT);
     item.setCurrency(CURRENCY);
     item.setVATCode(VAT_CODE);
+  }
+
+  @Test
+  public void testNotSingleton() {
+    IInvoice firstInvoice = Utils.getComponent(IInvoice.class);
+    IInvoice secondInvoice = Utils.getComponent(IInvoice.class);
+    replayDefault();
+    assertNotSame("Instanciation Strategy must be PER_LOOKUP", firstInvoice,
+        secondInvoice);
+    verifyDefault();
   }
 
   @Test

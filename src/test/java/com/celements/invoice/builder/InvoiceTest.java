@@ -7,7 +7,10 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-public class InvoiceTest {
+import com.celements.common.test.AbstractBridgedComponentTestCase;
+import com.xpn.xwiki.web.Utils;
+
+public class InvoiceTest extends AbstractBridgedComponentTestCase {
   private final String NAME = "invoice name";
   private final int PRICE = 2640;
   private final String CURRENCY = "CHF";
@@ -15,11 +18,21 @@ public class InvoiceTest {
   Invoice invoice;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp_InvoiceTest() throws Exception {
     invoice = new Invoice();
     invoice.setName(NAME);
     invoice.setPrice(PRICE);
     invoice.setCurrency(CURRENCY);
+  }
+
+  @Test
+  public void testNotSingleton() {
+    IInvoice firstInvoice = Utils.getComponent(IInvoice.class);
+    IInvoice secondInvoice = Utils.getComponent(IInvoice.class);
+    replayDefault();
+    assertNotSame("Instanciation Strategy must be PER_LOOKUP", firstInvoice,
+        secondInvoice);
+    verifyDefault();
   }
 
   @Test

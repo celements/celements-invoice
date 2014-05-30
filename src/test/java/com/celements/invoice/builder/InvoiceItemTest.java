@@ -14,6 +14,8 @@ public class InvoiceItemTest extends AbstractBridgedComponentTestCase {
   private final int AMOUNT = 3;
   private final String CURRENCY = "CHF";
   private final String VAT_CODE = "VAT123";
+  private final String ARTICLE_NR = "ArtNR123";
+  private final String ORDER_NR = "OrderNR123";
   
   InvoiceItem item;
   
@@ -25,6 +27,8 @@ public class InvoiceItemTest extends AbstractBridgedComponentTestCase {
     item.setAmount(AMOUNT);
     item.setCurrency(CURRENCY);
     item.setVATCode(VAT_CODE);
+    item.setArticleNr(ARTICLE_NR);
+    item.setOrderNr(ORDER_NR);
   }
 
   @Test
@@ -44,6 +48,8 @@ public class InvoiceItemTest extends AbstractBridgedComponentTestCase {
     assertEquals(AMOUNT, item.getAmount());
     assertEquals(CURRENCY, item.getCurrency());
     assertEquals(VAT_CODE, item.getVATCode());
+    assertEquals(ARTICLE_NR, item.getArticleNr());
+    assertEquals(ORDER_NR, item.getOrderNr());
   }
   
   @Test
@@ -54,6 +60,8 @@ public class InvoiceItemTest extends AbstractBridgedComponentTestCase {
     assertEquals(AMOUNT, copy.getAmount());
     assertEquals(CURRENCY, copy.getCurrency());
     assertEquals(VAT_CODE, copy.getVATCode());
+    assertEquals(ARTICLE_NR, copy.getArticleNr());
+    assertEquals(ORDER_NR, copy.getOrderNr());
   }
   
   @Test
@@ -72,6 +80,12 @@ public class InvoiceItemTest extends AbstractBridgedComponentTestCase {
     copy.setCurrency("EUR");
     assertEquals(CURRENCY, item.getCurrency());
     assertEquals("EUR", copy.getCurrency());
+    copy.setArticleNr("newArticleNr124");
+    assertEquals(ARTICLE_NR, item.getArticleNr());
+    assertEquals("newArticleNr124", copy.getArticleNr());
+    copy.setOrderNr("newOrderNr12123");
+    assertEquals(ORDER_NR, item.getOrderNr());
+    assertEquals("newOrderNr12123", copy.getOrderNr());
   }
 
   @Test

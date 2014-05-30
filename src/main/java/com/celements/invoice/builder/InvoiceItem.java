@@ -27,6 +27,8 @@ public class InvoiceItem implements IInvoiceItem {
     setAmount(item.getAmount());
     setCurrency(item.getCurrency());
     setVATCode(item.getVATCode());
+    setArticleNr(item.getArticleNr());
+    setOrderNr(item.getOrderNr());
   }
   
   public String getId() {

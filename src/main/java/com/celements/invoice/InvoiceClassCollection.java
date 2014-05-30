@@ -33,14 +33,20 @@ import com.xpn.xwiki.objects.classes.BooleanClass;
 
 @Component("com.celements.invoice.classcollection")
 public class InvoiceClassCollection extends AbstractClassCollection {
+  
+  public static final String FIELD_AMOUNT = "amount";
 
-  public static final String INVOICE_CLASS_DOC = "InvoiceClass";
   public static final String INVOICE_CLASSES_SPACE = "InvoiceClasses";
 
+  public static final String INVOICE_CLASS_DOC = "InvoiceClass";
+  public static final String FIELD_INVOICE_NUMBER = "invoiceNumber";
+  
   public static final String INVOICE_SUBSCRIPTION_ITEM_CLASS_DOC =
     "SubscriptionItemClass";
 
   public static final String INVOICE_ITEM_CLASS_DOC = "InvoiceItemClass";
+  public static final String FIELD_ORDER_NUMBER = "orderNumber";
+  public static final String FIELD_ARTICLE_NR = "articleNr";
 
   public static final String INVOICE_ADDRESS_CLASS_DOC = "AddressClass";
 
@@ -87,12 +93,12 @@ public class InvoiceClassCollection extends AbstractClassCollection {
     BaseClass bclass = doc.getXClass();
     bclass.setDocumentReference(classRef);
     
-    needsUpdate |= bclass.addTextField("invoiceNumber", "Invoice Number", 30);
+    needsUpdate |= bclass.addTextField(FIELD_INVOICE_NUMBER, "Invoice Number", 30);
     needsUpdate |= bclass.addTextField("subject", "Subject", 30);
     needsUpdate |= bclass.addTextField("currency", "Currency (iso4217)", 30);
     needsUpdate |= bclass.addTextAreaField("comment", "Comment", 80, 15);
     needsUpdate |= bclass.addDateField("invoiceDate" , "Invoice Date", "dd.MM.yyyy", 0);
-    needsUpdate |= bclass.addTextField("orderNumber", "Order number (use for single"
+    needsUpdate |= bclass.addTextField(FIELD_ORDER_NUMBER, "Order number (use for single"
         + " invoice)", 30);
     needsUpdate |= bclass.addNumberField("totalPrice", "Total of Invoice (in smallest"
         + " unit of currency)", 5, "integer");
@@ -182,7 +188,7 @@ public class InvoiceClassCollection extends AbstractClassCollection {
     BaseClass bclass = doc.getXClass();
     bclass.setDocumentReference(classRef);
     
-    needsUpdate |= bclass.addNumberField("amount", "Amount", 5, "integer");
+    needsUpdate |= bclass.addNumberField(FIELD_AMOUNT, "Amount", 5, "integer");
     needsUpdate |= bclass.addTextField("unitOfMeasure", "Unit of measure (UNSPSC-CODE)",
         30);
     needsUpdate |= bclass.addNumberField("unitPrice", "Price Unit (in smallest unit of"
@@ -193,9 +199,9 @@ public class InvoiceClassCollection extends AbstractClassCollection {
     needsUpdate |= bclass.addNumberField("vatValue", "VAT Value", 5, "float");
     needsUpdate |= bclass.addTextField("description", "Description", 30);
     needsUpdate |= bclass.addNumberField("position", "Position on invoice", 5, "integer");
-    needsUpdate |= bclass.addTextField("articleNr", "Article number", 30);
-    needsUpdate |= bclass.addTextField("orderNumber", "Order number (use for collective"
-        + " billing)", 30);
+    needsUpdate |= bclass.addTextField(FIELD_ARTICLE_NR, "Article number", 30);
+    needsUpdate |= bclass.addTextField(FIELD_ORDER_NUMBER, "Order number (use for"
+        + " collective billing)", 30);
     
     if(!"internal".equals(bclass.getCustomMapping())){
       needsUpdate = true;

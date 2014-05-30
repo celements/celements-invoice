@@ -41,6 +41,10 @@ import com.xpn.xwiki.XWikiContext;
 @Singleton
 public class InvoiceService implements IInvoiceServiceRole {
 
+  public static final String XWIKICFG_MIN_INVOICE_NUMBER =
+      "com.celements.invoice.minInvoiceNumber";
+  public static final String PREF_MIN_INVOICE_NUMBER = "minInvoiceNumber";
+
   private static Log LOGGER = LogFactory.getFactory().getInstance(InvoiceService.class);
 
   @Requirement
@@ -78,8 +82,8 @@ public class InvoiceService implements IInvoiceServiceRole {
   }
 
   private int getMinInvoiceNumberFromConfig() {
-    return getContext().getWiki().getXWikiPreferenceAsInt("minInvoiceNumber",
-        "com.celements.invoice.minInvoiceNumber", 1, getContext());
+    return getContext().getWiki().getXWikiPreferenceAsInt(PREF_MIN_INVOICE_NUMBER,
+        XWIKICFG_MIN_INVOICE_NUMBER, 1, getContext());
   }
 
   private boolean isValidInvoiceNumber(Integer latestInvoiceNumberFromDb) {

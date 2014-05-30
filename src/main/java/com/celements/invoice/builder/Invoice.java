@@ -14,6 +14,7 @@ public class Invoice implements IInvoice {
   private int price;
   private String currency;
   List<IInvoiceItem> invoiceItems;
+  private String invoiceNumber;
 
   public String getName() {
     return name;
@@ -54,6 +55,14 @@ public class Invoice implements IInvoice {
       }
     }
     return clone;
+  }
+
+  public void setInvoiceNumber(String invoiceNumber) {
+    this.invoiceNumber = invoiceNumber;
+  }
+
+  public String getInvoiceNumber() {
+    return invoiceNumber;
   }
 
 }

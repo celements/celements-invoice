@@ -17,4 +17,8 @@ public interface IInvoice {
   
   public void addInvoiceItem(IInvoiceItem item);
   public List<IInvoiceItem> getInvoiceItems();
+
+  public void setInvoiceNumber(String invoiceNumber);
+  public String getInvoiceNumber();
+
 }

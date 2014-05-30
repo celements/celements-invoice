@@ -37,7 +37,7 @@ import com.celements.invoice.InvoiceClassCollection;
 import com.celements.web.service.IWebUtilsService;
 import com.xpn.xwiki.XWikiContext;
 
-@Component
+@Component("xobject")
 @Singleton
 public class InvoiceService implements IInvoiceServiceRole {
 

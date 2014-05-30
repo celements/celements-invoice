@@ -10,7 +10,7 @@ import com.celements.invoice.InvoiceClassCollection;
 @Component("celInvoice")
 public class InvoiceScriptService implements ScriptService {
 
-  @Requirement
+  @Requirement("xobject")
   IInvoiceServiceRole invoiceService;
 
   public DocumentReference getInvoiceDocRefForInvoiceNumber(String invoiceNumber) {

@@ -21,4 +21,11 @@ public interface IInvoiceItem {
   
   public String getVATCode();
   public void setVATCode(String vatCode);
+
+  public String getArticleNr();
+  public void setArticleNr(String articleNr);
+
+  public String getOrderNr();
+  public void setOrderNr(String orderNr);
+
 }

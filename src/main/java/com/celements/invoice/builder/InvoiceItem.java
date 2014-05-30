@@ -13,6 +13,8 @@ public class InvoiceItem implements IInvoiceItem {
   private int amount;
   private String currency;
   private String vatCode;
+  private String articleNr;
+  private String orderNr;
 
 
   public InvoiceItem() {
@@ -80,4 +82,21 @@ public class InvoiceItem implements IInvoiceItem {
     return "[" + getName() + ", " + getCurrency() + " " + getPricePerPiece() + " x " 
         + getAmount() + ", VAT: " + getVATCode() + "]";
   }
+
+  public String getArticleNr() {
+    return articleNr;
+  }
+
+  public void setArticleNr(String articleNr) {
+    this.articleNr = articleNr;
+  }
+
+  public String getOrderNr() {
+    return orderNr;
+  }
+
+  public void setOrderNr(String orderNr) {
+    this.orderNr = orderNr;
+  }
+
 }

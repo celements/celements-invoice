@@ -73,4 +73,21 @@ public class InvoiceItemTest extends AbstractBridgedComponentTestCase {
     assertEquals(CURRENCY, item.getCurrency());
     assertEquals("EUR", copy.getCurrency());
   }
+
+  @Test
+  public void testSetGetArticleNr() {
+    IInvoiceItem invoiceItem = Utils.getComponent(IInvoiceItem.class);
+    String articleNr = "Article123";
+    invoiceItem.setArticleNr(articleNr);
+    assertEquals(articleNr, invoiceItem.getArticleNr());
+  }
+
+  @Test
+  public void testSetGetOrderNr() {
+    IInvoiceItem invoiceItem = Utils.getComponent(IInvoiceItem.class);
+    String orderNr = "OrderNr123";
+    invoiceItem.setOrderNr(orderNr);
+    assertEquals(orderNr, invoiceItem.getOrderNr());
+  }
+
 }

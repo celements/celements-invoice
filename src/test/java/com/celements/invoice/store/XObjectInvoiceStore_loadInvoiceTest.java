@@ -24,7 +24,7 @@ import com.xpn.xwiki.doc.XWikiDocument;
 import com.xpn.xwiki.objects.BaseObject;
 import com.xpn.xwiki.web.Utils;
 
-public class XObjectInvoiceStoreTest extends AbstractBridgedComponentTestCase {
+public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponentTestCase {
 
   private XObjectInvoiceStore invoiceStore;
   private IInvoiceServiceRole invoiceServiceMock;

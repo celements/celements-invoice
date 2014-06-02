@@ -239,15 +239,6 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
     verifyDefault();
   }
 
-  @Test
-  public void testStoreInvoice() {
-    IInvoice theInvoice = new Invoice();
-    replayDefault();
-    invoiceStore.storeInvoice(theInvoice);
-    verifyDefault();
-  }
-
-
   private InvoiceClassCollection getInvoiceClasses() {
     return (InvoiceClassCollection) Utils.getComponent(IClassCollectionRole.class,
         "com.celements.invoice.classcollection");

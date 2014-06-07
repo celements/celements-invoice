@@ -1,5 +1,7 @@
 package com.celements.invoice.builder;
 
+import java.util.List;
+
 import org.xwiki.component.annotation.ComponentRole;
 
 @ComponentRole
@@ -28,4 +30,6 @@ public interface IInvoiceItem {
   public String getOrderNr();
   public void setOrderNr(String orderNr);
 
+  public List<IInvoiceReferenceDocument> getReferenceDocs();
+  public void addInvoiceReferenceDocument(IInvoiceReferenceDocument refDoc);
 }

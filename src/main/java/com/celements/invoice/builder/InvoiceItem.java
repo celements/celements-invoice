@@ -1,5 +1,9 @@
 package com.celements.invoice.builder;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.xwiki.component.annotation.Component;
 import org.xwiki.component.annotation.InstantiationStrategy;
 import org.xwiki.component.descriptor.ComponentInstantiationStrategy;
@@ -15,7 +19,7 @@ public class InvoiceItem implements IInvoiceItem {
   private String vatCode;
   private String articleNr;
   private String orderNr;
-
+  private List<IInvoiceReferenceDocument> refDocs;
 
   public InvoiceItem() {
     super();
@@ -99,6 +103,20 @@ public class InvoiceItem implements IInvoiceItem {
 
   public void setOrderNr(String orderNr) {
     this.orderNr = orderNr;
+  }
+
+  public List<IInvoiceReferenceDocument> getReferenceDocs() {
+    if(refDocs == null) {
+      return Collections.emptyList();
+    }
+    return refDocs;
+  }
+
+  public void addInvoiceReferenceDocument(IInvoiceReferenceDocument refDoc) {
+    if(refDocs == null) {
+      refDocs = new ArrayList<IInvoiceReferenceDocument>();
+    }
+    refDocs.add(refDoc);
   }
 
 }

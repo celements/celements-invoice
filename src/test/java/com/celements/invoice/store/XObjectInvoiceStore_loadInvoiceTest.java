@@ -15,7 +15,6 @@ import com.celements.common.test.AbstractBridgedComponentTestCase;
 import com.celements.invoice.InvoiceClassCollection;
 import com.celements.invoice.builder.IInvoice;
 import com.celements.invoice.builder.IInvoiceItem;
-import com.celements.invoice.builder.Invoice;
 import com.celements.invoice.service.IInvoiceServiceRole;
 import com.xpn.xwiki.XWiki;
 import com.xpn.xwiki.XWikiContext;

@@ -94,8 +94,38 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
   }
 
   public void storeInvoice(IInvoice theInvoice) {
-    // TODO Auto-generated method stub
+    storeInvoice(theInvoice, "", false);
+  }
 
+  public void storeInvoice(IInvoice theInvoice, String comment) {
+    storeInvoice(theInvoice, comment, false);
+  }
+
+  public void storeInvoice(IInvoice theInvoice, String comment, boolean isMinorEdit) {
+    String invoiceNumber = theInvoice.getInvoiceNumber();
+    DocumentReference invoiceDocRef = invoiceService.getInvoiceDocRefForInvoiceNumber(
+        invoiceNumber);
+    try {
+      XWikiDocument invoiceDoc = getContext().getWiki().getDocument(invoiceDocRef,
+          getContext());
+      BaseObject invoiceObj = getOrCreateInvoiceObject(invoiceDoc);
+      invoiceObj.setStringValue(InvoiceClassCollection.INVOICE_CLASSES_SPACE,
+          invoiceNumber);
+      getContext().getWiki().saveDocument(invoiceDoc, comment, isMinorEdit, getContext());
+    } catch (XWikiException exp) {
+      LOGGER.error("Failed to get invoice document [" + invoiceDocRef + "].", exp);
+    }
+  }
+
+  BaseObject getOrCreateInvoiceObject(XWikiDocument invoiceDoc)
+      throws XWikiException {
+    BaseObject invoiceObj = invoiceDoc.getXObject(getInvoiceClasses(
+        ).getInvoiceClassRef(getWikiName()));
+    if (invoiceObj == null) {
+      invoiceObj = invoiceDoc.newXObject(getInvoiceClasses().getInvoiceClassRef(
+          getWikiName()), getContext());
+    }
+    return invoiceObj;
   }
 
 }

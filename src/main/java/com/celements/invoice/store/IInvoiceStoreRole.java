@@ -11,4 +11,8 @@ public interface IInvoiceStoreRole {
 
   public void storeInvoice(IInvoice theInvoice);
 
+  public void storeInvoice(IInvoice theInvoice, String comment);
+
+  public void storeInvoice(IInvoice theInvoice, String comment, boolean isMinorEdit);
+
 }

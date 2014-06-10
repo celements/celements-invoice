@@ -81,12 +81,20 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
     IInvoiceItem invoiceItem = Utils.getComponent(IInvoiceItem.class);
     invoiceItem.setAmount(invoiceItemObj.getIntValue(
         InvoiceClassCollection.FIELD_AMOUNT, 0));
-    String articleNr = invoiceItemObj.getStringValue(
-        InvoiceClassCollection.FIELD_ARTICLE_NR);
-    invoiceItem.setArticleNr(articleNr);
+    invoiceItem.setArticleNr(invoiceItemObj.getStringValue(
+        InvoiceClassCollection.FIELD_ARTICLE_NR));
     invoiceItem.setOrderNr(invoiceItemObj.getStringValue(
         InvoiceClassCollection.FIELD_ORDER_NUMBER));
     return invoiceItem;
+  }
+
+  void convertInvoiceItemTo(IInvoiceItem invoiceItem, BaseObject invoiceItemObj) {
+    invoiceItemObj.setIntValue(InvoiceClassCollection.FIELD_AMOUNT,
+        invoiceItem.getAmount());
+    invoiceItemObj.setStringValue(InvoiceClassCollection.FIELD_ARTICLE_NR,
+        invoiceItem.getArticleNr());
+    invoiceItemObj.setStringValue(InvoiceClassCollection.FIELD_ORDER_NUMBER,
+        invoiceItem.getOrderNr());
   }
 
   private String getWikiName() {
@@ -111,6 +119,13 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
       BaseObject invoiceObj = getOrCreateInvoiceObject(invoiceDoc);
       invoiceObj.setStringValue(InvoiceClassCollection.INVOICE_CLASSES_SPACE,
           invoiceNumber);
+      DocumentReference invoiceItemClassRef = getInvoiceClasses().getInvoiceItemClassRef(
+          getWikiName());
+      invoiceDoc.removeXObjects(invoiceItemClassRef);
+      for (IInvoiceItem item : theInvoice.getInvoiceItems()) {
+        BaseObject invItemObj = invoiceDoc.newXObject(invoiceItemClassRef, getContext());
+        convertInvoiceItemTo(item, invItemObj);
+      }
       getContext().getWiki().saveDocument(invoiceDoc, comment, isMinorEdit, getContext());
     } catch (XWikiException exp) {
       LOGGER.error("Failed to get invoice document [" + invoiceDocRef + "].", exp);

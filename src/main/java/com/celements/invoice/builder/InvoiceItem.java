@@ -85,7 +85,7 @@ public class InvoiceItem implements IInvoiceItem {
   
   @Override
   public String toString() {
-    return "[" + getName() + ", " + getCurrency() + " " + getPricePerPiece() + " x " 
+    return "[" + getId() + ", '" + getName() + "', " + getCurrency() + " " + getPricePerPiece() + " x " 
         + getAmount() + ", VAT: " + getVATCode() + "]";
   }
 

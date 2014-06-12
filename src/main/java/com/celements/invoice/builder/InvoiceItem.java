@@ -34,8 +34,10 @@ public class InvoiceItem implements IInvoiceItem {
     setVATCode(item.getVATCode());
     setArticleNr(item.getArticleNr());
     setOrderNr(item.getOrderNr());
-    for(IInvoiceReferenceDocument refDoc : refDocs) {
-      addInvoiceReferenceDocument(refDoc);
+    if(refDocs != null) {
+      for(IInvoiceReferenceDocument refDoc : refDocs) {
+        addInvoiceReferenceDocument(refDoc);
+      }
     }
   }
   

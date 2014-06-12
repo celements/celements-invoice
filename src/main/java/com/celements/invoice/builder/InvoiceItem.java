@@ -26,6 +26,7 @@ public class InvoiceItem implements IInvoiceItem {
   }
   
   public InvoiceItem(IInvoiceItem item) {
+    setId(item.getId());
     setName(item.getName());
     setPricePerPiece(item.getPricePerPiece());
     setAmount(item.getAmount());
@@ -33,6 +34,9 @@ public class InvoiceItem implements IInvoiceItem {
     setVATCode(item.getVATCode());
     setArticleNr(item.getArticleNr());
     setOrderNr(item.getOrderNr());
+    for(IInvoiceReferenceDocument refDoc : refDocs) {
+      addInvoiceReferenceDocument(refDoc);
+    }
   }
   
   public String getId() {

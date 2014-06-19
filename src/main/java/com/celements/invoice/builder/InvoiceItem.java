@@ -15,7 +15,7 @@ public class InvoiceItem implements IInvoiceItem {
   private String name;
   private int pricePerPiece;
   private int totalPrice;
-  private float amount;
+  private int amount;
   private String currency;
   private String vatCode;
   private String articleNr;
@@ -75,11 +75,11 @@ public class InvoiceItem implements IInvoiceItem {
     this.totalPrice = totalPrice;
   }
   
-  public float getAmount() {
+  public int getAmount() {
     return amount;
   }
   
-  public void setAmount(float amount) {
+  public void setAmount(int amount) {
     this.amount = amount;
   }
   

@@ -18,8 +18,8 @@ public interface IInvoiceItem {
   public int getTotalPrice();
   public void setTotalPrice(int totalPrice);
   
-  public int getAmount();
-  public void setAmount(int amount);
+  public float getAmount();
+  public void setAmount(float amount);
   
   public String getCurrency();
   public void setCurrency(String currency);

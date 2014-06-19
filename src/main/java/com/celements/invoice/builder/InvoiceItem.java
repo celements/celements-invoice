@@ -13,7 +13,8 @@ import org.xwiki.component.descriptor.ComponentInstantiationStrategy;
 public class InvoiceItem implements IInvoiceItem {
   private String id;
   private String name;
-  private int price;
+  private int pricePerPiece;
+  private int totalPrice;
   private int amount;
   private String currency;
   private String vatCode;
@@ -29,6 +30,7 @@ public class InvoiceItem implements IInvoiceItem {
     setId(item.getId());
     setName(item.getName());
     setPricePerPiece(item.getPricePerPiece());
+    setTotalPrice(item.getTotalPrice());
     setAmount(item.getAmount());
     setCurrency(item.getCurrency());
     setVATCode(item.getVATCode());
@@ -58,11 +60,19 @@ public class InvoiceItem implements IInvoiceItem {
   }
   
   public int getPricePerPiece() {
-    return price;
+    return pricePerPiece;
   }
   
   public void setPricePerPiece(int price) {
-    this.price = price;
+    this.pricePerPiece = price;
+  }
+  
+  public int getTotalPrice() {
+    return totalPrice;
+  }  
+  
+  public void setTotalPrice(int totalPrice) {
+    this.totalPrice = totalPrice;
   }
   
   public int getAmount() {

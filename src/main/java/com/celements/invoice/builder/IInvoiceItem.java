@@ -15,6 +15,9 @@ public interface IInvoiceItem {
   public int getPricePerPiece();
   public void setPricePerPiece(int price);
   
+  public int getTotalPrice();
+  public void setTotalPrice(int totalPrice);
+  
   public int getAmount();
   public void setAmount(int amount);
   

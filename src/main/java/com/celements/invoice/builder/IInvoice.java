@@ -6,9 +6,12 @@ import org.xwiki.component.annotation.ComponentRole;
 
 @ComponentRole
 public interface IInvoice {
+  public String getDocumentNameHint();
+  public void setDocumentNameHint(String documentNameHint);
+
   public String getName();
   public void setName(String name);
-  
+
   public int getPrice();
   public void setPrice(int price);
   

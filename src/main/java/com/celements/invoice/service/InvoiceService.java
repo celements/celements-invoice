@@ -34,6 +34,8 @@ import org.xwiki.query.QueryException;
 import org.xwiki.query.QueryManager;
 
 import com.celements.invoice.InvoiceClassCollection;
+import com.celements.invoice.builder.IInvoice;
+import com.celements.web.plugin.cmd.NextFreeDocNameCommand;
 import com.celements.web.service.IWebUtilsService;
 import com.xpn.xwiki.XWikiContext;
 
@@ -175,6 +177,15 @@ public class InvoiceService implements IInvoiceServiceRole {
     LOGGER.info("getInvoiceDocRefForInvoiceNumber for [" + invoiceNumber + "] returning ["
         + invoiceDocRef + "].");
     return invoiceDocRef;
+  }
+
+  public DocumentReference getNewInvoiceDocRef(IInvoice invoice) {
+    String rgSpaceName = "";
+    if (invoice.getDocumentNameHint() != null) {
+      rgSpaceName = invoice.getDocumentNameHint() + "-";
+    }
+    return new NextFreeDocNameCommand().getNextTitledPageDocRef(rgSpaceName + "Invoices",
+        "Invoice", getContext());
   }
 
   private String getInvoiceForInvoiceNumberXWQL() {

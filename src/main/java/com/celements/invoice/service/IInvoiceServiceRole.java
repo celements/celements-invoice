@@ -22,6 +22,8 @@ package com.celements.invoice.service;
 import org.xwiki.component.annotation.ComponentRole;
 import org.xwiki.model.reference.DocumentReference;
 
+import com.celements.invoice.builder.IInvoice;
+
 @ComponentRole
 public interface IInvoiceServiceRole {
 
@@ -29,4 +31,5 @@ public interface IInvoiceServiceRole {
 
   public DocumentReference getInvoiceDocRefForInvoiceNumber(String invoiceNumber);
 
+  public DocumentReference getNewInvoiceDocRef(IInvoice invoice);
 }

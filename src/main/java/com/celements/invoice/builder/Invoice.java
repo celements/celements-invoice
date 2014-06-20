@@ -15,6 +15,15 @@ public class Invoice implements IInvoice {
   private String currency;
   List<IInvoiceItem> invoiceItems;
   private String invoiceNumber;
+  private String documentNameHint;
+
+  public String getDocumentNameHint() {
+    return documentNameHint;
+  }
+
+  public void setDocumentNameHint(String documentNameHint) {
+    this.documentNameHint = documentNameHint;
+  }
 
   public String getName() {
     return name;

@@ -109,10 +109,16 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
     storeInvoice(theInvoice, comment, false);
   }
 
+  /**
+   * theInvoice MUST provide a invoiceNumber
+   */
   public void storeInvoice(IInvoice theInvoice, String comment, boolean isMinorEdit) {
     String invoiceNumber = theInvoice.getInvoiceNumber();
     DocumentReference invoiceDocRef = invoiceService.getInvoiceDocRefForInvoiceNumber(
         invoiceNumber);
+    if (invoiceDocRef == null) {
+      invoiceDocRef = invoiceService.getNewInvoiceDocRef(theInvoice);
+    }
     try {
       XWikiDocument invoiceDoc = getContext().getWiki().getDocument(invoiceDocRef,
           getContext());

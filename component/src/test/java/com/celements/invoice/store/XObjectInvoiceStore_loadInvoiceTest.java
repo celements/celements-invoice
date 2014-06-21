@@ -43,30 +43,30 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
 
   @Test
   public void testConvertToInvoice() {
-    String orderNr1 = "OrderNumber1123";
+    String orderNr = "OrderNumber1123";
     String invoiceNumber = "A126587";
     String invoiceSubj = "Invoice for May 2014";
     String currency = "CHF";
     String comment = "nothing to comment here";
     Date invoiceDate = new Date();
-    int totalPrice1 = 34560;
+    int totalPrice = 34560;
     BaseObject invoiceObj = new BaseObject();
     invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_NUMBER, invoiceNumber);
-    invoiceObj.setStringValue(InvoiceClassCollection.FIELD_ORDER_NUMBER, orderNr1);
+    invoiceObj.setStringValue(InvoiceClassCollection.FIELD_ORDER_NUMBER, orderNr);
     invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_SUBJECT, invoiceSubj);
     invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_CURRENCY, currency);
     invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_COMMENT, comment);
     invoiceObj.setDateValue(InvoiceClassCollection.FIELD_INVOICE_DATE, invoiceDate);
-    invoiceObj.setIntValue(InvoiceClassCollection.FIELD_TOTAL_PRICE, totalPrice1);
+    invoiceObj.setIntValue(InvoiceClassCollection.FIELD_TOTAL_PRICE, totalPrice);
     replayDefault();
     IInvoice invoice = invoiceStore.convertToInvoice(invoiceObj);
     assertEquals(invoiceNumber, invoice.getInvoiceNumber());
-    assertEquals(orderNr1, invoice.getOrderNr());
+    assertEquals(orderNr, invoice.getOrderNr());
     assertEquals(invoiceSubj, invoice.getName());
     assertEquals(currency, invoice.getCurrency());
     assertEquals(comment, invoice.getComment());
     assertEquals(invoiceDate, invoice.getInvoiceDate());
-    assertEquals(totalPrice1, invoice.getPrice());
+    assertEquals(totalPrice, invoice.getPrice());
     verifyDefault();
   }
 

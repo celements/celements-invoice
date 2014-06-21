@@ -1,6 +1,7 @@
 package com.celements.invoice.builder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.xwiki.component.annotation.Component;
@@ -16,6 +17,7 @@ public class Invoice implements IInvoice {
   List<IInvoiceItem> invoiceItems;
   private String invoiceNumber;
   private String documentNameHint;
+  private List<IInvoiceReferenceDocument> refDocs;
 
   public String getDocumentNameHint() {
     return documentNameHint;
@@ -72,6 +74,20 @@ public class Invoice implements IInvoice {
 
   public String getInvoiceNumber() {
     return invoiceNumber;
+  }
+
+  public List<IInvoiceReferenceDocument> getReferenceDocs() {
+    if(refDocs == null) {
+      return Collections.emptyList();
+    }
+    return refDocs;
+  }
+
+  public void addInvoiceReferenceDocument(IInvoiceReferenceDocument refDoc) {
+    if(refDocs == null) {
+      refDocs = new ArrayList<IInvoiceReferenceDocument>();
+    }
+    refDocs.add(refDoc);
   }
 
 }

@@ -75,15 +75,30 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
     int amount1 = 2;
     String articleNr1 = "ArtNr4665";
     String orderNr1 = "OrderNumber1123";
+    int unitPrice1 = 34560;
+    int unitOfPrice1 = 10;
+    int vatCode = 2;
+    float vatValue = 23.24F;
+    String descr = "the item you ordered";
     BaseObject invoiceItemObj = new BaseObject();
     invoiceItemObj.setStringValue(InvoiceClassCollection.FIELD_ARTICLE_NR, articleNr1);
     invoiceItemObj.setStringValue(InvoiceClassCollection.FIELD_ORDER_NUMBER, orderNr1);
     invoiceItemObj.setIntValue(InvoiceClassCollection.FIELD_AMOUNT, amount1);
+    invoiceItemObj.setIntValue(InvoiceClassCollection.FIELD_UNIT_PRICE, unitPrice1);
+    invoiceItemObj.setIntValue(InvoiceClassCollection.FIELD_UNIT_OF_PRICE, unitOfPrice1);
+    invoiceItemObj.setIntValue(InvoiceClassCollection.FIELD_VAT_CODE, vatCode);
+    invoiceItemObj.setFloatValue(InvoiceClassCollection.FIELD_VAT_VALUE, vatValue);
+    invoiceItemObj.setStringValue(InvoiceClassCollection.FIELD_ITEM_DESCRIPTION, descr);
     replayDefault();
     IInvoiceItem invoiceItem = invoiceStore.convertToInvoiceItem(invoiceItemObj);
     assertEquals(amount1, invoiceItem.getAmount());
     assertEquals(articleNr1, invoiceItem.getArticleNr());
     assertEquals(orderNr1, invoiceItem.getOrderNr());
+    assertEquals(unitPrice1, invoiceItem.getUnitPrice());
+    assertEquals(unitOfPrice1, invoiceItem.getUnitOfPrice());
+    assertEquals(vatCode, invoiceItem.getVATCode());
+    assertEquals(vatValue, invoiceItem.getVATValue(), 0.001);
+    assertEquals(descr, invoiceItem.getName());
     verifyDefault();
   }
 

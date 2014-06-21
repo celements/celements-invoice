@@ -85,6 +85,7 @@ public class XObjectInvoiceStore_storeInvoiceTest extends AbstractBridgedCompone
     String articleNr1 = "ArtNr4665";
     String orderNr1 = "OrderNumber1123";
     int unitPrice1 = 34560;
+    int unitOfPrice1 = 10;
     int vatCode = 2;
     float vatValue = 23.24F;
     String descr = "the item you ordered";
@@ -93,7 +94,8 @@ public class XObjectInvoiceStore_storeInvoiceTest extends AbstractBridgedCompone
     invoiceItem.setArticleNr(articleNr1);
     invoiceItem.setOrderNr(orderNr1);
     invoiceItem.setAmount(amount1);
-    invoiceItem.setPricePerPiece(unitPrice1);
+    invoiceItem.setUnitPrice(unitPrice1);
+    invoiceItem.setUnitOfPrice(unitOfPrice1);
     invoiceItem.setVATCode(vatCode);
     invoiceItem.setVATValue(vatValue);
     invoiceItem.setName(descr);

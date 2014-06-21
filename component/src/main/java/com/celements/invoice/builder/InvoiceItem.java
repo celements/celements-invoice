@@ -21,6 +21,8 @@ public class InvoiceItem implements IInvoiceItem {
   private String orderNr;
   private List<IInvoiceReferenceDocument> refDocs;
   private float vatValue;
+  private int unitPrice;
+  private int unitOfPrice;
 
   public InvoiceItem() {
     super();
@@ -132,6 +134,22 @@ public class InvoiceItem implements IInvoiceItem {
 
   public void setVATValue(float vatValue) {
     this.vatValue = vatValue;
+  }
+
+  public int getUnitPrice() {
+    return this.unitPrice;
+  }
+
+  public void setUnitPrice(int unitPrice) {
+    this.unitPrice = unitPrice;
+  }
+  
+  public int getUnitOfPrice() {
+    return this.unitOfPrice;
+  }
+
+  public void setUnitOfPrice(int unitOfPrice) {
+    this.unitOfPrice = unitOfPrice;
   }
 
 }

@@ -111,8 +111,16 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
         InvoiceClassCollection.FIELD_ARTICLE_NR));
     invoiceItem.setOrderNr(invoiceItemObj.getStringValue(
         InvoiceClassCollection.FIELD_ORDER_NUMBER));
-    invoiceItem.setTotalPrice(invoiceItemObj.getIntValue(
-        InvoiceClassCollection.FIELD_TOTAL_PRICE));
+    invoiceItem.setUnitPrice(invoiceItemObj.getIntValue(
+        InvoiceClassCollection.FIELD_UNIT_PRICE));
+    invoiceItem.setUnitOfPrice(invoiceItemObj.getIntValue(
+        InvoiceClassCollection.FIELD_UNIT_OF_PRICE));
+    invoiceItem.setVATCode(invoiceItemObj.getIntValue(
+        InvoiceClassCollection.FIELD_VAT_CODE));
+    invoiceItem.setVATValue(invoiceItemObj.getFloatValue(
+        InvoiceClassCollection.FIELD_VAT_VALUE));
+    invoiceItem.setName(invoiceItemObj.getStringValue(
+        InvoiceClassCollection.FIELD_ITEM_DESCRIPTION));
     return invoiceItem;
   }
 
@@ -196,7 +204,7 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
     invoiceItemObj.setStringValue(InvoiceClassCollection.FIELD_ORDER_NUMBER,
         invoiceItem.getOrderNr());
     invoiceItemObj.setIntValue(InvoiceClassCollection.FIELD_UNIT_PRICE,
-        invoiceItem.getPricePerPiece());
+        invoiceItem.getUnitPrice());
     invoiceItemObj.setIntValue(InvoiceClassCollection.FIELD_VAT_CODE,
         invoiceItem.getVATCode());
     invoiceItemObj.setFloatValue(InvoiceClassCollection.FIELD_VAT_VALUE,

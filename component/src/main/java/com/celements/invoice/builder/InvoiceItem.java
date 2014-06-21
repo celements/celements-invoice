@@ -16,7 +16,6 @@ public class InvoiceItem implements IInvoiceItem {
   private int pricePerPiece;
   private int totalPrice;
   private int amount;
-  private String currency;
   private String vatCode;
   private String articleNr;
   private String orderNr;
@@ -32,7 +31,6 @@ public class InvoiceItem implements IInvoiceItem {
     setPricePerPiece(item.getPricePerPiece());
     setTotalPrice(item.getTotalPrice());
     setAmount(item.getAmount());
-    setCurrency(item.getCurrency());
     setVATCode(item.getVATCode());
     setArticleNr(item.getArticleNr());
     setOrderNr(item.getOrderNr());
@@ -83,14 +81,6 @@ public class InvoiceItem implements IInvoiceItem {
     this.amount = amount;
   }
   
-  public String getCurrency() {
-    return currency;
-  }
-  
-  public void setCurrency(String currency) {
-    this.currency = currency;
-  }
-  
   public String getVATCode() {
     return vatCode;
   }
@@ -101,7 +91,7 @@ public class InvoiceItem implements IInvoiceItem {
   
   @Override
   public String toString() {
-    return "[" + getId() + ", '" + getName() + "', " + getCurrency() + " " + getPricePerPiece() + " x " 
+    return "[" + getId() + ", '" + getName() + "', " + getPricePerPiece() + " x " 
         + getAmount() + ", VAT: " + getVATCode() + "]";
   }
 

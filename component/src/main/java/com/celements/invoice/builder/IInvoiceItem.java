@@ -21,9 +21,6 @@ public interface IInvoiceItem {
   public int getAmount();
   public void setAmount(int amount);
   
-  public String getCurrency();
-  public void setCurrency(String currency);
-  
   public String getVATCode();
   public void setVATCode(String vatCode);
 

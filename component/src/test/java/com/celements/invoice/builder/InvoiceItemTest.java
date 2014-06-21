@@ -12,7 +12,6 @@ public class InvoiceItemTest extends AbstractBridgedComponentTestCase {
   private final String NAME = "item name";
   private final int PRICE_PER_PIECE = 1320;
   private final int AMOUNT = 3;
-  private final String CURRENCY = "CHF";
   private final String VAT_CODE = "VAT123";
   private final String ARTICLE_NR = "ArtNR123";
   private final String ORDER_NR = "OrderNR123";
@@ -25,7 +24,6 @@ public class InvoiceItemTest extends AbstractBridgedComponentTestCase {
     item.setName(NAME);
     item.setPricePerPiece(PRICE_PER_PIECE);
     item.setAmount(AMOUNT);
-    item.setCurrency(CURRENCY);
     item.setVATCode(VAT_CODE);
     item.setArticleNr(ARTICLE_NR);
     item.setOrderNr(ORDER_NR);
@@ -46,7 +44,6 @@ public class InvoiceItemTest extends AbstractBridgedComponentTestCase {
     assertEquals(NAME, item.getName());
     assertEquals(PRICE_PER_PIECE, item.getPricePerPiece());
     assertEquals(AMOUNT, item.getAmount());
-    assertEquals(CURRENCY, item.getCurrency());
     assertEquals(VAT_CODE, item.getVATCode());
     assertEquals(ARTICLE_NR, item.getArticleNr());
     assertEquals(ORDER_NR, item.getOrderNr());
@@ -58,7 +55,6 @@ public class InvoiceItemTest extends AbstractBridgedComponentTestCase {
     assertEquals(NAME, copy.getName());
     assertEquals(PRICE_PER_PIECE, copy.getPricePerPiece());
     assertEquals(AMOUNT, copy.getAmount());
-    assertEquals(CURRENCY, copy.getCurrency());
     assertEquals(VAT_CODE, copy.getVATCode());
     assertEquals(ARTICLE_NR, copy.getArticleNr());
     assertEquals(ORDER_NR, copy.getOrderNr());
@@ -69,17 +65,12 @@ public class InvoiceItemTest extends AbstractBridgedComponentTestCase {
     assertEquals(NAME, item.getName());
     assertEquals(PRICE_PER_PIECE, item.getPricePerPiece());
     assertEquals(AMOUNT, item.getAmount());
-    assertEquals(CURRENCY, item.getCurrency());
     assertEquals(VAT_CODE, item.getVATCode());
     InvoiceItem copy = new InvoiceItem(item);
     assertEquals(NAME, copy.getName());
     assertEquals(PRICE_PER_PIECE, copy.getPricePerPiece());
     assertEquals(AMOUNT, copy.getAmount());
-    assertEquals(CURRENCY, copy.getCurrency());
     assertEquals(VAT_CODE, copy.getVATCode());
-    copy.setCurrency("EUR");
-    assertEquals(CURRENCY, item.getCurrency());
-    assertEquals("EUR", copy.getCurrency());
     copy.setArticleNr("newArticleNr124");
     assertEquals(ARTICLE_NR, item.getArticleNr());
     assertEquals("newArticleNr124", copy.getArticleNr());

@@ -3,6 +3,7 @@ package com.celements.invoice.store;
 import groovy.lang.Singleton;
 
 import java.util.List;
+import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -37,6 +38,9 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
   @Requirement("com.celements.invoice.classcollection")
   IClassCollectionRole invoiceClasses;
 
+  @Requirement(role = IInvoiceStoreExtenderRole.class)
+  Map<String, IInvoiceStoreExtenderRole> storeExtenderMap;
+
   @Requirement
   Execution execution;
 
@@ -59,6 +63,7 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
             ).getInvoiceClassRef(getWikiName()));
         if (invoiceObj != null) {
           IInvoice invoice = convertToInvoice(invoiceObj);
+          callLoadInvoiceExtender(invoiceNumber, invoiceDoc, invoice); 
           List<BaseObject> invoiceItemObjList = invoiceDoc.getXObjects(getInvoiceClasses(
               ).getInvoiceItemClassRef(getWikiName()));
           if (invoiceItemObjList != null) {
@@ -83,6 +88,18 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
       }
     }
     return null;
+  }
+
+  private void callLoadInvoiceExtender(String invoiceNumber, XWikiDocument invoiceDoc,
+      IInvoice invoice) {
+    for (IInvoiceStoreExtenderRole storeExtender : storeExtenderMap.values()) {
+      try {
+        storeExtender.loadInvoice(invoiceDoc, invoice);
+      } catch (Exception exp) {
+        LOGGER.error("IInvoiceStoreExtender [" + storeExtender.getClass()
+            + "] failed to load invoice [" + invoiceNumber + "].", exp);
+      }
+    }
   }
 
   IInvoice convertToInvoice(BaseObject invoiceObj) {
@@ -162,9 +179,22 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
         BaseObject invItemObj = invoiceDoc.newXObject(invoiceItemClassRef, getContext());
         convertInvoiceItemTo(item, invItemObj, position);
       }
+      callStoreInvoiceExtender(theInvoice, invoiceNumber, invoiceDoc);
       getContext().getWiki().saveDocument(invoiceDoc, comment, isMinorEdit, getContext());
     } catch (XWikiException exp) {
       LOGGER.error("Failed to get invoice document [" + invoiceDocRef + "].", exp);
+    }
+  }
+
+  private void callStoreInvoiceExtender(IInvoice theInvoice, String invoiceNumber,
+      XWikiDocument invoiceDoc) {
+    for (IInvoiceStoreExtenderRole storeExtender : storeExtenderMap.values()) {
+      try {
+        storeExtender.storeInvoice(invoiceDoc, theInvoice);
+      } catch (Exception exp) {
+        LOGGER.error("IInvoiceStoreExtender [" + storeExtender.getClass()
+            + "] failed to store invoice [" + invoiceNumber + "].", exp);
+      }
     }
   }
 

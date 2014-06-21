@@ -106,17 +106,6 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
     return invoiceItem;
   }
 
-  void convertInvoiceItemTo(IInvoiceItem invoiceItem, BaseObject invoiceItemObj) {
-    invoiceItemObj.setIntValue(InvoiceClassCollection.FIELD_AMOUNT,
-        invoiceItem.getAmount());
-    invoiceItemObj.setStringValue(InvoiceClassCollection.FIELD_ARTICLE_NR,
-        invoiceItem.getArticleNr());
-    invoiceItemObj.setStringValue(InvoiceClassCollection.FIELD_ORDER_NUMBER,
-        invoiceItem.getOrderNr());
-    invoiceItemObj.setIntValue(InvoiceClassCollection.FIELD_UNIT_PRICE,
-        invoiceItem.getPricePerPiece());
-  }
-
   private String getWikiName() {
     return getContext().getDatabase();
   }
@@ -143,8 +132,7 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
       XWikiDocument invoiceDoc = getContext().getWiki().getDocument(invoiceDocRef,
           getContext());
       BaseObject invoiceObj = getOrCreateInvoiceObject(invoiceDoc);
-      invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_NUMBER,
-          invoiceNumber);
+      convertInvoiceTo(theInvoice, invoiceObj);
       DocumentReference invoiceItemClassRef = getInvoiceClasses().getInvoiceItemClassRef(
           getWikiName());
       invoiceDoc.removeXObjects(invoiceItemClassRef);
@@ -167,6 +155,34 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
           getWikiName()), getContext());
     }
     return invoiceObj;
+  }
+
+  void convertInvoiceTo(IInvoice theInvoice, BaseObject invoiceObj) {
+    invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_NUMBER,
+        theInvoice.getInvoiceNumber());
+    invoiceObj.setStringValue(InvoiceClassCollection.FIELD_ORDER_NUMBER,
+        theInvoice.getOrderNr());
+    invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_SUBJECT,
+        theInvoice.getName());
+    invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_CURRENCY,
+        theInvoice.getCurrency());
+    invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_COMMENT,
+        theInvoice.getComment());
+    invoiceObj.setDateValue(InvoiceClassCollection.FIELD_INVOICE_DATE,
+        theInvoice.getInvoiceDate());
+    invoiceObj.setIntValue(InvoiceClassCollection.FIELD_TOTAL_PRICE,
+        theInvoice.getPrice());
+  }
+
+  void convertInvoiceItemTo(IInvoiceItem invoiceItem, BaseObject invoiceItemObj) {
+    invoiceItemObj.setIntValue(InvoiceClassCollection.FIELD_AMOUNT,
+        invoiceItem.getAmount());
+    invoiceItemObj.setStringValue(InvoiceClassCollection.FIELD_ARTICLE_NR,
+        invoiceItem.getArticleNr());
+    invoiceItemObj.setStringValue(InvoiceClassCollection.FIELD_ORDER_NUMBER,
+        invoiceItem.getOrderNr());
+    invoiceItemObj.setIntValue(InvoiceClassCollection.FIELD_UNIT_PRICE,
+        invoiceItem.getPricePerPiece());
   }
 
 }

@@ -3,6 +3,7 @@ package com.celements.invoice.store;
 import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
 
+import java.util.Date;
 import java.util.List;
 
 import org.easymock.Capture;
@@ -39,6 +40,43 @@ public class XObjectInvoiceStore_storeInvoiceTest extends AbstractBridgedCompone
         "xobject");
     invoiceServiceMock = createMockAndAddToDefault(IInvoiceServiceRole.class);
     invoiceStore.invoiceService = invoiceServiceMock;
+  }
+
+  @Test
+  public void testConvertInvoiceTo() {
+    String orderNr = "OrderNumber1123";
+    String invoiceNumber = "A126587";
+    String invoiceSubj = "Invoice for May 2014";
+    String currency = "CHF";
+    String comment = "nothing to comment here";
+    Date invoiceDate = new Date();
+    int totalPrice = 34560;
+    BaseObject invoiceObj = new BaseObject();
+    IInvoice invoice = Utils.getComponent(IInvoice.class);
+    invoice.setInvoiceNumber(invoiceNumber);
+    invoice.setOrderNr(orderNr);
+    invoice.setName(invoiceSubj);
+    invoice.setCurrency(currency);
+    invoice.setComment(comment);
+    invoice.setInvoiceDate(invoiceDate);
+    invoice.setPrice(totalPrice);
+    replayDefault();
+    invoiceStore.convertInvoiceTo(invoice, invoiceObj);
+    assertEquals(invoiceNumber, invoiceObj.getStringValue(
+        InvoiceClassCollection.FIELD_INVOICE_NUMBER));
+    assertEquals(orderNr, invoiceObj.getStringValue(
+        InvoiceClassCollection.FIELD_ORDER_NUMBER));
+    assertEquals(invoiceSubj, invoiceObj.getStringValue(
+        InvoiceClassCollection.FIELD_INVOICE_SUBJECT));
+    assertEquals(currency, invoiceObj.getStringValue(
+        InvoiceClassCollection.FIELD_INVOICE_CURRENCY));
+    assertEquals(comment, invoiceObj.getStringValue(
+        InvoiceClassCollection.FIELD_INVOICE_COMMENT));
+    assertEquals(invoiceDate, invoiceObj.getDateValue(
+        InvoiceClassCollection.FIELD_INVOICE_DATE));
+    assertEquals(totalPrice, invoiceObj.getIntValue(
+        InvoiceClassCollection.FIELD_TOTAL_PRICE));
+    verifyDefault();
   }
 
   @Test

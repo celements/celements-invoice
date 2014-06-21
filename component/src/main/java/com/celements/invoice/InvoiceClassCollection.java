@@ -34,7 +34,6 @@ import com.xpn.xwiki.objects.classes.BooleanClass;
 @Component("com.celements.invoice.classcollection")
 public class InvoiceClassCollection extends AbstractClassCollection {
 
-
   private static Log LOGGER = LogFactory.getFactory().getInstance(
       InvoiceClassCollection.class);
   
@@ -56,6 +55,11 @@ public class InvoiceClassCollection extends AbstractClassCollection {
   public static final String FIELD_UNIT_PRICE = "unitPrice";
   public static final String FIELD_ORDER_NUMBER = "orderNumber";
   public static final String FIELD_ARTICLE_NR = "articleNr";
+  public static final String FIELD_ITEM_POSITION = "position";
+  public static final String FIELD_ITEM_DESCRIPTION = "description";
+  public static final String FIELD_VAT_VALUE = "vatValue";
+  public static final String FIELD_VAT_CODE = "vatCode";
+  public static final String FIELD_ITEM_AMOUNT = "unitOfPrice";
 
   public static final String INVOICE_ADDRESS_CLASS_DOC = "AddressClass";
 
@@ -197,14 +201,15 @@ public class InvoiceClassCollection extends AbstractClassCollection {
     needsUpdate |= bclass.addNumberField(FIELD_AMOUNT, "Amount", 5, "integer");
     needsUpdate |= bclass.addTextField("unitOfMeasure", "Unit of measure (UNSPSC-CODE)",
         30);
-    needsUpdate |= bclass.addNumberField(FIELD_UNIT_PRICE, "Price Unit (in smallest unit" +
-    		" of currency)", 5, "integer");
-    needsUpdate |= bclass.addNumberField("unitOfPrice", "amount per unit-price", 5,
+    needsUpdate |= bclass.addNumberField(FIELD_UNIT_PRICE, "Price Unit (in smallest unit"
+        + " of currency)", 5, "integer");
+    needsUpdate |= bclass.addNumberField(FIELD_ITEM_AMOUNT, "amount per unit-price", 5,
         "integer");
-    needsUpdate |= bclass.addNumberField("vatCode", "VAT Code", 5, "integer");
-    needsUpdate |= bclass.addNumberField("vatValue", "VAT Value", 5, "float");
-    needsUpdate |= bclass.addTextField("description", "Description", 30);
-    needsUpdate |= bclass.addNumberField("position", "Position on invoice", 5, "integer");
+    needsUpdate |= bclass.addNumberField(FIELD_VAT_CODE, "VAT Code", 5, "integer");
+    needsUpdate |= bclass.addNumberField(FIELD_VAT_VALUE, "VAT Value", 5, "float");
+    needsUpdate |= bclass.addTextField(FIELD_ITEM_DESCRIPTION, "Description", 30);
+    needsUpdate |= bclass.addNumberField(FIELD_ITEM_POSITION, "Position on invoice", 5,
+        "integer");
     needsUpdate |= bclass.addTextField(FIELD_ARTICLE_NR, "Article number", 30);
     needsUpdate |= bclass.addTextField(FIELD_ORDER_NUMBER, "Order number (use for"
         + " collective billing)", 30);

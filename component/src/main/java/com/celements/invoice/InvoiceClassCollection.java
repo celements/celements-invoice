@@ -33,25 +33,31 @@ import com.xpn.xwiki.objects.classes.BooleanClass;
 
 @Component("com.celements.invoice.classcollection")
 public class InvoiceClassCollection extends AbstractClassCollection {
-  
-  public static final String FIELD_AMOUNT = "amount";
 
+
+  private static Log LOGGER = LogFactory.getFactory().getInstance(
+      InvoiceClassCollection.class);
+  
   public static final String INVOICE_CLASSES_SPACE = "InvoiceClasses";
 
   public static final String INVOICE_CLASS_DOC = "InvoiceClass";
   public static final String FIELD_INVOICE_NUMBER = "invoiceNumber";
+  public static final String FIELD_INVOICE_SUBJECT = "subject";
+  public static final String FIELD_INVOICE_CURRENCY = "currency";
+  public static final String FIELD_INVOICE_COMMENT = "comment";
+  public static final String FIELD_INVOICE_DATE = "invoiceDate";
+  public static final String FIELD_TOTAL_PRICE = "totalPrice";
   
   public static final String INVOICE_SUBSCRIPTION_ITEM_CLASS_DOC =
     "SubscriptionItemClass";
 
   public static final String INVOICE_ITEM_CLASS_DOC = "InvoiceItemClass";
+  public static final String FIELD_AMOUNT = "amount";
+  public static final String FIELD_UNIT_PRICE = "unitPrice";
   public static final String FIELD_ORDER_NUMBER = "orderNumber";
   public static final String FIELD_ARTICLE_NR = "articleNr";
 
   public static final String INVOICE_ADDRESS_CLASS_DOC = "AddressClass";
-
-  private static Log LOGGER = LogFactory.getFactory().getInstance(
-      InvoiceClassCollection.class);
 
   @Override
   protected Log getLogger() {
@@ -94,13 +100,13 @@ public class InvoiceClassCollection extends AbstractClassCollection {
     bclass.setDocumentReference(classRef);
     
     needsUpdate |= bclass.addTextField(FIELD_INVOICE_NUMBER, "Invoice Number", 30);
-    needsUpdate |= bclass.addTextField("subject", "Subject", 30);
-    needsUpdate |= bclass.addTextField("currency", "Currency (iso4217)", 30);
-    needsUpdate |= bclass.addTextAreaField("comment", "Comment", 80, 15);
-    needsUpdate |= bclass.addDateField("invoiceDate" , "Invoice Date", "dd.MM.yyyy", 0);
+    needsUpdate |= bclass.addTextField(FIELD_INVOICE_SUBJECT, "Subject", 30);
+    needsUpdate |= bclass.addTextField(FIELD_INVOICE_CURRENCY, "Currency (iso4217)", 30);
+    needsUpdate |= bclass.addTextAreaField(FIELD_INVOICE_COMMENT, "Comment", 80, 15);
+    needsUpdate |= bclass.addDateField(FIELD_INVOICE_DATE , "Invoice Date", "dd.MM.yyyy", 0);
     needsUpdate |= bclass.addTextField(FIELD_ORDER_NUMBER, "Order number (use for single"
         + " invoice)", 30);
-    needsUpdate |= bclass.addNumberField("totalPrice", "Total of Invoice (in smallest"
+    needsUpdate |= bclass.addNumberField(FIELD_TOTAL_PRICE, "Total of Invoice (in smallest"
         + " unit of currency)", 5, "integer");
     needsUpdate |= bclass.addNumberField("totalVATfree", "Total VAT free of Invoice (in"
         + " smallest unit of currency)", 5, "integer");
@@ -191,8 +197,8 @@ public class InvoiceClassCollection extends AbstractClassCollection {
     needsUpdate |= bclass.addNumberField(FIELD_AMOUNT, "Amount", 5, "integer");
     needsUpdate |= bclass.addTextField("unitOfMeasure", "Unit of measure (UNSPSC-CODE)",
         30);
-    needsUpdate |= bclass.addNumberField("unitPrice", "Price Unit (in smallest unit of"
-        + " currency)", 5, "integer");
+    needsUpdate |= bclass.addNumberField(FIELD_UNIT_PRICE, "Price Unit (in smallest unit" +
+    		" of currency)", 5, "integer");
     needsUpdate |= bclass.addNumberField("unitOfPrice", "amount per unit-price", 5,
         "integer");
     needsUpdate |= bclass.addNumberField("vatCode", "VAT Code", 5, "integer");

@@ -1,5 +1,6 @@
 package com.celements.invoice.builder;
 
+import java.util.Date;
 import java.util.List;
 
 import org.xwiki.component.annotation.ComponentRole;
@@ -18,10 +19,19 @@ public interface IInvoice {
   public String getCurrency();
   public void setCurrency(String currency);
   
-  public void addInvoiceItem(IInvoiceItem item);
   public List<IInvoiceItem> getInvoiceItems();
+  public void addInvoiceItem(IInvoiceItem item);
 
-  public void setInvoiceNumber(String invoiceNumber);
   public String getInvoiceNumber();
+  public void setInvoiceNumber(String invoiceNumber);
+
+  public String getOrderNr();
+  public void setOrderNr(String orderNr);
+
+  public String getComment();
+  public void setComment(String comment);
+
+  public Date getInvoiceDate();
+  public void setInvoiceDate(Date invoiceDate);
 
 }

@@ -16,7 +16,7 @@ public class InvoiceItem implements IInvoiceItem {
   private int pricePerPiece;
   private int totalPrice;
   private int amount;
-  private String vatCode;
+  private int vatCode;
   private String articleNr;
   private String orderNr;
   private List<IInvoiceReferenceDocument> refDocs;
@@ -81,11 +81,11 @@ public class InvoiceItem implements IInvoiceItem {
     this.amount = amount;
   }
   
-  public String getVATCode() {
+  public int getVATCode() {
     return vatCode;
   }
   
-  public void setVATCode(String vatCode) {
+  public void setVATCode(int vatCode) {
     this.vatCode = vatCode;
   }
   

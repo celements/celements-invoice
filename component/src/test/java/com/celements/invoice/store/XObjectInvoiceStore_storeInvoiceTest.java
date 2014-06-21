@@ -85,11 +85,13 @@ public class XObjectInvoiceStore_storeInvoiceTest extends AbstractBridgedCompone
     String articleNr1 = "ArtNr4665";
     String orderNr1 = "OrderNumber1123";
     int unitPrice1 = 34560;
+    int vatCode = 2;
     IInvoiceItem invoiceItem = Utils.getComponent(IInvoiceItem.class);
     invoiceItem.setArticleNr(articleNr1);
     invoiceItem.setOrderNr(orderNr1);
     invoiceItem.setAmount(amount1);
     invoiceItem.setPricePerPiece(unitPrice1);
+    invoiceItem.setVATCode(vatCode);
     replayDefault();
     BaseObject invoiceItemObj = new BaseObject();
     invoiceStore.convertInvoiceItemTo(invoiceItem, invoiceItemObj);
@@ -101,6 +103,8 @@ public class XObjectInvoiceStore_storeInvoiceTest extends AbstractBridgedCompone
         InvoiceClassCollection.FIELD_ORDER_NUMBER));
     assertEquals(unitPrice1, invoiceItemObj.getIntValue(
         InvoiceClassCollection.FIELD_UNIT_PRICE));
+    assertEquals(vatCode, invoiceItemObj.getIntValue(
+        InvoiceClassCollection.FIELD_VAT_CODE));
     verifyDefault();
   }
 

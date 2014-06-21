@@ -12,7 +12,7 @@ public class InvoiceItemTest extends AbstractBridgedComponentTestCase {
   private final String NAME = "item name";
   private final int PRICE_PER_PIECE = 1320;
   private final int AMOUNT = 3;
-  private final String VAT_CODE = "VAT123";
+  private final int VAT_CODE = 2;
   private final String ARTICLE_NR = "ArtNR123";
   private final String ORDER_NR = "OrderNR123";
   

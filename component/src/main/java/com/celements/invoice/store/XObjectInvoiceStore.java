@@ -3,6 +3,8 @@ package com.celements.invoice.store;
 import groovy.lang.Singleton;
 
 import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -60,11 +62,19 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
           List<BaseObject> invoiceItemObjList = invoiceDoc.getXObjects(getInvoiceClasses(
               ).getInvoiceItemClassRef(getWikiName()));
           if (invoiceItemObjList != null) {
+            SortedMap<Integer, IInvoiceItem> itemMap =
+                new TreeMap<Integer, IInvoiceItem>();
             for(BaseObject invoiceItemObj : invoiceItemObjList) {
               if (invoiceItemObj != null) {
-                invoice.addInvoiceItem(convertToInvoiceItem(invoiceItemObj));
+                int position = invoiceItemObj.getIntValue(
+                    InvoiceClassCollection.FIELD_ITEM_POSITION);
+                while (itemMap.containsKey(position)) {
+                  position++;
+                }
+                itemMap.put(position, convertToInvoiceItem(invoiceItemObj));
               }
             }
+            invoice.addAllInvoiceItem(itemMap.values());
           }
           return invoice;
         }

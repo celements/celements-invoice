@@ -268,6 +268,65 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
     verifyDefault();
   }
 
+  @Test
+  public void testLoadInvoiceByInvoiceNumber_ItemPosition() throws Exception {
+    String invoiceNumber = "A12758";
+    DocumentReference invoiceDocRef = new DocumentReference(context.getDatabase(),
+        "InvoicesSpace", invoiceNumber);
+    expect(invoiceServiceMock.getInvoiceDocRefForInvoiceNumber(eq(invoiceNumber))
+        ).andReturn(invoiceDocRef).anyTimes();
+    expect(xwiki.exists(eq(invoiceDocRef), same(context))).andReturn(true);
+    XWikiDocument invoiceDoc = new XWikiDocument(invoiceDocRef);
+    BaseObject invoiceObj = new BaseObject();
+    invoiceObj.setXClassReference(getInvoiceClasses().getInvoiceClassRef(getContext(
+        ).getDatabase()));
+    invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_NUMBER,
+        invoiceNumber);
+    invoiceDoc.addXObject(invoiceObj);
+    BaseObject invoiceItem1Obj = new BaseObject();
+    invoiceItem1Obj.setXClassReference(getInvoiceClasses().getInvoiceItemClassRef(
+        getContext().getDatabase()));
+    String articleNr1 = "ArticleNr1";
+    invoiceItem1Obj.setStringValue(InvoiceClassCollection.FIELD_ARTICLE_NR, articleNr1);
+    String orderNr1 = "OrderNr1";
+    invoiceItem1Obj.setStringValue(InvoiceClassCollection.FIELD_ORDER_NUMBER, orderNr1);
+    int amount1 = 8;
+    invoiceItem1Obj.setIntValue(InvoiceClassCollection.FIELD_AMOUNT, amount1);
+    invoiceItem1Obj.setIntValue(InvoiceClassCollection.FIELD_ITEM_POSITION, 1);
+    BaseObject invoiceItem2Obj = new BaseObject();
+    invoiceItem2Obj.setXClassReference(getInvoiceClasses().getInvoiceItemClassRef(
+        getContext().getDatabase()));
+    String articleNr2 = "ArticleNr2";
+    invoiceItem2Obj.setStringValue(InvoiceClassCollection.FIELD_ARTICLE_NR, articleNr2);
+    String orderNr2 = "OrderNr2";
+    invoiceItem2Obj.setStringValue(InvoiceClassCollection.FIELD_ORDER_NUMBER, orderNr2);
+    int amount2 = 5;
+    invoiceItem2Obj.setIntValue(InvoiceClassCollection.FIELD_AMOUNT, amount2);
+    invoiceItem2Obj.setIntValue(InvoiceClassCollection.FIELD_ITEM_POSITION, 2);
+    //inverse list to test sorting on loading!!!
+    List<BaseObject> invoiceItemList = Arrays.asList(invoiceItem2Obj, invoiceItem1Obj);
+    invoiceDoc.setXObjects(getInvoiceClasses().getInvoiceItemClassRef(
+        getContext().getDatabase()), invoiceItemList);
+    expect(xwiki.getDocument(eq(invoiceDocRef), same(context))).andReturn(invoiceDoc
+        ).atLeastOnce();
+    replayDefault();
+    IInvoice invoice = invoiceStore.loadInvoiceByInvoiceNumber(invoiceNumber);
+    assertNotNull(invoice);
+    assertEquals(invoiceNumber, invoice.getInvoiceNumber());
+    List<IInvoiceItem> invoiceItemsList = invoice.getInvoiceItems();
+    assertFalse("expecting NOT empty invoiceItems list.", invoiceItemsList.isEmpty());
+    assertEquals("expecting 2 invoice itmes in list.", 2, invoiceItemsList.size());
+    IInvoiceItem firstItem = invoiceItemsList.get(0);
+    assertEquals(articleNr1, firstItem.getArticleNr());
+    assertEquals(amount1, firstItem.getAmount());
+    assertEquals(orderNr1, firstItem.getOrderNr());
+    IInvoiceItem secondItem = invoiceItemsList.get(1);
+    assertEquals(amount2, secondItem.getAmount());
+    assertEquals(articleNr2, secondItem.getArticleNr());
+    assertEquals(orderNr2, secondItem.getOrderNr());
+    verifyDefault();
+  }
+
   private InvoiceClassCollection getInvoiceClasses() {
     return (InvoiceClassCollection) Utils.getComponent(IClassCollectionRole.class,
         "com.celements.invoice.classcollection");

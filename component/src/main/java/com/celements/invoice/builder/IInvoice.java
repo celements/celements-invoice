@@ -1,5 +1,6 @@
 package com.celements.invoice.builder;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -21,6 +22,7 @@ public interface IInvoice {
   
   public List<IInvoiceItem> getInvoiceItems();
   public void addInvoiceItem(IInvoiceItem item);
+  public void addAllInvoiceItem(Collection<IInvoiceItem> items);
 
   public String getInvoiceNumber();
   public void setInvoiceNumber(String invoiceNumber);

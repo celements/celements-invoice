@@ -1,6 +1,7 @@
 package com.celements.invoice.builder;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -56,18 +57,24 @@ public class Invoice implements IInvoice {
   }
 
   public void addInvoiceItem(IInvoiceItem item) {
+    getInvoiceItemsList().add(item);
+  }
+
+  private List<IInvoiceItem> getInvoiceItemsList() {
     if(invoiceItems == null) {
       invoiceItems = new ArrayList<IInvoiceItem>();
     }
-    invoiceItems.add(item);
+    return invoiceItems;
   }
-  
+
+  public void addAllInvoiceItem(Collection<IInvoiceItem> items) {
+    getInvoiceItemsList().addAll(items);
+  }
+
   public List<IInvoiceItem> getInvoiceItems() {
     List<IInvoiceItem> clone = new ArrayList<IInvoiceItem>();
-    if(invoiceItems != null) {
-      for(IInvoiceItem item : invoiceItems) {
-        clone.add(new InvoiceItem(item));
-      }
+    for(IInvoiceItem item : getInvoiceItemsList()) {
+      clone.add(new InvoiceItem(item));
     }
     return clone;
   }

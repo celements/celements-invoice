@@ -20,6 +20,7 @@ public class InvoiceItem implements IInvoiceItem {
   private String articleNr;
   private String orderNr;
   private List<IInvoiceReferenceDocument> refDocs;
+  private float vatValue;
 
   public InvoiceItem() {
     super();
@@ -123,6 +124,14 @@ public class InvoiceItem implements IInvoiceItem {
       refDocs = new ArrayList<IInvoiceReferenceDocument>();
     }
     refDocs.add(refDoc);
+  }
+
+  public float getVATValue() {
+    return this.vatValue;
+  }
+
+  public void setVATValue(float vatValue) {
+    this.vatValue = vatValue;
   }
 
 }

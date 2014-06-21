@@ -136,9 +136,11 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
       DocumentReference invoiceItemClassRef = getInvoiceClasses().getInvoiceItemClassRef(
           getWikiName());
       invoiceDoc.removeXObjects(invoiceItemClassRef);
+      int position = 0;
       for (IInvoiceItem item : theInvoice.getInvoiceItems()) {
+        position++;
         BaseObject invItemObj = invoiceDoc.newXObject(invoiceItemClassRef, getContext());
-        convertInvoiceItemTo(item, invItemObj);
+        convertInvoiceItemTo(item, invItemObj, position);
       }
       getContext().getWiki().saveDocument(invoiceDoc, comment, isMinorEdit, getContext());
     } catch (XWikiException exp) {
@@ -174,7 +176,9 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
         theInvoice.getPrice());
   }
 
-  void convertInvoiceItemTo(IInvoiceItem invoiceItem, BaseObject invoiceItemObj) {
+  void convertInvoiceItemTo(IInvoiceItem invoiceItem, BaseObject invoiceItemObj,
+      int position) {
+    invoiceItemObj.setIntValue(InvoiceClassCollection.FIELD_ITEM_POSITION, position);
     invoiceItemObj.setIntValue(InvoiceClassCollection.FIELD_AMOUNT,
         invoiceItem.getAmount());
     invoiceItemObj.setStringValue(InvoiceClassCollection.FIELD_ARTICLE_NR,
@@ -185,6 +189,10 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
         invoiceItem.getPricePerPiece());
     invoiceItemObj.setIntValue(InvoiceClassCollection.FIELD_VAT_CODE,
         invoiceItem.getVATCode());
+    invoiceItemObj.setFloatValue(InvoiceClassCollection.FIELD_VAT_VALUE,
+        invoiceItem.getVATValue());
+    invoiceItemObj.setStringValue(InvoiceClassCollection.FIELD_ITEM_DESCRIPTION,
+        invoiceItem.getName());
   }
 
 }

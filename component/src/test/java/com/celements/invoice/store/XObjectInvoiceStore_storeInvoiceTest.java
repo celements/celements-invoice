@@ -86,15 +86,20 @@ public class XObjectInvoiceStore_storeInvoiceTest extends AbstractBridgedCompone
     String orderNr1 = "OrderNumber1123";
     int unitPrice1 = 34560;
     int vatCode = 2;
+    float vatValue = 23.24F;
+    String descr = "the item you ordered";
+    int position = 3;
     IInvoiceItem invoiceItem = Utils.getComponent(IInvoiceItem.class);
     invoiceItem.setArticleNr(articleNr1);
     invoiceItem.setOrderNr(orderNr1);
     invoiceItem.setAmount(amount1);
     invoiceItem.setPricePerPiece(unitPrice1);
     invoiceItem.setVATCode(vatCode);
+    invoiceItem.setVATValue(vatValue);
+    invoiceItem.setName(descr);
     replayDefault();
     BaseObject invoiceItemObj = new BaseObject();
-    invoiceStore.convertInvoiceItemTo(invoiceItem, invoiceItemObj);
+    invoiceStore.convertInvoiceItemTo(invoiceItem, invoiceItemObj, position);
     assertEquals(amount1, invoiceItemObj.getIntValue(
         InvoiceClassCollection.FIELD_AMOUNT));
     assertEquals(articleNr1, invoiceItemObj.getStringValue(
@@ -105,6 +110,12 @@ public class XObjectInvoiceStore_storeInvoiceTest extends AbstractBridgedCompone
         InvoiceClassCollection.FIELD_UNIT_PRICE));
     assertEquals(vatCode, invoiceItemObj.getIntValue(
         InvoiceClassCollection.FIELD_VAT_CODE));
+    assertEquals(vatValue, invoiceItemObj.getFloatValue(
+        InvoiceClassCollection.FIELD_VAT_VALUE), 0.001);
+    assertEquals(descr, invoiceItemObj.getStringValue(
+        InvoiceClassCollection.FIELD_ITEM_DESCRIPTION));
+    assertEquals(position, invoiceItemObj.getIntValue(
+        InvoiceClassCollection.FIELD_ITEM_POSITION));
     verifyDefault();
   }
 

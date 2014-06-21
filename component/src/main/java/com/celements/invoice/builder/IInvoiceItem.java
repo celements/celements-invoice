@@ -32,4 +32,7 @@ public interface IInvoiceItem {
 
   public List<IInvoiceReferenceDocument> getReferenceDocs();
   public void addInvoiceReferenceDocument(IInvoiceReferenceDocument refDoc);
+
+  public float getVATValue();
+  public void setVATValue(float vatValue);
 }

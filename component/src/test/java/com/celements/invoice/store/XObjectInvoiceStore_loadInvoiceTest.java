@@ -4,6 +4,7 @@ import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Before;
@@ -38,6 +39,35 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
         "xobject");
     invoiceServiceMock = createMockAndAddToDefault(IInvoiceServiceRole.class);
     invoiceStore.invoiceService = invoiceServiceMock;
+  }
+
+  @Test
+  public void testConvertToInvoice() {
+    String orderNr1 = "OrderNumber1123";
+    String invoiceNumber = "A126587";
+    String invoiceSubj = "Invoice for May 2014";
+    String currency = "CHF";
+    String comment = "nothing to comment here";
+    Date invoiceDate = new Date();
+    int totalPrice1 = 34560;
+    BaseObject invoiceObj = new BaseObject();
+    invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_NUMBER, invoiceNumber);
+    invoiceObj.setStringValue(InvoiceClassCollection.FIELD_ORDER_NUMBER, orderNr1);
+    invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_SUBJECT, invoiceSubj);
+    invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_CURRENCY, currency);
+    invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_COMMENT, comment);
+    invoiceObj.setDateValue(InvoiceClassCollection.FIELD_INVOICE_DATE, invoiceDate);
+    invoiceObj.setIntValue(InvoiceClassCollection.FIELD_TOTAL_PRICE, totalPrice1);
+    replayDefault();
+    IInvoice invoice = invoiceStore.convertToInvoice(invoiceObj);
+    assertEquals(invoiceNumber, invoice.getInvoiceNumber());
+    assertEquals(orderNr1, invoice.getOrderNr());
+    assertEquals(invoiceSubj, invoice.getName());
+    assertEquals(currency, invoice.getCurrency());
+    assertEquals(comment, invoice.getComment());
+    assertEquals(invoiceDate, invoice.getInvoiceDate());
+    assertEquals(totalPrice1, invoice.getPrice());
+    verifyDefault();
   }
 
   @Test
@@ -113,7 +143,7 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
     BaseObject invoiceObj = new BaseObject();
     invoiceObj.setXClassReference(getInvoiceClasses().getInvoiceClassRef(getContext(
         ).getDatabase()));
-    invoiceObj.setStringValue(InvoiceClassCollection.INVOICE_CLASSES_SPACE,
+    invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_NUMBER,
         invoiceNumber);
     invoiceDoc.addXObject(invoiceObj);
     expect(xwiki.getDocument(eq(invoiceDocRef), same(context))).andReturn(invoiceDoc
@@ -138,7 +168,7 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
     BaseObject invoiceObj = new BaseObject();
     invoiceObj.setXClassReference(getInvoiceClasses().getInvoiceClassRef(getContext(
         ).getDatabase()));
-    invoiceObj.setStringValue(InvoiceClassCollection.INVOICE_CLASSES_SPACE,
+    invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_NUMBER,
         invoiceNumber);
     invoiceDoc.addXObject(invoiceObj);
     BaseObject invoiceItem1Obj = new BaseObject();
@@ -193,7 +223,7 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
     BaseObject invoiceObj = new BaseObject();
     invoiceObj.setXClassReference(getInvoiceClasses().getInvoiceClassRef(getContext(
         ).getDatabase()));
-    invoiceObj.setStringValue(InvoiceClassCollection.INVOICE_CLASSES_SPACE,
+    invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_NUMBER,
         invoiceNumber);
     invoiceDoc.addXObject(invoiceObj);
     BaseObject invoiceItem1Obj = new BaseObject();

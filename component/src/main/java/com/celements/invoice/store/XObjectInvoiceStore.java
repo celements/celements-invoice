@@ -56,9 +56,7 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
         BaseObject invoiceObj = invoiceDoc.getXObject(getInvoiceClasses(
             ).getInvoiceClassRef(getWikiName()));
         if (invoiceObj != null) {
-          IInvoice invoice = Utils.getComponent(IInvoice.class);
-          invoice.setInvoiceNumber(invoiceObj.getStringValue(
-              InvoiceClassCollection.INVOICE_CLASSES_SPACE));
+          IInvoice invoice = convertToInvoice(invoiceObj);
           List<BaseObject> invoiceItemObjList = invoiceDoc.getXObjects(getInvoiceClasses(
               ).getInvoiceItemClassRef(getWikiName()));
           if (invoiceItemObjList != null) {
@@ -77,6 +75,24 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
     return null;
   }
 
+  IInvoice convertToInvoice(BaseObject invoiceObj) {
+    IInvoice invoice = Utils.getComponent(IInvoice.class);
+    invoice.setInvoiceNumber(invoiceObj.getStringValue(
+        InvoiceClassCollection.FIELD_INVOICE_NUMBER));
+    invoice.setOrderNr(invoiceObj.getStringValue(
+        InvoiceClassCollection.FIELD_ORDER_NUMBER));
+    invoice.setName(invoiceObj.getStringValue(
+        InvoiceClassCollection.FIELD_INVOICE_SUBJECT));
+    invoice.setCurrency(invoiceObj.getStringValue(
+        InvoiceClassCollection.FIELD_INVOICE_CURRENCY));
+    invoice.setComment(invoiceObj.getStringValue(
+        InvoiceClassCollection.FIELD_INVOICE_COMMENT));
+    invoice.setInvoiceDate(invoiceObj.getDateValue(
+        InvoiceClassCollection.FIELD_INVOICE_DATE));
+    invoice.setPrice(invoiceObj.getIntValue(InvoiceClassCollection.FIELD_TOTAL_PRICE));
+    return invoice;
+  }
+
   IInvoiceItem convertToInvoiceItem(BaseObject invoiceItemObj) {
     IInvoiceItem invoiceItem = Utils.getComponent(IInvoiceItem.class);
     invoiceItem.setAmount(invoiceItemObj.getIntValue(
@@ -85,6 +101,8 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
         InvoiceClassCollection.FIELD_ARTICLE_NR));
     invoiceItem.setOrderNr(invoiceItemObj.getStringValue(
         InvoiceClassCollection.FIELD_ORDER_NUMBER));
+    invoiceItem.setTotalPrice(invoiceItemObj.getIntValue(
+        InvoiceClassCollection.FIELD_TOTAL_PRICE));
     return invoiceItem;
   }
 
@@ -95,6 +113,8 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
         invoiceItem.getArticleNr());
     invoiceItemObj.setStringValue(InvoiceClassCollection.FIELD_ORDER_NUMBER,
         invoiceItem.getOrderNr());
+    invoiceItemObj.setIntValue(InvoiceClassCollection.FIELD_UNIT_PRICE,
+        invoiceItem.getPricePerPiece());
   }
 
   private String getWikiName() {
@@ -123,7 +143,7 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
       XWikiDocument invoiceDoc = getContext().getWiki().getDocument(invoiceDocRef,
           getContext());
       BaseObject invoiceObj = getOrCreateInvoiceObject(invoiceDoc);
-      invoiceObj.setStringValue(InvoiceClassCollection.INVOICE_CLASSES_SPACE,
+      invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_NUMBER,
           invoiceNumber);
       DocumentReference invoiceItemClassRef = getInvoiceClasses().getInvoiceItemClassRef(
           getWikiName());

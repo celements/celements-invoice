@@ -23,6 +23,7 @@ public class InvoiceItem implements IInvoiceItem {
   private float vatValue;
   private int unitPrice;
   private int unitOfPrice;
+  private String unitOfMeasure;
 
   public InvoiceItem() {
     super();
@@ -150,6 +151,14 @@ public class InvoiceItem implements IInvoiceItem {
 
   public void setUnitOfPrice(int unitOfPrice) {
     this.unitOfPrice = unitOfPrice;
+  }
+
+  public String getUnitOfMeasure() {
+    return this.unitOfMeasure;
+  }
+
+  public void setUnitOfMeasure(String unitOfMeasure) {
+    this.unitOfMeasure = unitOfMeasure;
   }
 
 }

@@ -41,4 +41,8 @@ public interface IInvoiceItem {
 
   public float getVATValue();
   public void setVATValue(float vatValue);
+
+  public String getUnitOfMeasure();
+  public void setUnitOfMeasure(String unitOfMeasure);
+
 }

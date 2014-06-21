@@ -121,6 +121,8 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
         InvoiceClassCollection.FIELD_VAT_VALUE));
     invoiceItem.setName(invoiceItemObj.getStringValue(
         InvoiceClassCollection.FIELD_ITEM_DESCRIPTION));
+    invoiceItem.setUnitOfMeasure(invoiceItemObj.getStringValue(
+        InvoiceClassCollection.FIELD_UNIT_OF_MEASURE));
     return invoiceItem;
   }
 
@@ -211,6 +213,8 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
         invoiceItem.getVATValue());
     invoiceItemObj.setStringValue(InvoiceClassCollection.FIELD_ITEM_DESCRIPTION,
         invoiceItem.getName());
+    invoiceItemObj.setStringValue(InvoiceClassCollection.FIELD_UNIT_OF_MEASURE,
+        invoiceItem.getUnitOfMeasure());
   }
 
 }

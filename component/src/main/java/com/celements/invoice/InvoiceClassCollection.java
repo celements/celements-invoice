@@ -34,7 +34,6 @@ import com.xpn.xwiki.objects.classes.BooleanClass;
 @Component("com.celements.invoice.classcollection")
 public class InvoiceClassCollection extends AbstractClassCollection {
 
-  private static final String FIELD_UNIT_OF_MEASURE = "unitOfMeasure";
 
   private static Log LOGGER = LogFactory.getFactory().getInstance(
       InvoiceClassCollection.class);
@@ -43,6 +42,7 @@ public class InvoiceClassCollection extends AbstractClassCollection {
 
   public static final String INVOICE_CLASS_DOC = "InvoiceClass";
   public static final String FIELD_INVOICE_NUMBER = "invoiceNumber";
+  public static final String FIELD_UNIT_OF_MEASURE = "unitOfMeasure";
   public static final String FIELD_INVOICE_SUBJECT = "subject";
   public static final String FIELD_INVOICE_CURRENCY = "currency";
   public static final String FIELD_INVOICE_COMMENT = "comment";

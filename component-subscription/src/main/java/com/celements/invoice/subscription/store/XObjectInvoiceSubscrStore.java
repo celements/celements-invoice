@@ -18,6 +18,7 @@ import com.xpn.xwiki.XWikiContext;
 import com.xpn.xwiki.XWikiException;
 import com.xpn.xwiki.doc.XWikiDocument;
 import com.xpn.xwiki.objects.BaseObject;
+import com.xpn.xwiki.web.Utils;
 
 @Component("celInvoiceSubscr.xobject")
 public class XObjectInvoiceSubscrStore implements IInvoiceStoreExtenderRole {
@@ -40,8 +41,19 @@ public class XObjectInvoiceSubscrStore implements IInvoiceStoreExtenderRole {
   }
 
   public void loadInvoice(XWikiDocument invoiceDoc, IInvoice invoice) {
-    // TODO Auto-generated method stub
-
+    BaseObject subscrObj = invoiceDoc.getXObject(getInvoiceClasses(
+        ).getSubscriptionItemClassRef(getWikiName()));
+    if (subscrObj != null) {
+      InvoiceSubscrReferenceDocument invoiceRefDoc = (InvoiceSubscrReferenceDocument)
+          Utils.getComponent(IInvoiceReferenceDocument.class, "subscription");
+      invoiceRefDoc.setFrom(subscrObj.getDateValue(
+          InvoiceClassCollection.FIELD_INVOICE_SUBSCR_FROM));
+      invoiceRefDoc.setTo(subscrObj.getDateValue(
+          InvoiceClassCollection.FIELD_INVOICE_SUBSCR_TO));
+      invoiceRefDoc.setSubscriptionReference(subscrObj.getStringValue(
+          InvoiceClassCollection.FIELD_INVOICE_SUBSCR_REF));
+      invoice.addInvoiceReferenceDocument(invoiceRefDoc);
+    }
   }
 
   public void storeInvoice(IInvoice theInvoice, XWikiDocument invoiceDoc) {

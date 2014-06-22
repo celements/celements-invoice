@@ -112,6 +112,8 @@ public class XObjectInvoiceStore_storeInvoiceTest extends AbstractBridgedCompone
         InvoiceClassCollection.FIELD_ORDER_NUMBER));
     assertEquals(unitPrice1, invoiceItemObj.getIntValue(
         InvoiceClassCollection.FIELD_UNIT_PRICE));
+    assertEquals(unitOfPrice1, invoiceItemObj.getIntValue(
+        InvoiceClassCollection.FIELD_UNIT_OF_PRICE));
     assertEquals(vatCode, invoiceItemObj.getIntValue(
         InvoiceClassCollection.FIELD_VAT_CODE));
     assertEquals(vatValue, invoiceItemObj.getFloatValue(

@@ -24,6 +24,9 @@ public interface IInvoice {
   public void addInvoiceItem(IInvoiceItem item);
   public void addAllInvoiceItem(Collection<IInvoiceItem> items);
 
+  public List<IInvoiceReferenceDocument> getReferenceDocs();
+  public void addInvoiceReferenceDocument(IInvoiceReferenceDocument refDoc);
+
   public String getInvoiceNumber();
   public void setInvoiceNumber(String invoiceNumber);
 

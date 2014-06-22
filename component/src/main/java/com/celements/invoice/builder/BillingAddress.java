@@ -7,6 +7,7 @@ public class BillingAddress implements IBillingAddress {
   private String lastName;
   private String streetNameAndNumber;
   private String zipNumber;
+  private String city;
   private String country;
   private String email;
   private String phoneNumber;
@@ -59,6 +60,14 @@ public class BillingAddress implements IBillingAddress {
 
   public void setZipNumber(String zipNumber) {
     this.zipNumber = zipNumber;
+  }
+  
+  public String getCity() {
+    return city;
+  }
+  
+  public void setCity(String city) {
+    this.city = city;
   }
 
   public String getCountry() {

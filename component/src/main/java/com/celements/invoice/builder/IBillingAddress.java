@@ -22,9 +22,12 @@ public interface IBillingAddress {
 
   public String getZipNumber();
   public void setZipNumber(String zipNumber);
+  
+  public String getCity();
+  public void setCity(String city);
 
   public String getCountry();
-  public void setCountry(String coutry);
+  public void setCountry(String country);
 
   public String getEmail();
   public void setEmail(String email);

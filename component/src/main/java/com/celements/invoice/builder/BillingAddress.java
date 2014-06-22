@@ -1,8 +1,11 @@
 package com.celements.invoice.builder;
 
 import org.xwiki.component.annotation.Component;
+import org.xwiki.component.annotation.InstantiationStrategy;
+import org.xwiki.component.descriptor.ComponentInstantiationStrategy;
 
 @Component
+@InstantiationStrategy(ComponentInstantiationStrategy.PER_LOOKUP)
 public class BillingAddress implements IBillingAddress {
   private String company;
   private String title;

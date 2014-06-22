@@ -4,3 +4,4 @@ com.celements.invoice.service.InvoiceScriptService
 com.celements.invoice.builder.Invoice
 com.celements.invoice.builder.InvoiceItem
 com.celements.invoice.store.XObjectInvoiceStore
+com.celements.invoice.builder.BillingAddress

@@ -15,6 +15,7 @@ import org.xwiki.component.descriptor.ComponentInstantiationStrategy;
 public class Invoice implements IInvoice {
   private String name;
   private int price;
+  private int totalVatFull;
   private String currency;
   List<IInvoiceItem> invoiceItems;
   private String invoiceNumber;
@@ -132,6 +133,14 @@ public class Invoice implements IInvoice {
 
   public void setBillingAddress(IBillingAddress billingAddress) {
     this.billingAddress = billingAddress;
+  }
+  
+  public int getTotalVATFull() {
+    return totalVatFull;
+  }
+
+  public void setTotalVATFull(int totalVatFull) {
+    this.totalVatFull = totalVatFull;
   }
 
 }

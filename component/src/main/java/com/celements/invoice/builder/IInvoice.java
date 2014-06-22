@@ -41,4 +41,8 @@ public interface IInvoice {
 
   public IBillingAddress getBillingAddress();
   public void setBillingAddress(IBillingAddress billingAddress);
+  
+  public int getTotalVATFull();
+  public void setTotalVATFull(int totalVatFull);
+  
 }

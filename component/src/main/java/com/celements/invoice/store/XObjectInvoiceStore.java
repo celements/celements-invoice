@@ -16,6 +16,7 @@ import org.xwiki.model.reference.DocumentReference;
 
 import com.celements.common.classes.IClassCollectionRole;
 import com.celements.invoice.InvoiceClassCollection;
+import com.celements.invoice.builder.EInvoiceStatus;
 import com.celements.invoice.builder.IInvoice;
 import com.celements.invoice.builder.IInvoiceItem;
 import com.celements.invoice.service.IInvoiceServiceRole;
@@ -117,6 +118,16 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
     invoice.setInvoiceDate(invoiceObj.getDateValue(
         InvoiceClassCollection.FIELD_INVOICE_DATE));
     invoice.setPrice(invoiceObj.getIntValue(InvoiceClassCollection.FIELD_TOTAL_PRICE));
+    invoice.setTotalVATFree(invoiceObj.getIntValue(
+        InvoiceClassCollection.FIELD_TOTAL_VAT_FREE));
+    invoice.setTotalVATReduced(invoiceObj.getIntValue(
+        InvoiceClassCollection.FIELD_TOTAL_VAT_REDUCED));
+    invoice.setTotalVATFull(invoiceObj.getIntValue(
+        InvoiceClassCollection.FIELD_TOTAL_VAT_FULL));
+    invoice.setCancelled((invoiceObj.getIntValue(
+        InvoiceClassCollection.FIELD_INVOICE_CANCELLED, 0) == 1));
+    invoice.setStatus(EInvoiceStatus.parse(invoiceObj.getStringValue(
+        InvoiceClassCollection.FIELD_INVOICE_STATUS)));
     return invoice;
   }
 
@@ -224,6 +235,21 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
         theInvoice.getInvoiceDate());
     invoiceObj.setIntValue(InvoiceClassCollection.FIELD_TOTAL_PRICE,
         theInvoice.getPrice());
+    invoiceObj.setIntValue(InvoiceClassCollection.FIELD_TOTAL_VAT_FREE,
+        theInvoice.getTotalVATFree());
+    invoiceObj.setIntValue(InvoiceClassCollection.FIELD_TOTAL_VAT_REDUCED,
+        theInvoice.getTotalVATReduced());
+    invoiceObj.setIntValue(InvoiceClassCollection.FIELD_TOTAL_VAT_FULL,
+        theInvoice.getTotalVATFull());
+    if (theInvoice.getStatus() != null) {
+      invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_STATUS,
+          theInvoice.getStatus().getStoredValue());
+    }
+    if (theInvoice.isCancelled()) {
+      invoiceObj.setIntValue(InvoiceClassCollection.FIELD_INVOICE_CANCELLED, 1);
+    } else {
+      invoiceObj.setIntValue(InvoiceClassCollection.FIELD_INVOICE_CANCELLED, 0);
+    }
   }
 
   void convertInvoiceItemTo(IInvoiceItem invoiceItem, BaseObject invoiceItemObj,

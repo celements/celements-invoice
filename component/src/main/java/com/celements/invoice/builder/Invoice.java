@@ -25,6 +25,10 @@ public class Invoice implements IInvoice {
   private String comment;
   private Date invoiceDate;
   private IBillingAddress billingAddress;
+  private int totalVatFree;
+  private int totalVatReduced;
+  private EInvoiceStatus status = EInvoiceStatus.isNew;
+  private boolean cancelled = false;
 
   public String getDocumentNameHint() {
     return documentNameHint;
@@ -141,6 +145,38 @@ public class Invoice implements IInvoice {
 
   public void setTotalVATFull(int totalVatFull) {
     this.totalVatFull = totalVatFull;
+  }
+
+  public int getTotalVATFree() {
+    return this.totalVatFree;
+  }
+
+  public void setTotalVATFree(int totalVatFree) {
+    this.totalVatFree = totalVatFree;
+  }
+
+  public int getTotalVATReduced() {
+    return this.totalVatReduced;
+  }
+
+  public void setTotalVATReduced(int totalVATReduced) {
+    this.totalVatReduced = totalVATReduced;
+  }
+
+  public EInvoiceStatus getStatus() {
+    return this.status;
+  }
+
+  public void setStatus(EInvoiceStatus status) {
+    this.status = status;
+  }
+
+  public boolean isCancelled() {
+    return this.cancelled;
+  }
+
+  public void setCancelled(boolean isCancelled) {
+    this.cancelled = isCancelled;
   }
 
 }

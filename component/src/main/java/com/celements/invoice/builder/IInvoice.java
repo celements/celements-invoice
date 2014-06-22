@@ -44,5 +44,17 @@ public interface IInvoice {
   
   public int getTotalVATFull();
   public void setTotalVATFull(int totalVatFull);
+
+  public int getTotalVATFree();
+  public void setTotalVATFree(int totalVatFree);
+
+  public int getTotalVATReduced();
+  public void setTotalVATReduced(int totalVATReduced);
+
+  public EInvoiceStatus getStatus();
+  public void setStatus(EInvoiceStatus status);
+
+  public boolean isCancelled();
+  public void setCancelled(boolean isCancelled);
   
 }

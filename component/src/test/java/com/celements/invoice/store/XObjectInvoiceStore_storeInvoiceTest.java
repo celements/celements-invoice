@@ -14,6 +14,7 @@ import org.xwiki.model.reference.DocumentReference;
 import com.celements.common.classes.IClassCollectionRole;
 import com.celements.common.test.AbstractBridgedComponentTestCase;
 import com.celements.invoice.InvoiceClassCollection;
+import com.celements.invoice.builder.EInvoiceStatus;
 import com.celements.invoice.builder.IInvoice;
 import com.celements.invoice.builder.IInvoiceItem;
 import com.celements.invoice.builder.Invoice;
@@ -51,6 +52,10 @@ public class XObjectInvoiceStore_storeInvoiceTest extends AbstractBridgedCompone
     String comment = "nothing to comment here";
     Date invoiceDate = new Date();
     int totalPrice = 34560;
+    int totalVatFree = 2455;
+    int totalVatReduced = 1020;
+    int totalVatFull = 480;
+    EInvoiceStatus status = EInvoiceStatus.isPrinted;
     BaseObject invoiceObj = new BaseObject();
     IInvoice invoice = Utils.getComponent(IInvoice.class);
     invoice.setInvoiceNumber(invoiceNumber);
@@ -60,6 +65,11 @@ public class XObjectInvoiceStore_storeInvoiceTest extends AbstractBridgedCompone
     invoice.setComment(comment);
     invoice.setInvoiceDate(invoiceDate);
     invoice.setPrice(totalPrice);
+    invoice.setTotalVATFree(totalVatFree);
+    invoice.setTotalVATReduced(totalVatReduced);
+    invoice.setTotalVATFull(totalVatFull);
+    invoice.setStatus(status);
+    invoice.setCancelled(true);
     replayDefault();
     invoiceStore.convertInvoiceTo(invoice, invoiceObj);
     assertEquals(invoiceNumber, invoiceObj.getStringValue(
@@ -76,6 +86,16 @@ public class XObjectInvoiceStore_storeInvoiceTest extends AbstractBridgedCompone
         InvoiceClassCollection.FIELD_INVOICE_DATE));
     assertEquals(totalPrice, invoiceObj.getIntValue(
         InvoiceClassCollection.FIELD_TOTAL_PRICE));
+    assertEquals(totalVatFree, invoiceObj.getIntValue(
+        InvoiceClassCollection.FIELD_TOTAL_VAT_FREE));
+    assertEquals(totalVatReduced, invoiceObj.getIntValue(
+        InvoiceClassCollection.FIELD_TOTAL_VAT_REDUCED));
+    assertEquals(totalVatFull, invoiceObj.getIntValue(
+        InvoiceClassCollection.FIELD_TOTAL_VAT_FULL));
+    assertEquals(1, invoiceObj.getIntValue(
+        InvoiceClassCollection.FIELD_INVOICE_CANCELLED));
+    assertEquals("printed", invoiceObj.getStringValue(
+        InvoiceClassCollection.FIELD_INVOICE_STATUS));
     verifyDefault();
   }
 

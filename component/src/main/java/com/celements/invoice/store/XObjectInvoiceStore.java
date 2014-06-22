@@ -190,7 +190,7 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
       XWikiDocument invoiceDoc) {
     for (IInvoiceStoreExtenderRole storeExtender : storeExtenderMap.values()) {
       try {
-        storeExtender.storeInvoice(invoiceDoc, theInvoice);
+        storeExtender.storeInvoice(theInvoice, invoiceDoc);
       } catch (Exception exp) {
         LOGGER.error("IInvoiceStoreExtender [" + storeExtender.getClass()
             + "] failed to store invoice [" + invoiceNumber + "].", exp);

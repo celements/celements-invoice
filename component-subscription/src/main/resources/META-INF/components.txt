@@ -1,1 +1,2 @@
 com.celements.invoice.subscription.InvoiceSubscrReferenceDocument
+com.celements.invoice.subscription.store.XObjectInvoiceSubscrStore

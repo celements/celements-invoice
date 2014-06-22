@@ -10,6 +10,6 @@ public interface IInvoiceStoreExtenderRole {
 
   public void loadInvoice(XWikiDocument invoiceDoc, IInvoice invoice);
 
-  public void storeInvoice(XWikiDocument invoiceDoc, IInvoice theInvoice);
+  public void storeInvoice(IInvoice theInvoice, XWikiDocument invoiceDoc);
 
 }

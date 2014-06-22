@@ -20,7 +20,8 @@ import com.xpn.xwiki.doc.XWikiDocument;
 import com.xpn.xwiki.objects.BaseObject;
 import com.xpn.xwiki.web.Utils;
 
-public class XObjectInvoiceSubscrStore_loadInvoiceTest extends AbstractBridgedComponentTestCase {
+public class XObjectInvoiceSubscrStore_loadInvoiceTest
+    extends AbstractBridgedComponentTestCase {
 
   private XObjectInvoiceSubscrStore invoiceSubscrStore;
   private XWikiContext context;

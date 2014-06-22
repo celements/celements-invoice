@@ -24,7 +24,8 @@ import com.xpn.xwiki.objects.BaseObject;
 import com.xpn.xwiki.objects.classes.BaseClass;
 import com.xpn.xwiki.web.Utils;
 
-public class XObjectInvoiceSubscrStore_storeInvoiceTest extends AbstractBridgedComponentTestCase {
+public class XObjectInvoiceSubscrStore_storeInvoiceTest
+    extends AbstractBridgedComponentTestCase {
 
   private XObjectInvoiceSubscrStore invoiceSubscrStore;
   private XWikiContext context;

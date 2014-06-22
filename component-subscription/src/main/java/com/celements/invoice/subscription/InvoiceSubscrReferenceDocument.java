@@ -3,10 +3,13 @@ package com.celements.invoice.subscription;
 import java.util.Date;
 
 import org.xwiki.component.annotation.Component;
+import org.xwiki.component.annotation.InstantiationStrategy;
+import org.xwiki.component.descriptor.ComponentInstantiationStrategy;
 
 import com.celements.invoice.builder.IInvoiceReferenceDocument;
 
 @Component("subscription")
+@InstantiationStrategy(ComponentInstantiationStrategy.PER_LOOKUP)
 public class InvoiceSubscrReferenceDocument implements IInvoiceReferenceDocument {
 
   private Date fromDate;

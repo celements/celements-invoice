@@ -23,6 +23,7 @@ public class Invoice implements IInvoice {
   private String orderNr;
   private String comment;
   private Date invoiceDate;
+  private IBillingAddress billingAddress;
 
   public String getDocumentNameHint() {
     return documentNameHint;
@@ -123,6 +124,14 @@ public class Invoice implements IInvoice {
 
   public void setInvoiceDate(Date invoiceDate) {
     this.invoiceDate = invoiceDate;
+  }
+
+  public IBillingAddress getBillingAddress() {
+    return billingAddress;
+  }
+
+  public void setBillingAddress(IBillingAddress billingAddress) {
+    this.billingAddress = billingAddress;
   }
 
 }

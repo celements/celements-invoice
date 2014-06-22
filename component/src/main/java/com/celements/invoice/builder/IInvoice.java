@@ -39,4 +39,6 @@ public interface IInvoice {
   public Date getInvoiceDate();
   public void setInvoiceDate(Date invoiceDate);
 
+  public IBillingAddress getBillingAddress();
+  public void setBillingAddress(IBillingAddress billingAddress);
 }

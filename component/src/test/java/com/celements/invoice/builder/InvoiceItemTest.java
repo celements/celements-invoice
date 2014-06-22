@@ -15,6 +15,10 @@ public class InvoiceItemTest extends AbstractBridgedComponentTestCase {
   private final int VAT_CODE = 2;
   private final String ARTICLE_NR = "ArtNR123";
   private final String ORDER_NR = "OrderNR123";
+  private final float VAT_VALUE = 8f;
+  public static final int UNIT_PRICE = 10000;
+  public static final int UNIT_OF_PRICE = 13;
+  public static final String UNIT_OF_MEASURE = "EA";
   
   InvoiceItem item;
   
@@ -27,6 +31,10 @@ public class InvoiceItemTest extends AbstractBridgedComponentTestCase {
     item.setVATCode(VAT_CODE);
     item.setArticleNr(ARTICLE_NR);
     item.setOrderNr(ORDER_NR);
+    item.setVATValue(VAT_VALUE);
+    item.setUnitPrice(UNIT_PRICE);
+    item.setUnitOfPrice(UNIT_OF_PRICE);
+    item.setUnitOfMeasure(UNIT_OF_MEASURE);
   }
 
   @Test
@@ -77,6 +85,18 @@ public class InvoiceItemTest extends AbstractBridgedComponentTestCase {
     copy.setOrderNr("newOrderNr12123");
     assertEquals(ORDER_NR, item.getOrderNr());
     assertEquals("newOrderNr12123", copy.getOrderNr());
+    copy.setVATValue(6f);
+    assertTrue(VAT_VALUE - item.getVATValue() < 0.00001);
+    assertTrue(6f - item.getVATValue() < 0.00001);
+    copy.setUnitPrice(3);
+    assertEquals(UNIT_PRICE, item.getUnitPrice());
+    assertEquals(3, copy.getUnitPrice());
+    copy.setUnitOfPrice(5);
+    assertEquals(UNIT_OF_PRICE, item.getUnitOfPrice());
+    assertEquals(5, copy.getUnitOfPrice());
+    copy.setUnitOfMeasure("AB");
+    assertEquals(UNIT_OF_MEASURE, item.getUnitOfMeasure());
+    assertEquals("AB", copy.getUnitOfMeasure());
   }
 
   @Test

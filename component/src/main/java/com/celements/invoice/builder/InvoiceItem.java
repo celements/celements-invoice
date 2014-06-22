@@ -43,6 +43,10 @@ public class InvoiceItem implements IInvoiceItem {
         addInvoiceReferenceDocument(refDoc);
       }
     }
+    setVATValue(item.getVATValue());
+    setUnitPrice(item.getUnitPrice());
+    setUnitOfPrice(item.getUnitOfPrice());
+    setUnitOfMeasure(item.getUnitOfMeasure());
   }
   
   public String getId() {

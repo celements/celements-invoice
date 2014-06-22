@@ -34,7 +34,6 @@ import com.xpn.xwiki.objects.classes.BooleanClass;
 @Component("com.celements.invoice.classcollection")
 public class InvoiceClassCollection extends AbstractClassCollection {
 
-
   private static Log LOGGER = LogFactory.getFactory().getInstance(
       InvoiceClassCollection.class);
   
@@ -51,6 +50,9 @@ public class InvoiceClassCollection extends AbstractClassCollection {
   
   public static final String INVOICE_SUBSCRIPTION_ITEM_CLASS_DOC =
     "SubscriptionItemClass";
+  public static final String FIELD_INVOICE_SUBSCR_REF = "subscrRef";
+  public static final String FIELD_INVOICE_SUBSCR_FROM = "from";
+  public static final String FIELD_INVOICE_SUBSCR_TO = "to";
 
   public static final String INVOICE_ITEM_CLASS_DOC = "InvoiceItemClass";
   public static final String FIELD_AMOUNT = "amount";
@@ -162,12 +164,12 @@ public class InvoiceClassCollection extends AbstractClassCollection {
     BaseClass bclass = doc.getXClass();
     bclass.setDocumentReference(classRef);
     
-    needsUpdate |= bclass.addTextField("subscrRef", "Subscription Reference"
+    needsUpdate |= bclass.addTextField(FIELD_INVOICE_SUBSCR_REF, "Subscription Reference"
         + " (wiki docRef)", 30);
-    needsUpdate |= bclass.addDateField("from" , "Invoice Subscription From Date",
-        "dd.MM.yyyy", 0);
-    needsUpdate |= bclass.addDateField("to" , "Invoice Subscription To Date",
-        "dd.MM.yyyy", 0);
+    needsUpdate |= bclass.addDateField(FIELD_INVOICE_SUBSCR_FROM,
+        "Invoice Subscription From Date", "dd.MM.yyyy", 0);
+    needsUpdate |= bclass.addDateField(FIELD_INVOICE_SUBSCR_TO,
+        "Invoice Subscription To Date", "dd.MM.yyyy", 0);
     
     if(!"internal".equals(bclass.getCustomMapping())){
       needsUpdate = true;

@@ -182,7 +182,7 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
       callStoreInvoiceExtender(theInvoice, invoiceNumber, invoiceDoc);
       getContext().getWiki().saveDocument(invoiceDoc, comment, isMinorEdit, getContext());
     } catch (XWikiException exp) {
-      LOGGER.error("Failed to get invoice document [" + invoiceDocRef + "].", exp);
+      LOGGER.error("Failed to store invoice document [" + invoiceDocRef + "].", exp);
     }
   }
 

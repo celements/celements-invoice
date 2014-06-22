@@ -23,6 +23,7 @@ import groovy.lang.Singleton;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xwiki.component.annotation.Component;
@@ -181,7 +182,7 @@ public class InvoiceService implements IInvoiceServiceRole {
 
   public DocumentReference getNewInvoiceDocRef(IInvoice invoice) {
     String rgSpaceName = "";
-    if (invoice.getDocumentNameHint() != null) {
+    if (!StringUtils.isEmpty(invoice.getDocumentNameHint())) {
       rgSpaceName = invoice.getDocumentNameHint() + "-";
     }
     return new NextFreeDocNameCommand().getNextTitledPageDocRef(rgSpaceName + "Invoices",

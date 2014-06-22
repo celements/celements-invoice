@@ -7,12 +7,15 @@ import java.util.Arrays;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.query.Query;
 import org.xwiki.query.QueryManager;
 
 import com.celements.common.test.AbstractBridgedComponentTestCase;
+import com.celements.invoice.builder.IInvoice;
 import com.xpn.xwiki.XWiki;
 import com.xpn.xwiki.XWikiContext;
+import com.xpn.xwiki.doc.XWikiDocument;
 import com.xpn.xwiki.web.Utils;
 
 public class InvoiceServiceTest extends AbstractBridgedComponentTestCase {
@@ -46,6 +49,57 @@ public class InvoiceServiceTest extends AbstractBridgedComponentTestCase {
             1).anyTimes();
     replayDefault();
     assertNotNull(invoiceNumber, invoiceService.getNewInvoiceNumber());
+    verifyDefault();
+  }
+
+  @Test
+  public void testGetNewInvoiceDocRef_nameHint_null() throws Exception {
+    DocumentReference expectedDocRef = new DocumentReference(context.getDatabase(),
+        "Invoices", "Invoice1");
+    IInvoice invoice = Utils.getComponent(IInvoice.class);
+    invoice.setDocumentNameHint(null);
+    expect(xwiki.exists(eq(expectedDocRef), same(context))).andReturn(false
+        ).atLeastOnce();
+    XWikiDocument expectedDocMock = createMockAndAddToDefault(XWikiDocument.class);
+    expect(xwiki.getDocument(eq(expectedDocRef), same(context))).andReturn(
+        expectedDocMock).atLeastOnce();
+    expect(expectedDocMock.getLock(same(context))).andReturn(null).atLeastOnce();
+    replayDefault();
+    assertEquals(expectedDocRef, invoiceService.getNewInvoiceDocRef(invoice));
+    verifyDefault();
+  }
+
+  @Test
+  public void testGetNewInvoiceDocRef_nameHint_empty() throws Exception {
+    DocumentReference expectedDocRef = new DocumentReference(context.getDatabase(),
+        "Invoices", "Invoice1");
+    IInvoice invoice = Utils.getComponent(IInvoice.class);
+    invoice.setDocumentNameHint("");
+    expect(xwiki.exists(eq(expectedDocRef), same(context))).andReturn(false
+        ).atLeastOnce();
+    XWikiDocument expectedDocMock = createMockAndAddToDefault(XWikiDocument.class);
+    expect(xwiki.getDocument(eq(expectedDocRef), same(context))).andReturn(
+        expectedDocMock).atLeastOnce();
+    expect(expectedDocMock.getLock(same(context))).andReturn(null).atLeastOnce();
+    replayDefault();
+    assertEquals(expectedDocRef, invoiceService.getNewInvoiceDocRef(invoice));
+    verifyDefault();
+  }
+
+  @Test
+  public void testGetNewInvoiceDocRef() throws Exception {
+    DocumentReference expectedDocRef = new DocumentReference(context.getDatabase(),
+        "test-Invoices", "Invoice1");
+    IInvoice invoice = Utils.getComponent(IInvoice.class);
+    invoice.setDocumentNameHint("test");
+    expect(xwiki.exists(eq(expectedDocRef), same(context))).andReturn(false
+        ).atLeastOnce();
+    XWikiDocument expectedDocMock = createMockAndAddToDefault(XWikiDocument.class);
+    expect(xwiki.getDocument(eq(expectedDocRef), same(context))).andReturn(
+        expectedDocMock).atLeastOnce();
+    expect(expectedDocMock.getLock(same(context))).andReturn(null).atLeastOnce();
+    replayDefault();
+    assertEquals(expectedDocRef, invoiceService.getNewInvoiceDocRef(invoice));
     verifyDefault();
   }
 

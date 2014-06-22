@@ -66,6 +66,19 @@ public class InvoiceClassCollection extends AbstractClassCollection {
   public static final String FIELD_UNIT_OF_PRICE = "unitOfPrice";
 
   public static final String INVOICE_ADDRESS_CLASS_DOC = "AddressClass";
+  public static final String FIELD_ADDRESS_COMPANY = "company";
+  public static final String FIELD_ADDRESS_TITLE = "title";
+  public static final String FIELD_ADDRESS_FIRST_NAME = "first_name";
+  public static final String FIELD_ADDRESS_NAME = "name";
+  public static final String FIELD_ADDRESS_STREET = "address";
+  public static final String FIELD_ADDRESS_ADDITION = "addressAddition";
+  public static final String FIELD_ADDRESS_POBOX = "pobox";
+  public static final String FIELD_ADDRESS_ZIP = "zip";
+  public static final String FIELD_ADDRESS_CITY = "city";
+  public static final String FIELD_ADDRESS_COUNTRY = "country";
+  public static final String FIELD_ADDRESS_EMAIL = "email";
+  public static final String FIELD_ADDRESS_PHONE = "phone";
+  public static final String FIELD_ADDRESS_TYPE = "address_type";
 
   @Override
   protected Log getLogger() {
@@ -247,19 +260,19 @@ public class InvoiceClassCollection extends AbstractClassCollection {
     
     BaseClass bclass = doc.getXClass();
     bclass.setXClassReference(classRef);
-    needsUpdate |= bclass.addTextField("company", "Company", 30);
-    needsUpdate |= bclass.addTextField("title", "Title", 30);
-    needsUpdate |= bclass.addTextField("first_name", "First Name", 30);
-    needsUpdate |= bclass.addTextField("name", "Name", 30);
-    needsUpdate |= bclass.addTextField("address", "Address", 30);
-    needsUpdate |= bclass.addTextField("addressAddition", "Address Addition", 30);
-    needsUpdate |= bclass.addTextField("pobox", "PO Box", 30);
-    needsUpdate |= bclass.addTextField("zip", "Zip", 30);
-    needsUpdate |= bclass.addTextField("city", "City", 30);
-    needsUpdate |= bclass.addTextField("country", "Country", 30);
-    needsUpdate |= bclass.addTextField("email", "Email", 30);
-    needsUpdate |= bclass.addTextField("phone", "Phone", 30);
-    needsUpdate |= bclass.addStaticListField("address_type", "Address Type", 
+    needsUpdate |= bclass.addTextField(FIELD_ADDRESS_COMPANY, "Company", 30);
+    needsUpdate |= bclass.addTextField(FIELD_ADDRESS_TITLE, "Title", 30);
+    needsUpdate |= bclass.addTextField(FIELD_ADDRESS_FIRST_NAME, "First Name", 30);
+    needsUpdate |= bclass.addTextField(FIELD_ADDRESS_NAME, "Name", 30);
+    needsUpdate |= bclass.addTextField(FIELD_ADDRESS_STREET, "Address", 30);
+    needsUpdate |= bclass.addTextField(FIELD_ADDRESS_ADDITION, "Address Addition", 30);
+    needsUpdate |= bclass.addTextField(FIELD_ADDRESS_POBOX, "PO Box", 30);
+    needsUpdate |= bclass.addTextField(FIELD_ADDRESS_ZIP, "Zip", 30);
+    needsUpdate |= bclass.addTextField(FIELD_ADDRESS_CITY, "City", 30);
+    needsUpdate |= bclass.addTextField(FIELD_ADDRESS_COUNTRY, "Country", 30);
+    needsUpdate |= bclass.addTextField(FIELD_ADDRESS_EMAIL, "Email", 30);
+    needsUpdate |= bclass.addTextField(FIELD_ADDRESS_PHONE, "Phone", 30);
+    needsUpdate |= bclass.addStaticListField(FIELD_ADDRESS_TYPE, "Address Type", 
         "Shipping|Billing");
     
     if(!"internal".equals(bclass.getCustomMapping())){

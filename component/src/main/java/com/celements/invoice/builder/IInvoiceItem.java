@@ -18,8 +18,8 @@ public interface IInvoiceItem {
   public void setUnitPrice(int unitPrice);
   public int getUnitPrice();
 
-  public void setUnitOfPrice(int unitOfPrice);
-  public int getUnitOfPrice();
+  public void setUnitOfPrice(float unitOfPrice);
+  public float getUnitOfPrice();
   
   public int getTotalPrice();
   public void setTotalPrice(int totalPrice);

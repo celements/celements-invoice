@@ -92,8 +92,8 @@ public class InvoiceItemTest extends AbstractBridgedComponentTestCase {
     assertEquals(UNIT_PRICE, item.getUnitPrice());
     assertEquals(3, copy.getUnitPrice());
     copy.setUnitOfPrice(5);
-    assertEquals(UNIT_OF_PRICE, item.getUnitOfPrice());
-    assertEquals(5, copy.getUnitOfPrice());
+    assertEquals(UNIT_OF_PRICE, item.getUnitOfPrice(), 0.00001);
+    assertEquals(5, copy.getUnitOfPrice(), 0.00001);
     copy.setUnitOfMeasure("AB");
     assertEquals(UNIT_OF_MEASURE, item.getUnitOfMeasure());
     assertEquals("AB", copy.getUnitOfMeasure());

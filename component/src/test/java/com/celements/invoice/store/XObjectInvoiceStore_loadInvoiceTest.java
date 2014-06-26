@@ -94,7 +94,7 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
     String articleNr1 = "ArtNr4665";
     String orderNr1 = "OrderNumber1123";
     int unitPrice1 = 34560;
-    int unitOfPrice1 = 10;
+    float unitOfPrice1 = 10;
     int vatCode = 2;
     float vatValue = 23.24F;
     String descr = "the item you ordered";
@@ -105,7 +105,7 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
     invoiceItemObj.setStringValue(InvoiceClassCollection.FIELD_UNIT_OF_MEASURE,
         unitOfMeasure);
     invoiceItemObj.setIntValue(InvoiceClassCollection.FIELD_UNIT_PRICE, unitPrice1);
-    invoiceItemObj.setIntValue(InvoiceClassCollection.FIELD_UNIT_OF_PRICE, unitOfPrice1);
+    invoiceItemObj.setFloatValue(InvoiceClassCollection.FIELD_UNIT_OF_PRICE, unitOfPrice1);
     invoiceItemObj.setIntValue(InvoiceClassCollection.FIELD_VAT_CODE, vatCode);
     invoiceItemObj.setFloatValue(InvoiceClassCollection.FIELD_VAT_VALUE, vatValue);
     invoiceItemObj.setStringValue(InvoiceClassCollection.FIELD_ITEM_DESCRIPTION, descr);
@@ -116,7 +116,7 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
     assertEquals(articleNr1, invoiceItem.getArticleNr());
     assertEquals(orderNr1, invoiceItem.getOrderNr());
     assertEquals(unitPrice1, invoiceItem.getUnitPrice());
-    assertEquals(unitOfPrice1, invoiceItem.getUnitOfPrice());
+    assertEquals(unitOfPrice1, invoiceItem.getUnitOfPrice(), 0.00001);
     assertEquals(vatCode, invoiceItem.getVATCode());
     assertEquals(vatValue, invoiceItem.getVATValue(), 0.001);
     assertEquals(descr, invoiceItem.getName());

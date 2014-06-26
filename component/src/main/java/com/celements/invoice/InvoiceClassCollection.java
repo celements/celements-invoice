@@ -200,7 +200,7 @@ public class InvoiceClassCollection extends AbstractClassCollection {
     return bclass;
   }
 
-  public DocumentReference getInvoiceItemClassRef(String wikiName) {
+  public static DocumentReference getInvoiceItemClassRef(String wikiName) {
     return new DocumentReference(wikiName, INVOICE_CLASSES_SPACE,
         INVOICE_ITEM_CLASS_DOC);
   }

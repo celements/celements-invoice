@@ -104,7 +104,7 @@ public class InvoiceClassCollection extends AbstractClassCollection {
     getInvoiceAddressClass();
   }
 
-  public DocumentReference getInvoiceClassRef(String wikiName) {
+  public static DocumentReference getInvoiceClassRef(String wikiName) {
     return new DocumentReference(wikiName, INVOICE_CLASSES_SPACE, INVOICE_CLASS_DOC);
   }
 

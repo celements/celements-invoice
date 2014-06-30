@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.model.reference.DocumentReference;
 
+import com.celements.common.classes.IClassCollectionRole;
 import com.celements.invoice.InvoiceClassCollection;
 import com.celements.migrations.SubSystemHibernateMigrationManager;
 import com.celements.migrator.AbstractCelementsHibernateMigrator;
@@ -14,6 +15,7 @@ import com.xpn.xwiki.doc.XWikiDocument;
 import com.xpn.xwiki.objects.classes.BaseClass;
 import com.xpn.xwiki.objects.classes.NumberClass;
 import com.xpn.xwiki.store.migration.XWikiDBVersion;
+import com.xpn.xwiki.web.Utils;
 
 @Component("ChangeUnitOfPriceToFloat")
 public class ChangeUnitOfPriceToFloat extends AbstractCelementsHibernateMigrator {
@@ -30,7 +32,7 @@ public class ChangeUnitOfPriceToFloat extends AbstractCelementsHibernateMigrator
   public void migrate(SubSystemHibernateMigrationManager manager, XWikiContext context
       ) throws XWikiException {
     LOGGER.info("Starting ChangeUnitOfPriceToFloat migration");
-    DocumentReference invoiceItemClassRef = InvoiceClassCollection.getInvoiceItemClassRef(
+    DocumentReference invoiceItemClassRef = getInvoiceClasses().getInvoiceItemClassRef(
         context.getDatabase());
     if(context.getWiki().exists(invoiceItemClassRef, context)) {
       XWikiDocument doc = context.getWiki().getDocument(invoiceItemClassRef, context);
@@ -54,6 +56,11 @@ public class ChangeUnitOfPriceToFloat extends AbstractCelementsHibernateMigrator
 
   public String getName() {
     return "ChangeUnitOfPriceToFloat";
+  }
+
+  private InvoiceClassCollection getInvoiceClasses() {
+    return (InvoiceClassCollection) Utils.getComponent(IClassCollectionRole.class,
+        "com.celements.invoice.classcollection");
   }
 
   /**

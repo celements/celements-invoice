@@ -17,6 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.xwiki.model.reference.DocumentReference;
 
+import com.celements.common.classes.IClassCollectionRole;
 import com.celements.common.test.AbstractBridgedComponentTestCase;
 import com.celements.invoice.InvoiceClassCollection;
 import com.celements.invoice.builder.EInvoiceStatus;
@@ -182,7 +183,7 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
     expect(xwiki.exists(eq(invoiceDocRef), same(context))).andReturn(true);
     XWikiDocument invoiceDoc = new XWikiDocument(invoiceDocRef);
     BaseObject invoiceObj = new BaseObject();
-    invoiceObj.setXClassReference(InvoiceClassCollection.getInvoiceClassRef(getContext(
+    invoiceObj.setXClassReference(getInvoiceClasses().getInvoiceClassRef(getContext(
         ).getDatabase()));
     invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_NUMBER,
         invoiceNumber);
@@ -207,13 +208,13 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
     expect(xwiki.exists(eq(invoiceDocRef), same(context))).andReturn(true);
     XWikiDocument invoiceDoc = new XWikiDocument(invoiceDocRef);
     BaseObject invoiceObj = new BaseObject();
-    invoiceObj.setXClassReference(InvoiceClassCollection.getInvoiceClassRef(getContext(
+    invoiceObj.setXClassReference(getInvoiceClasses().getInvoiceClassRef(getContext(
         ).getDatabase()));
     invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_NUMBER,
         invoiceNumber);
     invoiceDoc.addXObject(invoiceObj);
     BaseObject invoiceItem1Obj = new BaseObject();
-    invoiceItem1Obj.setXClassReference(InvoiceClassCollection.getInvoiceItemClassRef(
+    invoiceItem1Obj.setXClassReference(getInvoiceClasses().getInvoiceItemClassRef(
         getContext().getDatabase()));
     String articleNr1 = "ArticleNr1";
     invoiceItem1Obj.setStringValue(InvoiceClassCollection.FIELD_ARTICLE_NR, articleNr1);
@@ -223,7 +224,7 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
     invoiceItem1Obj.setIntValue(InvoiceClassCollection.FIELD_AMOUNT, amount1);
     invoiceDoc.addXObject(invoiceItem1Obj);
     BaseObject invoiceItem2Obj = new BaseObject();
-    invoiceItem2Obj.setXClassReference(InvoiceClassCollection.getInvoiceItemClassRef(
+    invoiceItem2Obj.setXClassReference(getInvoiceClasses().getInvoiceItemClassRef(
         getContext().getDatabase()));
     String articleNr2 = "ArticleNr2";
     invoiceItem2Obj.setStringValue(InvoiceClassCollection.FIELD_ARTICLE_NR, articleNr2);
@@ -262,13 +263,13 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
     expect(xwiki.exists(eq(invoiceDocRef), same(context))).andReturn(true);
     XWikiDocument invoiceDoc = new XWikiDocument(invoiceDocRef);
     BaseObject invoiceObj = new BaseObject();
-    invoiceObj.setXClassReference(InvoiceClassCollection.getInvoiceClassRef(getContext(
+    invoiceObj.setXClassReference(getInvoiceClasses().getInvoiceClassRef(getContext(
         ).getDatabase()));
     invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_NUMBER,
         invoiceNumber);
     invoiceDoc.addXObject(invoiceObj);
     BaseObject invoiceItem1Obj = new BaseObject();
-    invoiceItem1Obj.setXClassReference(InvoiceClassCollection.getInvoiceItemClassRef(
+    invoiceItem1Obj.setXClassReference(getInvoiceClasses().getInvoiceItemClassRef(
         getContext().getDatabase()));
     String articleNr1 = "ArticleNr1";
     invoiceItem1Obj.setStringValue(InvoiceClassCollection.FIELD_ARTICLE_NR, articleNr1);
@@ -277,7 +278,7 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
     int amount1 = 8;
     invoiceItem1Obj.setIntValue(InvoiceClassCollection.FIELD_AMOUNT, amount1);
     BaseObject invoiceItem2Obj = new BaseObject();
-    invoiceItem2Obj.setXClassReference(InvoiceClassCollection.getInvoiceItemClassRef(
+    invoiceItem2Obj.setXClassReference(getInvoiceClasses().getInvoiceItemClassRef(
         getContext().getDatabase()));
     String articleNr2 = "ArticleNr2";
     invoiceItem2Obj.setStringValue(InvoiceClassCollection.FIELD_ARTICLE_NR, articleNr2);
@@ -287,7 +288,7 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
     invoiceItem2Obj.setIntValue(InvoiceClassCollection.FIELD_AMOUNT, amount2);
     List<BaseObject> invoiceItemList = Arrays.asList(invoiceItem1Obj, null,
         invoiceItem2Obj);
-    invoiceDoc.setXObjects(InvoiceClassCollection.getInvoiceItemClassRef(
+    invoiceDoc.setXObjects(getInvoiceClasses().getInvoiceItemClassRef(
         getContext().getDatabase()), invoiceItemList);
     expect(xwiki.getDocument(eq(invoiceDocRef), same(context))).andReturn(invoiceDoc
         ).atLeastOnce();
@@ -319,13 +320,13 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
     expect(xwiki.exists(eq(invoiceDocRef), same(context))).andReturn(true);
     XWikiDocument invoiceDoc = new XWikiDocument(invoiceDocRef);
     BaseObject invoiceObj = new BaseObject();
-    invoiceObj.setXClassReference(InvoiceClassCollection.getInvoiceClassRef(getContext(
+    invoiceObj.setXClassReference(getInvoiceClasses().getInvoiceClassRef(getContext(
         ).getDatabase()));
     invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_NUMBER,
         invoiceNumber);
     invoiceDoc.addXObject(invoiceObj);
     BaseObject invoiceItem1Obj = new BaseObject();
-    invoiceItem1Obj.setXClassReference(InvoiceClassCollection.getInvoiceItemClassRef(
+    invoiceItem1Obj.setXClassReference(getInvoiceClasses().getInvoiceItemClassRef(
         getContext().getDatabase()));
     String articleNr1 = "ArticleNr1";
     invoiceItem1Obj.setStringValue(InvoiceClassCollection.FIELD_ARTICLE_NR, articleNr1);
@@ -335,7 +336,7 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
     invoiceItem1Obj.setIntValue(InvoiceClassCollection.FIELD_AMOUNT, amount1);
     invoiceItem1Obj.setIntValue(InvoiceClassCollection.FIELD_ITEM_POSITION, 1);
     BaseObject invoiceItem2Obj = new BaseObject();
-    invoiceItem2Obj.setXClassReference(InvoiceClassCollection.getInvoiceItemClassRef(
+    invoiceItem2Obj.setXClassReference(getInvoiceClasses().getInvoiceItemClassRef(
         getContext().getDatabase()));
     String articleNr2 = "ArticleNr2";
     invoiceItem2Obj.setStringValue(InvoiceClassCollection.FIELD_ARTICLE_NR, articleNr2);
@@ -346,10 +347,7 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
     invoiceItem2Obj.setIntValue(InvoiceClassCollection.FIELD_ITEM_POSITION, 2);
     //inverse list to test sorting on loading!!!
     List<BaseObject> invoiceItemList = Arrays.asList(invoiceItem2Obj, invoiceItem1Obj);
-    invoiceDoc.setXObjects(InvoiceClassCollection
-        
-        
-        .getInvoiceItemClassRef(
+    invoiceDoc.setXObjects(getInvoiceClasses().getInvoiceItemClassRef(
         getContext().getDatabase()), invoiceItemList);
     expect(xwiki.getDocument(eq(invoiceDocRef), same(context))).andReturn(invoiceDoc
         ).atLeastOnce();
@@ -369,6 +367,11 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
     assertEquals(articleNr2, secondItem.getArticleNr());
     assertEquals(orderNr2, secondItem.getOrderNr());
     verifyDefault();
+  }
+
+  private InvoiceClassCollection getInvoiceClasses() {
+    return (InvoiceClassCollection) Utils.getComponent(IClassCollectionRole.class,
+        "com.celements.invoice.classcollection");
   }
 
 }

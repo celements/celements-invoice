@@ -133,7 +133,7 @@ public class XObjectInvoiceStore_storeInvoiceTest extends AbstractBridgedCompone
     assertEquals(unitPrice1, invoiceItemObj.getIntValue(
         InvoiceClassCollection.FIELD_UNIT_PRICE));
     assertEquals(unitOfPrice1, invoiceItemObj.getFloatValue(
-        InvoiceClassCollection.FIELD_UNIT_OF_PRICE));
+        InvoiceClassCollection.FIELD_UNIT_OF_PRICE), 0.00001);
     assertEquals(vatCode, invoiceItemObj.getIntValue(
         InvoiceClassCollection.FIELD_VAT_CODE));
     assertEquals(vatValue, invoiceItemObj.getFloatValue(

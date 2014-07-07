@@ -70,7 +70,7 @@
 		<property name="unitPrice" type="integer">
 			<column name="CII_UNIT_PRICE" />
 		</property>
-		<property name="unitOfPrice" type="integer">
+		<property name="unitOfPrice" type="float">
 			<column name="CII_UNIT_OF_PRICE" />
 		</property>
 		<property name="vatCode" type="integer">

@@ -6,3 +6,4 @@ com.celements.invoice.builder.InvoiceItem
 com.celements.invoice.store.XObjectInvoiceStore
 com.celements.invoice.builder.BillingAddress
 com.celements.invoice.store.XObjectBillingAddressStore
+com.celements.invoice.migrations.ChangeUnitOfPriceToFloat

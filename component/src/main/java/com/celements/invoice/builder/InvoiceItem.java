@@ -22,7 +22,7 @@ public class InvoiceItem implements IInvoiceItem {
   private List<IInvoiceReferenceDocument> refDocs;
   private float vatValue;
   private int unitPrice;
-  private int unitOfPrice;
+  private float unitOfPrice;
   private String unitOfMeasure;
 
   public InvoiceItem() {
@@ -149,11 +149,11 @@ public class InvoiceItem implements IInvoiceItem {
     this.unitPrice = unitPrice;
   }
   
-  public int getUnitOfPrice() {
+  public float getUnitOfPrice() {
     return this.unitOfPrice;
   }
 
-  public void setUnitOfPrice(int unitOfPrice) {
+  public void setUnitOfPrice(float unitOfPrice) {
     this.unitOfPrice = unitOfPrice;
   }
 

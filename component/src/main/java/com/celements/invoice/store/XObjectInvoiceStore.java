@@ -263,7 +263,7 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
         invoiceItem.getOrderNr());
     invoiceItemObj.setIntValue(InvoiceClassCollection.FIELD_UNIT_PRICE,
         invoiceItem.getUnitPrice());
-    invoiceItemObj.setIntValue(InvoiceClassCollection.FIELD_UNIT_OF_PRICE,
+    invoiceItemObj.setFloatValue(InvoiceClassCollection.FIELD_UNIT_OF_PRICE,
         invoiceItem.getUnitOfPrice());
     invoiceItemObj.setIntValue(InvoiceClassCollection.FIELD_VAT_CODE,
         invoiceItem.getVATCode());

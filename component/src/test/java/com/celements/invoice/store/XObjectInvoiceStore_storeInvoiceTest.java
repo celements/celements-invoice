@@ -106,7 +106,7 @@ public class XObjectInvoiceStore_storeInvoiceTest extends AbstractBridgedCompone
     String orderNr1 = "OrderNumber1123";
     String unitOfMeasure = "EA";
     int unitPrice1 = 34560;
-    int unitOfPrice1 = 10;
+    float unitOfPrice1 = 10;
     int vatCode = 2;
     float vatValue = 23.24F;
     String descr = "the item you ordered";
@@ -132,8 +132,8 @@ public class XObjectInvoiceStore_storeInvoiceTest extends AbstractBridgedCompone
         InvoiceClassCollection.FIELD_ORDER_NUMBER));
     assertEquals(unitPrice1, invoiceItemObj.getIntValue(
         InvoiceClassCollection.FIELD_UNIT_PRICE));
-    assertEquals(unitOfPrice1, invoiceItemObj.getIntValue(
-        InvoiceClassCollection.FIELD_UNIT_OF_PRICE));
+    assertEquals(unitOfPrice1, invoiceItemObj.getFloatValue(
+        InvoiceClassCollection.FIELD_UNIT_OF_PRICE), 0.00001);
     assertEquals(vatCode, invoiceItemObj.getIntValue(
         InvoiceClassCollection.FIELD_VAT_CODE));
     assertEquals(vatValue, invoiceItemObj.getFloatValue(

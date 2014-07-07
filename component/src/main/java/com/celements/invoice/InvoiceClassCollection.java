@@ -228,7 +228,7 @@ public class InvoiceClassCollection extends AbstractClassCollection {
     needsUpdate |= bclass.addNumberField(FIELD_UNIT_PRICE, "Price Unit (in smallest unit"
         + " of currency)", 5, "integer");
     needsUpdate |= bclass.addNumberField(FIELD_UNIT_OF_PRICE, "amount per unit-price", 5,
-        "integer");
+        "float");
     needsUpdate |= bclass.addNumberField(FIELD_VAT_CODE, "VAT Code", 5, "integer");
     needsUpdate |= bclass.addNumberField(FIELD_VAT_VALUE, "VAT Value", 5, "float");
     needsUpdate |= bclass.addTextField(FIELD_ITEM_DESCRIPTION, "Description", 30);

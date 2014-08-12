@@ -5,14 +5,18 @@ import static org.junit.Assert.*;
 
 import java.util.Arrays;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.xwiki.component.descriptor.ComponentDescriptor;
+import org.xwiki.component.manager.ComponentManager;
 import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.query.Query;
 import org.xwiki.query.QueryManager;
 
 import com.celements.common.test.AbstractBridgedComponentTestCase;
 import com.celements.invoice.builder.IInvoice;
+import com.celements.nextfreedoc.INextFreeDocRole;
 import com.xpn.xwiki.XWiki;
 import com.xpn.xwiki.XWikiContext;
 import com.xpn.xwiki.doc.XWikiDocument;
@@ -24,15 +28,33 @@ public class InvoiceServiceTest extends AbstractBridgedComponentTestCase {
   private XWikiContext context;
   private XWiki xwiki;
   private QueryManager queryManagerMock;
+  private INextFreeDocRole nextFreeDocMock;
+  private INextFreeDocRole defaultNextFreeDoc;
+  private ComponentManager componentManager;
 
   @Before
   public void setUp_XObjectInvoiceStoreTest() throws Exception {
+    componentManager = Utils.getComponentManager();
+    defaultNextFreeDoc = componentManager.lookup(INextFreeDocRole.class);
+    componentManager.release(defaultNextFreeDoc);
+    ComponentDescriptor<INextFreeDocRole> nextFreeDocDesc =
+        componentManager.getComponentDescriptor(INextFreeDocRole.class, "default");
+    nextFreeDocMock = createMockAndAddToDefault(INextFreeDocRole.class);
+    componentManager.registerComponent(nextFreeDocDesc, nextFreeDocMock);
     context = getContext();
     xwiki = getWikiMock();
     invoiceService = (InvoiceService) Utils.getComponent(IInvoiceServiceRole.class,
         "xobject");
     queryManagerMock = createMockAndAddToDefault(QueryManager.class);
     invoiceService.query = queryManagerMock;
+  }
+
+  @After
+  public void tearDown_XObjectInvoiceStoreTest() throws Exception {
+    componentManager.release(nextFreeDocMock);
+    ComponentDescriptor<INextFreeDocRole> nextFreeDocDesc =
+        componentManager.getComponentDescriptor(INextFreeDocRole.class, "default");
+    componentManager.registerComponent(nextFreeDocDesc, defaultNextFreeDoc);
   }
 
   @Test
@@ -58,12 +80,9 @@ public class InvoiceServiceTest extends AbstractBridgedComponentTestCase {
         "Invoices", "Invoice1");
     IInvoice invoice = Utils.getComponent(IInvoice.class);
     invoice.setDocumentNameHint(null);
-    expect(xwiki.exists(eq(expectedDocRef), same(context))).andReturn(false
-        ).atLeastOnce();
-    XWikiDocument expectedDocMock = createMockAndAddToDefault(XWikiDocument.class);
-    expect(xwiki.getDocument(eq(expectedDocRef), same(context))).andReturn(
-        expectedDocMock).atLeastOnce();
-    expect(expectedDocMock.getLock(same(context))).andReturn(null).atLeastOnce();
+    expect(nextFreeDocMock.getNextTitledPageDocRef(
+        eq(expectedDocRef.getLastSpaceReference()), eq("Invoice"))).andReturn(
+            expectedDocRef);
     replayDefault();
     assertEquals(expectedDocRef, invoiceService.getNewInvoiceDocRef(invoice));
     verifyDefault();
@@ -75,12 +94,9 @@ public class InvoiceServiceTest extends AbstractBridgedComponentTestCase {
         "Invoices", "Invoice1");
     IInvoice invoice = Utils.getComponent(IInvoice.class);
     invoice.setDocumentNameHint("");
-    expect(xwiki.exists(eq(expectedDocRef), same(context))).andReturn(false
-        ).atLeastOnce();
-    XWikiDocument expectedDocMock = createMockAndAddToDefault(XWikiDocument.class);
-    expect(xwiki.getDocument(eq(expectedDocRef), same(context))).andReturn(
-        expectedDocMock).atLeastOnce();
-    expect(expectedDocMock.getLock(same(context))).andReturn(null).atLeastOnce();
+    expect(nextFreeDocMock.getNextTitledPageDocRef(
+        eq(expectedDocRef.getLastSpaceReference()), eq("Invoice"))).andReturn(
+            expectedDocRef);
     replayDefault();
     assertEquals(expectedDocRef, invoiceService.getNewInvoiceDocRef(invoice));
     verifyDefault();
@@ -92,12 +108,9 @@ public class InvoiceServiceTest extends AbstractBridgedComponentTestCase {
         "test-Invoices", "Invoice1");
     IInvoice invoice = Utils.getComponent(IInvoice.class);
     invoice.setDocumentNameHint("test");
-    expect(xwiki.exists(eq(expectedDocRef), same(context))).andReturn(false
-        ).atLeastOnce();
-    XWikiDocument expectedDocMock = createMockAndAddToDefault(XWikiDocument.class);
-    expect(xwiki.getDocument(eq(expectedDocRef), same(context))).andReturn(
-        expectedDocMock).atLeastOnce();
-    expect(expectedDocMock.getLock(same(context))).andReturn(null).atLeastOnce();
+    expect(nextFreeDocMock.getNextTitledPageDocRef(
+        eq(expectedDocRef.getLastSpaceReference()), eq("Invoice"))).andReturn(
+            expectedDocRef);
     replayDefault();
     assertEquals(expectedDocRef, invoiceService.getNewInvoiceDocRef(invoice));
     verifyDefault();

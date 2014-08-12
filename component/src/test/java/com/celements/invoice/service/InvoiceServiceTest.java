@@ -19,7 +19,6 @@ import com.celements.invoice.builder.IInvoice;
 import com.celements.nextfreedoc.INextFreeDocRole;
 import com.xpn.xwiki.XWiki;
 import com.xpn.xwiki.XWikiContext;
-import com.xpn.xwiki.doc.XWikiDocument;
 import com.xpn.xwiki.web.Utils;
 
 public class InvoiceServiceTest extends AbstractBridgedComponentTestCase {

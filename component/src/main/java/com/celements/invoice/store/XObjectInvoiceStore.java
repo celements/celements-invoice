@@ -33,29 +33,28 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
   private static Log LOGGER = LogFactory.getFactory().getInstance(
       XObjectInvoiceStore.class);
 
-  @Requirement("xobject")
+  // not as requirement due to cyclic dependency
   IInvoiceServiceRole invoiceService;
 
   @Requirement("com.celements.invoice.classcollection")
-  IClassCollectionRole invoiceClasses;
+  private IClassCollectionRole invoiceClasses;
 
   @Requirement(role = IInvoiceStoreExtenderRole.class)
-  Map<String, IInvoiceStoreExtenderRole> storeExtenderMap;
+  private Map<String, IInvoiceStoreExtenderRole> storeExtenderMap;
 
   @Requirement
-  Execution execution;
+  private Execution execution;
 
   private XWikiContext getContext() {
-    return (XWikiContext)execution.getContext().getProperty("xwikicontext");
+    return (XWikiContext) execution.getContext().getProperty("xwikicontext");
   }
 
   private InvoiceClassCollection getInvoiceClasses() {
     return (InvoiceClassCollection) invoiceClasses;
   }
 
-  public IInvoice loadInvoiceByInvoiceNumber(String invoiceNumber) {
-    DocumentReference invoiceDocRef = invoiceService.getInvoiceDocRefForInvoiceNumber(
-        invoiceNumber);
+  @Override
+  public IInvoice loadInvoice(DocumentReference invoiceDocRef) {
     if (getContext().getWiki().exists(invoiceDocRef, getContext())) {
       try {
         XWikiDocument invoiceDoc = getContext().getWiki().getDocument(invoiceDocRef,
@@ -64,13 +63,12 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
             ).getInvoiceClassRef(getWikiName()));
         if (invoiceObj != null) {
           IInvoice invoice = convertToInvoice(invoiceObj);
-          callLoadInvoiceExtender(invoiceNumber, invoiceDoc, invoice); 
+          callLoadInvoiceExtender(invoiceDoc, invoice);
           List<BaseObject> invoiceItemObjList = invoiceDoc.getXObjects(getInvoiceClasses(
               ).getInvoiceItemClassRef(getWikiName()));
           if (invoiceItemObjList != null) {
-            SortedMap<Integer, IInvoiceItem> itemMap =
-                new TreeMap<Integer, IInvoiceItem>();
-            for(BaseObject invoiceItemObj : invoiceItemObjList) {
+            SortedMap<Integer, IInvoiceItem> itemMap = new TreeMap<Integer, IInvoiceItem>();
+            for (BaseObject invoiceItemObj : invoiceItemObjList) {
               if (invoiceItemObj != null) {
                 int position = invoiceItemObj.getIntValue(
                     InvoiceClassCollection.FIELD_ITEM_POSITION);
@@ -91,14 +89,13 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
     return null;
   }
 
-  private void callLoadInvoiceExtender(String invoiceNumber, XWikiDocument invoiceDoc,
-      IInvoice invoice) {
+  private void callLoadInvoiceExtender(XWikiDocument invoiceDoc, IInvoice invoice) {
     for (IInvoiceStoreExtenderRole storeExtender : storeExtenderMap.values()) {
       try {
         storeExtender.loadInvoice(invoiceDoc, invoice);
       } catch (Exception exp) {
         LOGGER.error("IInvoiceStoreExtender [" + storeExtender.getClass()
-            + "] failed to load invoice [" + invoiceNumber + "].", exp);
+            + "] failed to load invoice [" + invoiceDoc + "].", exp);
       }
     }
   }
@@ -158,10 +155,12 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
     return getContext().getDatabase();
   }
 
+  @Override
   public void storeInvoice(IInvoice theInvoice) {
     storeInvoice(theInvoice, "", false);
   }
 
+  @Override
   public void storeInvoice(IInvoice theInvoice, String comment) {
     storeInvoice(theInvoice, comment, false);
   }
@@ -169,12 +168,13 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
   /**
    * theInvoice MUST provide a invoiceNumber
    */
+  @Override
   public void storeInvoice(IInvoice theInvoice, String comment, boolean isMinorEdit) {
     String invoiceNumber = theInvoice.getInvoiceNumber();
-    DocumentReference invoiceDocRef = invoiceService.getInvoiceDocRefForInvoiceNumber(
-        invoiceNumber);
+    DocumentReference invoiceDocRef = getInvoiceService(
+        ).getInvoiceDocRefForInvoiceNumber(invoiceNumber);
     if (invoiceDocRef == null) {
-      invoiceDocRef = invoiceService.getNewInvoiceDocRef(theInvoice);
+      invoiceDocRef = getInvoiceService().getNewInvoiceDocRef(theInvoice);
     }
     try {
       XWikiDocument invoiceDoc = getContext().getWiki().getDocument(invoiceDocRef,
@@ -209,10 +209,9 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
     }
   }
 
-  BaseObject getOrCreateInvoiceObject(XWikiDocument invoiceDoc)
-      throws XWikiException {
-    BaseObject invoiceObj = invoiceDoc.getXObject(getInvoiceClasses(
-        ).getInvoiceClassRef(getWikiName()));
+  BaseObject getOrCreateInvoiceObject(XWikiDocument invoiceDoc) throws XWikiException {
+    BaseObject invoiceObj = invoiceDoc.getXObject(getInvoiceClasses().getInvoiceClassRef(
+        getWikiName()));
     if (invoiceObj == null) {
       invoiceObj = invoiceDoc.newXObject(getInvoiceClasses().getInvoiceClassRef(
           getWikiName()), getContext());
@@ -242,7 +241,7 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
     invoiceObj.setIntValue(InvoiceClassCollection.FIELD_TOTAL_VAT_FULL,
         theInvoice.getTotalVATFull());
     if (theInvoice.getStatus() != null) {
-      invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_STATUS,
+      invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_STATUS, 
           theInvoice.getStatus().getStoredValue());
     }
     if (theInvoice.isCancelled()) {
@@ -273,6 +272,13 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
         invoiceItem.getName());
     invoiceItemObj.setStringValue(InvoiceClassCollection.FIELD_UNIT_OF_MEASURE,
         invoiceItem.getUnitOfMeasure());
+  }
+
+  private IInvoiceServiceRole getInvoiceService() {
+    if (invoiceService == null) {
+      invoiceService = Utils.getComponent(IInvoiceServiceRole.class, "xobject");
+    }
+    return invoiceService;
   }
 
 }

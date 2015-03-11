@@ -1,13 +1,7 @@
 package com.celements.invoice.store;
 
-import static org.easymock.EasyMock.eq;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.same;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.easymock.EasyMock.*;
+import static org.junit.Assert.*;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -23,7 +17,6 @@ import com.celements.invoice.InvoiceClassCollection;
 import com.celements.invoice.builder.EInvoiceStatus;
 import com.celements.invoice.builder.IInvoice;
 import com.celements.invoice.builder.IInvoiceItem;
-import com.celements.invoice.service.IInvoiceServiceRole;
 import com.xpn.xwiki.XWiki;
 import com.xpn.xwiki.XWikiContext;
 import com.xpn.xwiki.XWikiException;
@@ -34,7 +27,6 @@ import com.xpn.xwiki.web.Utils;
 public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponentTestCase {
 
   private XObjectInvoiceStore invoiceStore;
-  private IInvoiceServiceRole invoiceServiceMock;
   private XWikiContext context;
   private XWiki xwiki;
 
@@ -44,8 +36,6 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
     xwiki = getWikiMock();
     invoiceStore = (XObjectInvoiceStore) Utils.getComponent(IInvoiceStoreRole.class,
         "xobject");
-    invoiceServiceMock = createMockAndAddToDefault(IInvoiceServiceRole.class);
-    invoiceStore.invoiceService = invoiceServiceMock;
   }
 
   @Test
@@ -130,56 +120,48 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
   }
 
   @Test
-  public void testLoadInvoiceByInvoiceNumber_notExists() throws Exception {
+  public void testLoadInvoice_notExists() throws Exception {
     String invoiceNumber = "A12758";
     DocumentReference invoiceDocRef = new DocumentReference(context.getDatabase(),
         "InvoicesSpace", invoiceNumber);
-    expect(invoiceServiceMock.getInvoiceDocRefForInvoiceNumber(eq(invoiceNumber))
-        ).andReturn(invoiceDocRef).anyTimes();
     expect(xwiki.exists(eq(invoiceDocRef), same(context))).andReturn(false);
     replayDefault();
-    assertNull(invoiceStore.loadInvoiceByInvoiceNumber(invoiceNumber));
+    assertNull(invoiceStore.loadInvoice(invoiceDocRef));
     verifyDefault();
   }
 
   @Test
-  public void testLoadInvoiceByInvoiceNumber_Exception() throws Exception {
+  public void testLoadInvoice_Exception() throws Exception {
     String invoiceNumber = "A12758";
     DocumentReference invoiceDocRef = new DocumentReference(context.getDatabase(),
         "InvoicesSpace", invoiceNumber);
-    expect(invoiceServiceMock.getInvoiceDocRefForInvoiceNumber(eq(invoiceNumber))
-        ).andReturn(invoiceDocRef).anyTimes();
     expect(xwiki.exists(eq(invoiceDocRef), same(context))).andReturn(true);
     expect(xwiki.getDocument(eq(invoiceDocRef), same(context))).andThrow(
         new XWikiException()).atLeastOnce();
     replayDefault();
-    assertNull(invoiceStore.loadInvoiceByInvoiceNumber(invoiceNumber));
+    assertNull(invoiceStore.loadInvoice(invoiceDocRef));
     verifyDefault();
   }
 
   @Test
-  public void testLoadInvoiceByInvoiceNumber_notAnInvoiceDocument() throws Exception {
+  public void testLoadInvoice_notAnInvoiceDocument() throws Exception {
     String invoiceNumber = "A12758";
     DocumentReference invoiceDocRef = new DocumentReference(context.getDatabase(),
         "InvoicesSpace", invoiceNumber);
-    expect(invoiceServiceMock.getInvoiceDocRefForInvoiceNumber(eq(invoiceNumber))
-        ).andReturn(invoiceDocRef).anyTimes();
     expect(xwiki.exists(eq(invoiceDocRef), same(context))).andReturn(true);
     XWikiDocument invoiceDoc = new XWikiDocument(invoiceDocRef);
     expect(xwiki.getDocument(eq(invoiceDocRef), same(context))).andReturn(invoiceDoc
         ).atLeastOnce();
     replayDefault();
-    assertNull(invoiceStore.loadInvoiceByInvoiceNumber(invoiceNumber));
+    assertNull(invoiceStore.loadInvoice(invoiceDocRef));
     verifyDefault();
   }
 
   @Test
-  public void testLoadInvoiceByInvoiceNumber_emptyInvoice() throws Exception {
+  public void testLoadInvoice_emptyInvoice() throws Exception {
     String invoiceNumber = "A12758";
     DocumentReference invoiceDocRef = new DocumentReference(context.getDatabase(),
         "InvoicesSpace", invoiceNumber);
-    expect(invoiceServiceMock.getInvoiceDocRefForInvoiceNumber(eq(invoiceNumber))
-        ).andReturn(invoiceDocRef).anyTimes();
     expect(xwiki.exists(eq(invoiceDocRef), same(context))).andReturn(true);
     XWikiDocument invoiceDoc = new XWikiDocument(invoiceDocRef);
     BaseObject invoiceObj = new BaseObject();
@@ -191,7 +173,7 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
     expect(xwiki.getDocument(eq(invoiceDocRef), same(context))).andReturn(invoiceDoc
         ).atLeastOnce();
     replayDefault();
-    IInvoice invoice = invoiceStore.loadInvoiceByInvoiceNumber(invoiceNumber);
+    IInvoice invoice = invoiceStore.loadInvoice(invoiceDocRef);
     assertNotNull(invoice);
     assertEquals(invoiceNumber, invoice.getInvoiceNumber());
     assertTrue("expecting empty invoiceItems list.", invoice.getInvoiceItems().isEmpty());
@@ -199,12 +181,10 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
   }
 
   @Test
-  public void testLoadInvoiceByInvoiceNumber() throws Exception {
+  public void testLoadInvoice() throws Exception {
     String invoiceNumber = "A12758";
     DocumentReference invoiceDocRef = new DocumentReference(context.getDatabase(),
         "InvoicesSpace", invoiceNumber);
-    expect(invoiceServiceMock.getInvoiceDocRefForInvoiceNumber(eq(invoiceNumber))
-        ).andReturn(invoiceDocRef).anyTimes();
     expect(xwiki.exists(eq(invoiceDocRef), same(context))).andReturn(true);
     XWikiDocument invoiceDoc = new XWikiDocument(invoiceDocRef);
     BaseObject invoiceObj = new BaseObject();
@@ -236,7 +216,7 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
     expect(xwiki.getDocument(eq(invoiceDocRef), same(context))).andReturn(invoiceDoc
         ).atLeastOnce();
     replayDefault();
-    IInvoice invoice = invoiceStore.loadInvoiceByInvoiceNumber(invoiceNumber);
+    IInvoice invoice = invoiceStore.loadInvoice(invoiceDocRef);
     assertNotNull(invoice);
     assertEquals(invoiceNumber, invoice.getInvoiceNumber());
     List<IInvoiceItem> invoiceItemsList = invoice.getInvoiceItems();
@@ -254,12 +234,10 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
   }
 
   @Test
-  public void testLoadInvoiceByInvoiceNumber_deletedItemObject() throws Exception {
+  public void testLoadInvoice_deletedItemObject() throws Exception {
     String invoiceNumber = "A12758";
     DocumentReference invoiceDocRef = new DocumentReference(context.getDatabase(),
         "InvoicesSpace", invoiceNumber);
-    expect(invoiceServiceMock.getInvoiceDocRefForInvoiceNumber(eq(invoiceNumber))
-        ).andReturn(invoiceDocRef).anyTimes();
     expect(xwiki.exists(eq(invoiceDocRef), same(context))).andReturn(true);
     XWikiDocument invoiceDoc = new XWikiDocument(invoiceDocRef);
     BaseObject invoiceObj = new BaseObject();
@@ -293,7 +271,7 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
     expect(xwiki.getDocument(eq(invoiceDocRef), same(context))).andReturn(invoiceDoc
         ).atLeastOnce();
     replayDefault();
-    IInvoice invoice = invoiceStore.loadInvoiceByInvoiceNumber(invoiceNumber);
+    IInvoice invoice = invoiceStore.loadInvoice(invoiceDocRef);
     assertNotNull(invoice);
     assertEquals(invoiceNumber, invoice.getInvoiceNumber());
     List<IInvoiceItem> invoiceItemsList = invoice.getInvoiceItems();
@@ -311,12 +289,10 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
   }
 
   @Test
-  public void testLoadInvoiceByInvoiceNumber_ItemPosition() throws Exception {
+  public void testLoadInvoice_ItemPosition() throws Exception {
     String invoiceNumber = "A12758";
     DocumentReference invoiceDocRef = new DocumentReference(context.getDatabase(),
         "InvoicesSpace", invoiceNumber);
-    expect(invoiceServiceMock.getInvoiceDocRefForInvoiceNumber(eq(invoiceNumber))
-        ).andReturn(invoiceDocRef).anyTimes();
     expect(xwiki.exists(eq(invoiceDocRef), same(context))).andReturn(true);
     XWikiDocument invoiceDoc = new XWikiDocument(invoiceDocRef);
     BaseObject invoiceObj = new BaseObject();
@@ -352,7 +328,7 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
     expect(xwiki.getDocument(eq(invoiceDocRef), same(context))).andReturn(invoiceDoc
         ).atLeastOnce();
     replayDefault();
-    IInvoice invoice = invoiceStore.loadInvoiceByInvoiceNumber(invoiceNumber);
+    IInvoice invoice = invoiceStore.loadInvoice(invoiceDocRef);
     assertNotNull(invoice);
     assertEquals(invoiceNumber, invoice.getInvoiceNumber());
     List<IInvoiceItem> invoiceItemsList = invoice.getInvoiceItems();

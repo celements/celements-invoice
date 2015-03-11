@@ -1,13 +1,14 @@
 package com.celements.invoice.store;
 
 import org.xwiki.component.annotation.ComponentRole;
+import org.xwiki.model.reference.DocumentReference;
 
 import com.celements.invoice.builder.IInvoice;
 
 @ComponentRole
 public interface IInvoiceStoreRole {
 
-  public IInvoice loadInvoiceByInvoiceNumber(String invoiceNumber);
+  public IInvoice loadInvoice(DocumentReference invoiceDocRef);
 
   public void storeInvoice(IInvoice theInvoice);
 

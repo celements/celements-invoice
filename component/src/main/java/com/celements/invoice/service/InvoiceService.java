@@ -36,7 +36,8 @@ import org.xwiki.query.QueryManager;
 
 import com.celements.invoice.InvoiceClassCollection;
 import com.celements.invoice.builder.IInvoice;
-import com.celements.web.plugin.cmd.NextFreeDocNameCommand;
+import com.celements.invoice.store.IInvoiceStoreRole;
+import com.celements.nextfreedoc.INextFreeDocRole;
 import com.celements.web.service.IWebUtilsService;
 import com.xpn.xwiki.XWikiContext;
 
@@ -51,18 +52,25 @@ public class InvoiceService implements IInvoiceServiceRole {
   private static Log LOGGER = LogFactory.getFactory().getInstance(InvoiceService.class);
 
   @Requirement
-  QueryManager query;
+  QueryManager queryManager;
+
+  @Requirement("xobject")
+  IInvoiceStoreRole invoiceStore;
 
   @Requirement
-  Execution execution;
+  private INextFreeDocRole nextFreeDocService;
 
   @Requirement
-  IWebUtilsService webUtilsService;
+  private IWebUtilsService webUtilsService;
+
+  @Requirement
+  private Execution execution;
 
   private XWikiContext getContext() {
-    return (XWikiContext)execution.getContext().getProperty("xwikicontext");
+    return (XWikiContext) execution.getContext().getProperty("xwikicontext");
   }
 
+  @Override
   synchronized public String getNewInvoiceNumber() {
     int latestInvoiceNumber = getLatestInvoiceNumber() + 1;
     return Integer.toString(latestInvoiceNumber);
@@ -74,8 +82,8 @@ public class InvoiceService implements IInvoiceServiceRole {
     if (!isValidInvoiceNumber(latestInvoiceNumberFromDb)) {
       int minInvoiceNumberFromConfig = getMinInvoiceNumberFromConfig();
       LOGGER.debug("getLatestInvoiceNumber invalid invoice number found ["
-          + latestInvoiceNumberFromDb + "] returning min from config [" +
-          minInvoiceNumberFromConfig + "].");
+          + latestInvoiceNumberFromDb + "] returning min from config ["
+          + minInvoiceNumberFromConfig + "].");
       return minInvoiceNumberFromConfig;
     } else {
       LOGGER.debug("getLatestInvoiceNumber returning [" + latestInvoiceNumberFromDb
@@ -96,15 +104,14 @@ public class InvoiceService implements IInvoiceServiceRole {
 
   private String getMaxInvoiceNumberHQL() {
     return "select max(invoice.invoiceNumber) from "
-      + InvoiceClassCollection.INVOICE_CLASSES_SPACE + "."
-      + InvoiceClassCollection.INVOICE_CLASS_DOC + " as invoice";
+        + InvoiceClassCollection.INVOICE_CLASSES_SPACE + "."
+        + InvoiceClassCollection.INVOICE_CLASS_DOC + " as invoice";
   }
 
   private Integer getLatestInvoiceNumberFromDb() {
-    LOGGER.trace("getLatestInvoiceNumberFromDb: looking for latest invoice number in db."
-        );
+    LOGGER.trace("getLatestInvoiceNumberFromDb: looking for latest invoice number in db.");
     try {
-      List<String> result = query.createQuery(getMaxInvoiceNumberHQL(), Query.HQL
+      List<String> result = queryManager.createQuery(getMaxInvoiceNumberHQL(), Query.HQL
           ).execute();
       if (!result.isEmpty()) {
         String maxInvoiceNumberStr = result.get(0);
@@ -129,8 +136,8 @@ public class InvoiceService implements IInvoiceServiceRole {
 
   private Integer getHighestInvoiceNumberByCountingDown() throws QueryException {
     LOGGER.trace("getHighestInvoiceNumberByCountingDown: counting down.");
-    List<String> resultDesc = query.createQuery(getInvoiceNumbersDescHQL(), Query.HQL
-        ).execute();
+    List<String> resultDesc = queryManager.createQuery(getInvoiceNumbersDescHQL(), 
+        Query.HQL).execute();
     for (String invoiceNumberStr : resultDesc) {
       try {
         int highestInvoiceNumber = Integer.parseInt(invoiceNumberStr);
@@ -153,46 +160,47 @@ public class InvoiceService implements IInvoiceServiceRole {
 
   private String getInvoiceNumbersDescHQL() {
     return "select invoice.invoiceNumber from "
-      + InvoiceClassCollection.INVOICE_CLASSES_SPACE + "."
-      + InvoiceClassCollection.INVOICE_CLASS_DOC + " as invoice"
-      + " order by length(invoice.invoiceNumber) desc, invoice.invoiceNumber desc";
+        + InvoiceClassCollection.INVOICE_CLASSES_SPACE + "."
+        + InvoiceClassCollection.INVOICE_CLASS_DOC + " as invoice"
+        + " order by length(invoice.invoiceNumber) desc, invoice.invoiceNumber desc";
   }
 
+  @Override
   public DocumentReference getInvoiceDocRefForInvoiceNumber(String invoiceNumber) {
     DocumentReference invoiceDocRef = null;
     try {
       LOGGER.debug("getInvoiceDocRefForInvoiceNumber for [" + invoiceNumber + "].");
       String docForInvoiceNumberXWQL = getInvoiceForInvoiceNumberXWQL();
       LOGGER.trace("getInvoiceDocRefForInvoiceNumber: " + docForInvoiceNumberXWQL);
-      Query theQuery = query.createQuery(docForInvoiceNumberXWQL, Query.XWQL);
+      Query theQuery = queryManager.createQuery(docForInvoiceNumberXWQL, Query.XWQL);
       theQuery.bindValue("invoiceNumber", invoiceNumber);
       List<Object> result = theQuery.execute();
       if (result.size() > 0) {
-        invoiceDocRef = webUtilsService.resolveDocumentReference(result.get(0).toString()
-            );
+        invoiceDocRef = webUtilsService.resolveDocumentReference(result.get(0).toString());
       }
     } catch (QueryException queryExp) {
-      LOGGER.error("Failed to execute getInvoiceForInvoiceNumber query ["
-          + invoiceNumber + "].", queryExp);
+      LOGGER.error("Failed to execute getInvoiceForInvoiceNumber query [" + invoiceNumber
+          + "].", queryExp);
     }
-    LOGGER.info("getInvoiceDocRefForInvoiceNumber for [" + invoiceNumber + "] returning ["
-        + invoiceDocRef + "].");
+    LOGGER.info("getInvoiceDocRefForInvoiceNumber for [" + invoiceNumber
+        + "] returning [" + invoiceDocRef + "].");
     return invoiceDocRef;
   }
 
+  @Override
   public DocumentReference getNewInvoiceDocRef(IInvoice invoice) {
-    String rgSpaceName = "";
-    if (!StringUtils.isEmpty(invoice.getDocumentNameHint())) {
-      rgSpaceName = invoice.getDocumentNameHint() + "-";
+    String spaceName = "Invoices";
+    if (!StringUtils.isBlank(invoice.getDocumentNameHint())) {
+      spaceName = invoice.getDocumentNameHint() + "-" + spaceName;
     }
-    return new NextFreeDocNameCommand().getNextTitledPageDocRef(rgSpaceName + "Invoices",
-        "Invoice", getContext());
+    return nextFreeDocService.getNextTitledPageDocRef(
+        webUtilsService.resolveSpaceReference(spaceName), "Invoice");
   }
 
   private String getInvoiceForInvoiceNumberXWQL() {
     return "from doc.object(" + InvoiceClassCollection.INVOICE_CLASSES_SPACE + "."
-      + InvoiceClassCollection.INVOICE_CLASS_DOC + ") as invoice"
-      + " where invoice.invoiceNumber = :invoiceNumber";
+        + InvoiceClassCollection.INVOICE_CLASS_DOC + ") as invoice"
+        + " where invoice.invoiceNumber = :invoiceNumber";
   }
 
 }

@@ -14,8 +14,6 @@ public class InvoiceItem implements IInvoiceItem {
 
   private String id;
   private String name;
-  private int pricePerPiece;
-  private int totalPrice;
   private int amount;
   private int vatCode;
   private String articleNr;
@@ -33,8 +31,6 @@ public class InvoiceItem implements IInvoiceItem {
   public InvoiceItem(IInvoiceItem item) {
     setId(item.getId());
     setName(item.getName());
-    setPricePerPiece(item.getPricePerPiece());
-    setTotalPrice(item.getTotalPrice());
     setAmount(item.getAmount());
     setVATCode(item.getVATCode());
     setArticleNr(item.getArticleNr());
@@ -71,26 +67,6 @@ public class InvoiceItem implements IInvoiceItem {
   }
 
   @Override
-  public int getPricePerPiece() {
-    return pricePerPiece;
-  }
-
-  @Override
-  public void setPricePerPiece(int price) {
-    this.pricePerPiece = price;
-  }
-
-  @Override
-  public int getTotalPrice() {
-    return totalPrice;
-  }
-
-  @Override
-  public void setTotalPrice(int totalPrice) {
-    this.totalPrice = totalPrice;
-  }
-
-  @Override
   public int getAmount() {
     return amount;
   }
@@ -108,12 +84,6 @@ public class InvoiceItem implements IInvoiceItem {
   @Override
   public void setVATCode(int vatCode) {
     this.vatCode = vatCode;
-  }
-
-  @Override
-  public String toString() {
-    return "[" + getId() + ", '" + getName() + "', " + getPricePerPiece() + " x "
-        + getAmount() + ", VAT: " + getVATCode() + "]";
   }
 
   @Override
@@ -190,6 +160,19 @@ public class InvoiceItem implements IInvoiceItem {
   @Override
   public void setUnitOfMeasure(String unitOfMeasure) {
     this.unitOfMeasure = unitOfMeasure;
+  }
+
+  @Override
+  public int getTotalPrice() {
+    return getUnitPrice() * getAmount();
+  }
+
+  @Override
+  public String toString() {
+    return "InvoiceItem [id=" + id + ", name=" + name + ", amount=" + amount
+        + ", vatCode=" + vatCode + ", articleNr=" + articleNr + ", orderNr=" + orderNr
+        + ", refDocs=" + refDocs + ", vatValue=" + vatValue + ", unitPrice=" + unitPrice
+        + ", unitOfPrice=" + unitOfPrice + ", unitOfMeasure=" + unitOfMeasure + "]";
   }
 
 }

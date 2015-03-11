@@ -6,27 +6,22 @@ import org.xwiki.component.annotation.ComponentRole;
 
 @ComponentRole
 public interface IInvoiceItem {
+
   public String getId();
   public void setId(String id);
-  
+
   public String getName();
   public void setName(String name);
-  
-  public int getPricePerPiece();
-  public void setPricePerPiece(int price);
 
   public void setUnitPrice(int unitPrice);
   public int getUnitPrice();
 
   public void setUnitOfPrice(float unitOfPrice);
   public float getUnitOfPrice();
-  
-  public int getTotalPrice();
-  public void setTotalPrice(int totalPrice);
-  
+
   public int getAmount();
   public void setAmount(int amount);
-  
+
   public int getVATCode();
   public void setVATCode(int vatCode);
 
@@ -44,5 +39,7 @@ public interface IInvoiceItem {
 
   public String getUnitOfMeasure();
   public void setUnitOfMeasure(String unitOfMeasure);
+
+  public int getTotalPrice();
 
 }

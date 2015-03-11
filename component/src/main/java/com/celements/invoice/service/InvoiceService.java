@@ -36,7 +36,6 @@ import org.xwiki.query.QueryManager;
 
 import com.celements.invoice.InvoiceClassCollection;
 import com.celements.invoice.builder.IInvoice;
-import com.celements.invoice.store.IInvoiceStoreRole;
 import com.celements.nextfreedoc.INextFreeDocRole;
 import com.celements.web.service.IWebUtilsService;
 import com.xpn.xwiki.XWikiContext;
@@ -53,9 +52,6 @@ public class InvoiceService implements IInvoiceServiceRole {
 
   @Requirement
   QueryManager queryManager;
-
-  @Requirement("xobject")
-  IInvoiceStoreRole invoiceStore;
 
   @Requirement
   private INextFreeDocRole nextFreeDocService;
@@ -187,6 +183,12 @@ public class InvoiceService implements IInvoiceServiceRole {
     return invoiceDocRef;
   }
 
+  private String getInvoiceForInvoiceNumberXWQL() {
+    return "from doc.object(" + InvoiceClassCollection.INVOICE_CLASSES_SPACE + "."
+        + InvoiceClassCollection.INVOICE_CLASS_DOC + ") as invoice"
+        + " where invoice.invoiceNumber = :invoiceNumber";
+  }
+
   @Override
   public DocumentReference getNewInvoiceDocRef(IInvoice invoice) {
     String spaceName = "Invoices";
@@ -195,12 +197,6 @@ public class InvoiceService implements IInvoiceServiceRole {
     }
     return nextFreeDocService.getNextTitledPageDocRef(
         webUtilsService.resolveSpaceReference(spaceName), "Invoice");
-  }
-
-  private String getInvoiceForInvoiceNumberXWQL() {
-    return "from doc.object(" + InvoiceClassCollection.INVOICE_CLASSES_SPACE + "."
-        + InvoiceClassCollection.INVOICE_CLASS_DOC + ") as invoice"
-        + " where invoice.invoiceNumber = :invoiceNumber";
   }
 
 }

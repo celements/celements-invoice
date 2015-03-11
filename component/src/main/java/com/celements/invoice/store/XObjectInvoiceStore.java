@@ -33,7 +33,7 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
   private static Log LOGGER = LogFactory.getFactory().getInstance(
       XObjectInvoiceStore.class);
 
-  // not as requirement due to cyclic dependency
+  @Requirement("xobject")
   IInvoiceServiceRole invoiceService;
 
   @Requirement("com.celements.invoice.classcollection")
@@ -171,10 +171,10 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
   @Override
   public void storeInvoice(IInvoice theInvoice, String comment, boolean isMinorEdit) {
     String invoiceNumber = theInvoice.getInvoiceNumber();
-    DocumentReference invoiceDocRef = getInvoiceService(
-        ).getInvoiceDocRefForInvoiceNumber(invoiceNumber);
+    DocumentReference invoiceDocRef = invoiceService.getInvoiceDocRefForInvoiceNumber(
+        invoiceNumber);
     if (invoiceDocRef == null) {
-      invoiceDocRef = getInvoiceService().getNewInvoiceDocRef(theInvoice);
+      invoiceDocRef = invoiceService.getNewInvoiceDocRef(theInvoice);
     }
     try {
       XWikiDocument invoiceDoc = getContext().getWiki().getDocument(invoiceDocRef,
@@ -272,13 +272,6 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
         invoiceItem.getName());
     invoiceItemObj.setStringValue(InvoiceClassCollection.FIELD_UNIT_OF_MEASURE,
         invoiceItem.getUnitOfMeasure());
-  }
-
-  private IInvoiceServiceRole getInvoiceService() {
-    if (invoiceService == null) {
-      invoiceService = Utils.getComponent(IInvoiceServiceRole.class, "xobject");
-    }
-    return invoiceService;
   }
 
 }

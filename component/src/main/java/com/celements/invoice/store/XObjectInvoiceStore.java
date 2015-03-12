@@ -2,6 +2,7 @@ package com.celements.invoice.store;
 
 import groovy.lang.Singleton;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -36,11 +37,11 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
   @Requirement("xobject")
   IInvoiceServiceRole invoiceService;
 
+  @Requirement
+  Map<String, IInvoiceStoreExtenderRole> storeExtenderMap;
+
   @Requirement("com.celements.invoice.classcollection")
   private IClassCollectionRole invoiceClasses;
-
-  @Requirement(role = IInvoiceStoreExtenderRole.class)
-  private Map<String, IInvoiceStoreExtenderRole> storeExtenderMap;
 
   @Requirement
   private Execution execution;
@@ -55,6 +56,7 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
 
   @Override
   public IInvoice loadInvoice(DocumentReference invoiceDocRef) {
+    IInvoice invoice = null;
     if (getContext().getWiki().exists(invoiceDocRef, getContext())) {
       try {
         XWikiDocument invoiceDoc = getContext().getWiki().getDocument(invoiceDocRef,
@@ -62,31 +64,15 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
         BaseObject invoiceObj = invoiceDoc.getXObject(getInvoiceClasses(
             ).getInvoiceClassRef(getWikiName()));
         if (invoiceObj != null) {
-          IInvoice invoice = convertToInvoice(invoiceObj);
+          invoice = convertToInvoice(invoiceObj);
           callLoadInvoiceExtender(invoiceDoc, invoice);
-          List<BaseObject> invoiceItemObjList = invoiceDoc.getXObjects(getInvoiceClasses(
-              ).getInvoiceItemClassRef(getWikiName()));
-          if (invoiceItemObjList != null) {
-            SortedMap<Integer, IInvoiceItem> itemMap = new TreeMap<Integer, IInvoiceItem>();
-            for (BaseObject invoiceItemObj : invoiceItemObjList) {
-              if (invoiceItemObj != null) {
-                int position = invoiceItemObj.getIntValue(
-                    InvoiceClassCollection.FIELD_ITEM_POSITION);
-                while (itemMap.containsKey(position)) {
-                  position++;
-                }
-                itemMap.put(position, convertToInvoiceItem(invoiceItemObj));
-              }
-            }
-            invoice.addAllInvoiceItem(itemMap.values());
-          }
-          return invoice;
+          invoice.addAllInvoiceItem(getInvoiceItemList(invoiceDoc));
         }
       } catch (XWikiException exp) {
         LOGGER.error("Failed to load invoice document [" + invoiceDocRef + "].", exp);
       }
     }
-    return null;
+    return invoice;
   }
 
   private void callLoadInvoiceExtender(XWikiDocument invoiceDoc, IInvoice invoice) {
@@ -128,7 +114,66 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
     return invoice;
   }
 
-  IInvoiceItem convertToInvoiceItem(BaseObject invoiceItemObj) {
+  private Collection<IInvoiceItem> getInvoiceItemList(XWikiDocument invoiceDoc) {
+    SortedMap<Integer, IInvoiceItem> itemMap = new TreeMap<Integer, IInvoiceItem>();
+    List<BaseObject> objList = invoiceDoc.getXObjects(getInvoiceClasses(
+        ).getInvoiceItemClassRef(getWikiName()));
+    if (objList != null) {
+      for (BaseObject invoiceItemObj : objList) {
+        IInvoiceItem item = loadInvoiceItem(invoiceDoc, invoiceItemObj);
+        if (item != null) {
+          int pos = invoiceItemObj.getIntValue(InvoiceClassCollection.FIELD_ITEM_POSITION,
+              0);
+          while (itemMap.containsKey(pos)) {
+            pos++;
+          }
+          itemMap.put(pos, item);
+        }
+      }
+    }
+    return itemMap.values();
+  }
+
+  @Override
+  public IInvoiceItem loadInvoiceItem(DocumentReference invoiceDocRef, int position) {
+    IInvoiceItem invoiceItem = null;
+    if (getContext().getWiki().exists(invoiceDocRef, getContext())) {
+      try {
+        XWikiDocument invoiceDoc = getContext().getWiki().getDocument(invoiceDocRef,
+            getContext());
+        invoiceItem = loadInvoiceItem(invoiceDoc, invoiceDoc.getXObject(
+            getInvoiceClasses().getInvoiceItemClassRef(getWikiName()), 
+            InvoiceClassCollection.FIELD_ITEM_POSITION, Integer.toString(position)));
+      } catch (XWikiException exp) {
+        LOGGER.error("Failed to load invoice document [" + invoiceDocRef + "].", exp);
+      }
+    }
+    return invoiceItem;
+  }
+
+  private IInvoiceItem loadInvoiceItem(XWikiDocument invoiceDoc, 
+      BaseObject invoiceItemObj) {
+    IInvoiceItem invoiceItem = null;
+      if (invoiceItemObj != null) {
+        invoiceItem = convertToInvoiceItem(invoiceItemObj);
+        callLoadInvoiceItemExtender(invoiceDoc, invoiceItem);
+      }
+    return invoiceItem;
+  }
+
+  private void callLoadInvoiceItemExtender(XWikiDocument invoiceDoc, 
+      IInvoiceItem invoiceItem) {
+    for (IInvoiceStoreExtenderRole storeExtender : storeExtenderMap.values()) {
+      try {
+        storeExtender.loadInvoiceItem(invoiceDoc, invoiceItem);
+      } catch (Exception exp) {
+        LOGGER.error("IInvoiceStoreExtender [" + storeExtender.getClass()
+            + "] failed to load invoice [" + invoiceDoc + "].", exp);
+      }
+    }
+  }
+
+  private IInvoiceItem convertToInvoiceItem(BaseObject invoiceItemObj) {
     IInvoiceItem invoiceItem = Utils.getComponent(IInvoiceItem.class);
     invoiceItem.setAmount(invoiceItemObj.getIntValue(
         InvoiceClassCollection.FIELD_AMOUNT, 0));
@@ -138,7 +183,7 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
         InvoiceClassCollection.FIELD_ORDER_NUMBER));
     invoiceItem.setUnitPrice(invoiceItemObj.getIntValue(
         InvoiceClassCollection.FIELD_UNIT_PRICE));
-    invoiceItem.setUnitOfPrice(invoiceItemObj.getIntValue(
+    invoiceItem.setUnitOfPrice(invoiceItemObj.getFloatValue(
         InvoiceClassCollection.FIELD_UNIT_OF_PRICE));
     invoiceItem.setVATCode(invoiceItemObj.getIntValue(
         InvoiceClassCollection.FIELD_VAT_CODE));

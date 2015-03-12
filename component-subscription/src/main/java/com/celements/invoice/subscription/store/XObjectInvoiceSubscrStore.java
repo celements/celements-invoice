@@ -11,6 +11,7 @@ import org.xwiki.context.Execution;
 import com.celements.common.classes.IClassCollectionRole;
 import com.celements.invoice.InvoiceClassCollection;
 import com.celements.invoice.builder.IInvoice;
+import com.celements.invoice.builder.IInvoiceItem;
 import com.celements.invoice.builder.IInvoiceReferenceDocument;
 import com.celements.invoice.store.IInvoiceStoreExtenderRole;
 import com.celements.invoice.subscription.InvoiceSubscrReferenceDocument;
@@ -40,6 +41,7 @@ public class XObjectInvoiceSubscrStore implements IInvoiceStoreExtenderRole {
     return (InvoiceClassCollection) invoiceClasses;
   }
 
+  @Override
   public void loadInvoice(XWikiDocument invoiceDoc, IInvoice invoice) {
     BaseObject subscrObj = invoiceDoc.getXObject(getInvoiceClasses(
         ).getSubscriptionItemClassRef(getWikiName()));
@@ -56,6 +58,11 @@ public class XObjectInvoiceSubscrStore implements IInvoiceStoreExtenderRole {
     }
   }
 
+  @Override
+  public void loadInvoiceItem(XWikiDocument invoiceDoc, IInvoiceItem invoiceItem) {
+  }
+
+  @Override
   public void storeInvoice(IInvoice theInvoice, XWikiDocument invoiceDoc) {
     List<IInvoiceReferenceDocument> invReferenceDocs = theInvoice.getReferenceDocs();
     for (IInvoiceReferenceDocument invRefDoc : invReferenceDocs) {

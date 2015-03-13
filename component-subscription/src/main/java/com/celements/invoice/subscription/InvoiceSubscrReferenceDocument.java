@@ -8,9 +8,11 @@ import org.xwiki.component.descriptor.ComponentInstantiationStrategy;
 
 import com.celements.invoice.builder.IInvoiceReferenceDocument;
 
-@Component("subscription")
+@Component(InvoiceSubscrReferenceDocument.NAME)
 @InstantiationStrategy(ComponentInstantiationStrategy.PER_LOOKUP)
 public class InvoiceSubscrReferenceDocument implements IInvoiceReferenceDocument {
+  
+  public static final String NAME = "subscription";
 
   private Date fromDate;
   private Date toDate;

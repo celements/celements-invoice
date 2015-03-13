@@ -10,7 +10,6 @@ import com.xpn.xwiki.web.Utils;
 
 public class InvoiceItemTest extends AbstractBridgedComponentTestCase {
   private final String NAME = "item name";
-  private final int PRICE_PER_PIECE = 1320;
   private final int AMOUNT = 3;
   private final int VAT_CODE = 2;
   private final String ARTICLE_NR = "ArtNR123";
@@ -20,13 +19,12 @@ public class InvoiceItemTest extends AbstractBridgedComponentTestCase {
   public static final int UNIT_OF_PRICE = 13;
   public static final String UNIT_OF_MEASURE = "EA";
   
-  InvoiceItem item;
+  IInvoiceItem item;
   
   @Before
   public void setUp_InvoiceItemTest() throws Exception {
-    item = new InvoiceItem();
+    item = Utils.getComponent(IInvoiceItem.class);
     item.setName(NAME);
-    item.setPricePerPiece(PRICE_PER_PIECE);
     item.setAmount(AMOUNT);
     item.setVATCode(VAT_CODE);
     item.setArticleNr(ARTICLE_NR);
@@ -50,7 +48,6 @@ public class InvoiceItemTest extends AbstractBridgedComponentTestCase {
   @Test
   public void testBuildObject() {
     assertEquals(NAME, item.getName());
-    assertEquals(PRICE_PER_PIECE, item.getPricePerPiece());
     assertEquals(AMOUNT, item.getAmount());
     assertEquals(VAT_CODE, item.getVATCode());
     assertEquals(ARTICLE_NR, item.getArticleNr());
@@ -61,7 +58,6 @@ public class InvoiceItemTest extends AbstractBridgedComponentTestCase {
   public void testCopyObject() {
     InvoiceItem copy = new InvoiceItem(item);
     assertEquals(NAME, copy.getName());
-    assertEquals(PRICE_PER_PIECE, copy.getPricePerPiece());
     assertEquals(AMOUNT, copy.getAmount());
     assertEquals(VAT_CODE, copy.getVATCode());
     assertEquals(ARTICLE_NR, copy.getArticleNr());
@@ -71,12 +67,10 @@ public class InvoiceItemTest extends AbstractBridgedComponentTestCase {
   @Test
   public void testCopyObject_withChanges() {
     assertEquals(NAME, item.getName());
-    assertEquals(PRICE_PER_PIECE, item.getPricePerPiece());
     assertEquals(AMOUNT, item.getAmount());
     assertEquals(VAT_CODE, item.getVATCode());
     InvoiceItem copy = new InvoiceItem(item);
     assertEquals(NAME, copy.getName());
-    assertEquals(PRICE_PER_PIECE, copy.getPricePerPiece());
     assertEquals(AMOUNT, copy.getAmount());
     assertEquals(VAT_CODE, copy.getVATCode());
     copy.setArticleNr("newArticleNr124");
@@ -113,6 +107,11 @@ public class InvoiceItemTest extends AbstractBridgedComponentTestCase {
     String orderNr = "OrderNr123";
     invoiceItem.setOrderNr(orderNr);
     assertEquals(orderNr, invoiceItem.getOrderNr());
+  }
+
+  @Test
+  public void testGetTotalPrice() {
+    assertEquals(UNIT_PRICE * AMOUNT, item.getTotalPrice());
   }
 
 }

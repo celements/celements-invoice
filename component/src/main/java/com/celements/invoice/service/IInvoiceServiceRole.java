@@ -32,4 +32,5 @@ public interface IInvoiceServiceRole {
   public DocumentReference getInvoiceDocRefForInvoiceNumber(String invoiceNumber);
 
   public DocumentReference getNewInvoiceDocRef(IInvoice invoice);
+
 }

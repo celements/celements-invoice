@@ -45,7 +45,7 @@ public class InvoiceServiceTest extends AbstractBridgedComponentTestCase {
     invoiceService = (InvoiceService) Utils.getComponent(IInvoiceServiceRole.class,
         "xobject");
     queryManagerMock = createMockAndAddToDefault(QueryManager.class);
-    invoiceService.query = queryManagerMock;
+    invoiceService.queryManager = queryManagerMock;
   }
 
   @After
@@ -103,15 +103,26 @@ public class InvoiceServiceTest extends AbstractBridgedComponentTestCase {
 
   @Test
   public void testGetNewInvoiceDocRef() throws Exception {
-    DocumentReference expectedDocRef = new DocumentReference(context.getDatabase(),
-        "test-Invoices", "Invoice1");
+    IInvoice invoice = Utils.getComponent(IInvoice.class);
+    DocumentReference expDocRef = new DocumentReference(context.getDatabase(), "Invoices", 
+        "Invoice1");
+    expect(nextFreeDocMock.getNextTitledPageDocRef(eq(expDocRef.getLastSpaceReference()), 
+        eq("Invoice"))).andReturn(expDocRef).once();
+    replayDefault();
+    assertEquals(expDocRef, invoiceService.getNewInvoiceDocRef(invoice));
+    verifyDefault();
+  }
+
+  @Test
+  public void testGetNewInvoiceDocRef_withHint() throws Exception {
     IInvoice invoice = Utils.getComponent(IInvoice.class);
     invoice.setDocumentNameHint("test");
-    expect(nextFreeDocMock.getNextTitledPageDocRef(
-        eq(expectedDocRef.getLastSpaceReference()), eq("Invoice"))).andReturn(
-            expectedDocRef);
+    DocumentReference expDocRef = new DocumentReference(context.getDatabase(),
+        "test-Invoices", "Invoice1");
+    expect(nextFreeDocMock.getNextTitledPageDocRef(eq(expDocRef.getLastSpaceReference()), 
+        eq("Invoice"))).andReturn(expDocRef).once();
     replayDefault();
-    assertEquals(expectedDocRef, invoiceService.getNewInvoiceDocRef(invoice));
+    assertEquals(expDocRef, invoiceService.getNewInvoiceDocRef(invoice));
     verifyDefault();
   }
 

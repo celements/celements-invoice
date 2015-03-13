@@ -1,15 +1,8 @@
 package com.celements.invoice.store;
 
-import static org.easymock.EasyMock.eq;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.same;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.easymock.EasyMock.*;
+import static org.junit.Assert.*;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -23,7 +16,7 @@ import com.celements.invoice.InvoiceClassCollection;
 import com.celements.invoice.builder.EInvoiceStatus;
 import com.celements.invoice.builder.IInvoice;
 import com.celements.invoice.builder.IInvoiceItem;
-import com.celements.invoice.service.IInvoiceServiceRole;
+import com.google.common.base.Function;
 import com.xpn.xwiki.XWiki;
 import com.xpn.xwiki.XWikiContext;
 import com.xpn.xwiki.XWikiException;
@@ -34,9 +27,11 @@ import com.xpn.xwiki.web.Utils;
 public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponentTestCase {
 
   private XObjectInvoiceStore invoiceStore;
-  private IInvoiceServiceRole invoiceServiceMock;
   private XWikiContext context;
   private XWiki xwiki;
+  
+  private DocumentReference invoiceDocRef;
+  private XWikiDocument invoiceDoc;
 
   @Before
   public void setUp_XObjectInvoiceStoreTest() throws Exception {
@@ -44,8 +39,15 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
     xwiki = getWikiMock();
     invoiceStore = (XObjectInvoiceStore) Utils.getComponent(IInvoiceStoreRole.class,
         "xobject");
-    invoiceServiceMock = createMockAndAddToDefault(IInvoiceServiceRole.class);
-    invoiceStore.invoiceService = invoiceServiceMock;
+    invoiceDocRef = new DocumentReference(context.getDatabase(), "InvoicesSpace", 
+        "InvoiceDoc");
+    invoiceDoc = new XWikiDocument(invoiceDocRef);
+  }
+  
+  private void expectInvoiceDoc() throws Exception {
+    expect(xwiki.exists(eq(invoiceDocRef), same(context))).andReturn(true);
+    expect(xwiki.getDocument(eq(invoiceDocRef), same(context))).andReturn(invoiceDoc
+        ).once();
   }
 
   @Test
@@ -62,6 +64,7 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
     int vatFull = 4560;
     String invoiceStatus = "printed";
     int invoiceCancelled = 1;
+    String customerId = "Customer1234";
     BaseObject invoiceObj = new BaseObject();
     invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_NUMBER, invoiceNumber);
     invoiceObj.setStringValue(InvoiceClassCollection.FIELD_ORDER_NUMBER, orderNr);
@@ -76,6 +79,7 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
     invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_STATUS, invoiceStatus);
     invoiceObj.setIntValue(InvoiceClassCollection.FIELD_INVOICE_CANCELLED,
         invoiceCancelled);
+    invoiceObj.setStringValue(InvoiceClassCollection.FIELD_CUSTOMER_ID, customerId);
     replayDefault();
     IInvoice invoice = invoiceStore.convertToInvoice(invoiceObj);
     assertEquals(invoiceNumber, invoice.getInvoiceNumber());
@@ -90,283 +94,269 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
     assertEquals(vatFull, invoice.getTotalVATFull());
     assertEquals(EInvoiceStatus.isPrinted, invoice.getStatus());
     assertTrue(invoice.isCancelled());
+    assertEquals(customerId, invoice.getCustomerId());
     verifyDefault();
   }
 
   @Test
-  public void testConvertToInvoiceItem() {
-    int amount1 = 2;
-    String unitOfMeasure = "EA";
-    String articleNr1 = "ArtNr4665";
-    String orderNr1 = "OrderNumber1123";
-    int unitPrice1 = 34560;
-    float unitOfPrice1 = 10;
-    int vatCode = 2;
-    float vatValue = 23.24F;
-    String descr = "the item you ordered";
-    BaseObject invoiceItemObj = new BaseObject();
-    invoiceItemObj.setStringValue(InvoiceClassCollection.FIELD_ARTICLE_NR, articleNr1);
-    invoiceItemObj.setStringValue(InvoiceClassCollection.FIELD_ORDER_NUMBER, orderNr1);
-    invoiceItemObj.setIntValue(InvoiceClassCollection.FIELD_AMOUNT, amount1);
-    invoiceItemObj.setStringValue(InvoiceClassCollection.FIELD_UNIT_OF_MEASURE,
-        unitOfMeasure);
-    invoiceItemObj.setIntValue(InvoiceClassCollection.FIELD_UNIT_PRICE, unitPrice1);
-    invoiceItemObj.setFloatValue(InvoiceClassCollection.FIELD_UNIT_OF_PRICE, unitOfPrice1);
-    invoiceItemObj.setIntValue(InvoiceClassCollection.FIELD_VAT_CODE, vatCode);
-    invoiceItemObj.setFloatValue(InvoiceClassCollection.FIELD_VAT_VALUE, vatValue);
-    invoiceItemObj.setStringValue(InvoiceClassCollection.FIELD_ITEM_DESCRIPTION, descr);
-    replayDefault();
-    IInvoiceItem invoiceItem = invoiceStore.convertToInvoiceItem(invoiceItemObj);
-    assertEquals(amount1, invoiceItem.getAmount());
-    assertEquals(unitOfMeasure, invoiceItem.getUnitOfMeasure());
-    assertEquals(articleNr1, invoiceItem.getArticleNr());
-    assertEquals(orderNr1, invoiceItem.getOrderNr());
-    assertEquals(unitPrice1, invoiceItem.getUnitPrice());
-    assertEquals(unitOfPrice1, invoiceItem.getUnitOfPrice(), 0.00001);
-    assertEquals(vatCode, invoiceItem.getVATCode());
-    assertEquals(vatValue, invoiceItem.getVATValue(), 0.001);
-    assertEquals(descr, invoiceItem.getName());
-    verifyDefault();
-  }
-
-  @Test
-  public void testLoadInvoiceByInvoiceNumber_notExists() throws Exception {
-    String invoiceNumber = "A12758";
-    DocumentReference invoiceDocRef = new DocumentReference(context.getDatabase(),
-        "InvoicesSpace", invoiceNumber);
-    expect(invoiceServiceMock.getInvoiceDocRefForInvoiceNumber(eq(invoiceNumber))
-        ).andReturn(invoiceDocRef).anyTimes();
+  public void testLoadInvoice_notExists() throws Exception {
     expect(xwiki.exists(eq(invoiceDocRef), same(context))).andReturn(false);
     replayDefault();
-    assertNull(invoiceStore.loadInvoiceByInvoiceNumber(invoiceNumber));
+    assertNull(invoiceStore.loadInvoice(invoiceDocRef));
     verifyDefault();
   }
 
   @Test
-  public void testLoadInvoiceByInvoiceNumber_Exception() throws Exception {
-    String invoiceNumber = "A12758";
-    DocumentReference invoiceDocRef = new DocumentReference(context.getDatabase(),
-        "InvoicesSpace", invoiceNumber);
-    expect(invoiceServiceMock.getInvoiceDocRefForInvoiceNumber(eq(invoiceNumber))
-        ).andReturn(invoiceDocRef).anyTimes();
+  public void testLoadInvoice_Exception() throws Exception {
     expect(xwiki.exists(eq(invoiceDocRef), same(context))).andReturn(true);
     expect(xwiki.getDocument(eq(invoiceDocRef), same(context))).andThrow(
-        new XWikiException()).atLeastOnce();
+        new XWikiException()).once();
     replayDefault();
-    assertNull(invoiceStore.loadInvoiceByInvoiceNumber(invoiceNumber));
+    assertNull(invoiceStore.loadInvoice(invoiceDocRef));
     verifyDefault();
   }
 
   @Test
-  public void testLoadInvoiceByInvoiceNumber_notAnInvoiceDocument() throws Exception {
-    String invoiceNumber = "A12758";
-    DocumentReference invoiceDocRef = new DocumentReference(context.getDatabase(),
-        "InvoicesSpace", invoiceNumber);
-    expect(invoiceServiceMock.getInvoiceDocRefForInvoiceNumber(eq(invoiceNumber))
-        ).andReturn(invoiceDocRef).anyTimes();
-    expect(xwiki.exists(eq(invoiceDocRef), same(context))).andReturn(true);
-    XWikiDocument invoiceDoc = new XWikiDocument(invoiceDocRef);
-    expect(xwiki.getDocument(eq(invoiceDocRef), same(context))).andReturn(invoiceDoc
-        ).atLeastOnce();
+  public void testLoadInvoice_notAnInvoiceDocument() throws Exception {
+    expectInvoiceDoc();
     replayDefault();
-    assertNull(invoiceStore.loadInvoiceByInvoiceNumber(invoiceNumber));
+    assertNull(invoiceStore.loadInvoice(invoiceDocRef));
     verifyDefault();
   }
 
   @Test
-  public void testLoadInvoiceByInvoiceNumber_emptyInvoice() throws Exception {
+  public void testLoadInvoice_emptyInvoice() throws Exception {
     String invoiceNumber = "A12758";
-    DocumentReference invoiceDocRef = new DocumentReference(context.getDatabase(),
-        "InvoicesSpace", invoiceNumber);
-    expect(invoiceServiceMock.getInvoiceDocRefForInvoiceNumber(eq(invoiceNumber))
-        ).andReturn(invoiceDocRef).anyTimes();
-    expect(xwiki.exists(eq(invoiceDocRef), same(context))).andReturn(true);
-    XWikiDocument invoiceDoc = new XWikiDocument(invoiceDocRef);
     BaseObject invoiceObj = new BaseObject();
     invoiceObj.setXClassReference(getInvoiceClasses().getInvoiceClassRef(getContext(
         ).getDatabase()));
-    invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_NUMBER,
-        invoiceNumber);
+    invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_NUMBER, invoiceNumber);
     invoiceDoc.addXObject(invoiceObj);
-    expect(xwiki.getDocument(eq(invoiceDocRef), same(context))).andReturn(invoiceDoc
-        ).atLeastOnce();
+    
+    expectInvoiceDoc();
+    
     replayDefault();
-    IInvoice invoice = invoiceStore.loadInvoiceByInvoiceNumber(invoiceNumber);
+    IInvoice invoice = invoiceStore.loadInvoice(invoiceDocRef);
+    verifyDefault();
+    
     assertNotNull(invoice);
     assertEquals(invoiceNumber, invoice.getInvoiceNumber());
     assertTrue("expecting empty invoiceItems list.", invoice.getInvoiceItems().isEmpty());
-    verifyDefault();
   }
 
   @Test
-  public void testLoadInvoiceByInvoiceNumber() throws Exception {
+  public void testLoadInvoice() throws Exception {
     String invoiceNumber = "A12758";
-    DocumentReference invoiceDocRef = new DocumentReference(context.getDatabase(),
-        "InvoicesSpace", invoiceNumber);
-    expect(invoiceServiceMock.getInvoiceDocRefForInvoiceNumber(eq(invoiceNumber))
-        ).andReturn(invoiceDocRef).anyTimes();
-    expect(xwiki.exists(eq(invoiceDocRef), same(context))).andReturn(true);
-    XWikiDocument invoiceDoc = new XWikiDocument(invoiceDocRef);
     BaseObject invoiceObj = new BaseObject();
     invoiceObj.setXClassReference(getInvoiceClasses().getInvoiceClassRef(getContext(
         ).getDatabase()));
-    invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_NUMBER,
-        invoiceNumber);
+    invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_NUMBER, invoiceNumber);
     invoiceDoc.addXObject(invoiceObj);
-    BaseObject invoiceItem1Obj = new BaseObject();
-    invoiceItem1Obj.setXClassReference(getInvoiceClasses().getInvoiceItemClassRef(
-        getContext().getDatabase()));
-    String articleNr1 = "ArticleNr1";
-    invoiceItem1Obj.setStringValue(InvoiceClassCollection.FIELD_ARTICLE_NR, articleNr1);
-    String orderNr1 = "OrderNr1";
-    invoiceItem1Obj.setStringValue(InvoiceClassCollection.FIELD_ORDER_NUMBER, orderNr1);
-    int amount1 = 8;
-    invoiceItem1Obj.setIntValue(InvoiceClassCollection.FIELD_AMOUNT, amount1);
-    invoiceDoc.addXObject(invoiceItem1Obj);
-    BaseObject invoiceItem2Obj = new BaseObject();
-    invoiceItem2Obj.setXClassReference(getInvoiceClasses().getInvoiceItemClassRef(
-        getContext().getDatabase()));
-    String articleNr2 = "ArticleNr2";
-    invoiceItem2Obj.setStringValue(InvoiceClassCollection.FIELD_ARTICLE_NR, articleNr2);
-    String orderNr2 = "OrderNr2";
-    invoiceItem2Obj.setStringValue(InvoiceClassCollection.FIELD_ORDER_NUMBER, orderNr2);
-    int amount2 = 5;
-    invoiceItem2Obj.setIntValue(InvoiceClassCollection.FIELD_AMOUNT, amount2);
-    invoiceDoc.addXObject(invoiceItem2Obj);
-    expect(xwiki.getDocument(eq(invoiceDocRef), same(context))).andReturn(invoiceDoc
-        ).atLeastOnce();
+    invoiceDoc.addXObject(getInvoiceItemObj(1));
+    invoiceDoc.addXObject(getInvoiceItemObj(2));
+    
+    expectInvoiceDoc();
+    
     replayDefault();
-    IInvoice invoice = invoiceStore.loadInvoiceByInvoiceNumber(invoiceNumber);
+    IInvoice invoice = invoiceStore.loadInvoice(invoiceDocRef);
+    verifyDefault();
+    
     assertNotNull(invoice);
     assertEquals(invoiceNumber, invoice.getInvoiceNumber());
     List<IInvoiceItem> invoiceItemsList = invoice.getInvoiceItems();
     assertFalse("expecting NOT empty invoiceItems list.", invoiceItemsList.isEmpty());
     assertEquals("expecting 2 invoice itmes in list.", 2, invoiceItemsList.size());
-    IInvoiceItem firstItem = invoiceItemsList.get(0);
-    assertEquals(amount1, firstItem.getAmount());
-    assertEquals(articleNr1, firstItem.getArticleNr());
-    assertEquals(orderNr1, firstItem.getOrderNr());
-    IInvoiceItem secondItem = invoiceItemsList.get(1);
-    assertEquals(amount2, secondItem.getAmount());
-    assertEquals(articleNr2, secondItem.getArticleNr());
-    assertEquals(orderNr2, secondItem.getOrderNr());
-    verifyDefault();
+    assertInvoiceItem(invoiceItemsList.get(0), 1);
+    assertInvoiceItem(invoiceItemsList.get(1), 2);
   }
 
   @Test
-  public void testLoadInvoiceByInvoiceNumber_deletedItemObject() throws Exception {
+  public void testLoadInvoice_ItemPosition() throws Exception {
     String invoiceNumber = "A12758";
-    DocumentReference invoiceDocRef = new DocumentReference(context.getDatabase(),
-        "InvoicesSpace", invoiceNumber);
-    expect(invoiceServiceMock.getInvoiceDocRefForInvoiceNumber(eq(invoiceNumber))
-        ).andReturn(invoiceDocRef).anyTimes();
-    expect(xwiki.exists(eq(invoiceDocRef), same(context))).andReturn(true);
-    XWikiDocument invoiceDoc = new XWikiDocument(invoiceDocRef);
     BaseObject invoiceObj = new BaseObject();
     invoiceObj.setXClassReference(getInvoiceClasses().getInvoiceClassRef(getContext(
         ).getDatabase()));
-    invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_NUMBER,
-        invoiceNumber);
+    invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_NUMBER, invoiceNumber);
     invoiceDoc.addXObject(invoiceObj);
-    BaseObject invoiceItem1Obj = new BaseObject();
-    invoiceItem1Obj.setXClassReference(getInvoiceClasses().getInvoiceItemClassRef(
-        getContext().getDatabase()));
-    String articleNr1 = "ArticleNr1";
-    invoiceItem1Obj.setStringValue(InvoiceClassCollection.FIELD_ARTICLE_NR, articleNr1);
-    String orderNr1 = "OrderNr1";
-    invoiceItem1Obj.setStringValue(InvoiceClassCollection.FIELD_ORDER_NUMBER, orderNr1);
-    int amount1 = 8;
-    invoiceItem1Obj.setIntValue(InvoiceClassCollection.FIELD_AMOUNT, amount1);
-    BaseObject invoiceItem2Obj = new BaseObject();
-    invoiceItem2Obj.setXClassReference(getInvoiceClasses().getInvoiceItemClassRef(
-        getContext().getDatabase()));
-    String articleNr2 = "ArticleNr2";
-    invoiceItem2Obj.setStringValue(InvoiceClassCollection.FIELD_ARTICLE_NR, articleNr2);
-    String orderNr2 = "OrderNr2";
-    invoiceItem2Obj.setStringValue(InvoiceClassCollection.FIELD_ORDER_NUMBER, orderNr2);
-    int amount2 = 5;
-    invoiceItem2Obj.setIntValue(InvoiceClassCollection.FIELD_AMOUNT, amount2);
-    List<BaseObject> invoiceItemList = Arrays.asList(invoiceItem1Obj, null,
-        invoiceItem2Obj);
-    invoiceDoc.setXObjects(getInvoiceClasses().getInvoiceItemClassRef(
-        getContext().getDatabase()), invoiceItemList);
-    expect(xwiki.getDocument(eq(invoiceDocRef), same(context))).andReturn(invoiceDoc
-        ).atLeastOnce();
+
+    //inverse adding order to test sorting on loading!!!
+    invoiceDoc.addXObject(getInvoiceItemObj(2));
+    invoiceDoc.addXObject(getInvoiceItemObj(1));
+
+    expectInvoiceDoc();
+    
     replayDefault();
-    IInvoice invoice = invoiceStore.loadInvoiceByInvoiceNumber(invoiceNumber);
+    IInvoice invoice = invoiceStore.loadInvoice(invoiceDocRef);
+    verifyDefault();
+    
     assertNotNull(invoice);
     assertEquals(invoiceNumber, invoice.getInvoiceNumber());
     List<IInvoiceItem> invoiceItemsList = invoice.getInvoiceItems();
     assertFalse("expecting NOT empty invoiceItems list.", invoiceItemsList.isEmpty());
     assertEquals("expecting 2 invoice itmes in list.", 2, invoiceItemsList.size());
-    IInvoiceItem firstItem = invoiceItemsList.get(0);
-    assertEquals(amount1, firstItem.getAmount());
-    assertEquals(articleNr1, firstItem.getArticleNr());
-    assertEquals(orderNr1, firstItem.getOrderNr());
-    IInvoiceItem secondItem = invoiceItemsList.get(1);
-    assertEquals(amount2, secondItem.getAmount());
-    assertEquals(articleNr2, secondItem.getArticleNr());
-    assertEquals(orderNr2, secondItem.getOrderNr());
-    verifyDefault();
+    assertInvoiceItem(invoiceItemsList.get(0), 1);
+    assertInvoiceItem(invoiceItemsList.get(1), 2);
   }
-
+  
   @Test
-  public void testLoadInvoiceByInvoiceNumber_ItemPosition() throws Exception {
+  @SuppressWarnings("unchecked")
+  public void testLoadInvoice_extended() throws Exception {
     String invoiceNumber = "A12758";
-    DocumentReference invoiceDocRef = new DocumentReference(context.getDatabase(),
-        "InvoicesSpace", invoiceNumber);
-    expect(invoiceServiceMock.getInvoiceDocRefForInvoiceNumber(eq(invoiceNumber))
-        ).andReturn(invoiceDocRef).anyTimes();
-    expect(xwiki.exists(eq(invoiceDocRef), same(context))).andReturn(true);
-    XWikiDocument invoiceDoc = new XWikiDocument(invoiceDocRef);
     BaseObject invoiceObj = new BaseObject();
     invoiceObj.setXClassReference(getInvoiceClasses().getInvoiceClassRef(getContext(
         ).getDatabase()));
-    invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_NUMBER,
-        invoiceNumber);
+    invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_NUMBER, invoiceNumber);
     invoiceDoc.addXObject(invoiceObj);
-    BaseObject invoiceItem1Obj = new BaseObject();
-    invoiceItem1Obj.setXClassReference(getInvoiceClasses().getInvoiceItemClassRef(
-        getContext().getDatabase()));
-    String articleNr1 = "ArticleNr1";
-    invoiceItem1Obj.setStringValue(InvoiceClassCollection.FIELD_ARTICLE_NR, articleNr1);
-    String orderNr1 = "OrderNr1";
-    invoiceItem1Obj.setStringValue(InvoiceClassCollection.FIELD_ORDER_NUMBER, orderNr1);
-    int amount1 = 8;
-    invoiceItem1Obj.setIntValue(InvoiceClassCollection.FIELD_AMOUNT, amount1);
-    invoiceItem1Obj.setIntValue(InvoiceClassCollection.FIELD_ITEM_POSITION, 1);
-    BaseObject invoiceItem2Obj = new BaseObject();
-    invoiceItem2Obj.setXClassReference(getInvoiceClasses().getInvoiceItemClassRef(
-        getContext().getDatabase()));
-    String articleNr2 = "ArticleNr2";
-    invoiceItem2Obj.setStringValue(InvoiceClassCollection.FIELD_ARTICLE_NR, articleNr2);
-    String orderNr2 = "OrderNr2";
-    invoiceItem2Obj.setStringValue(InvoiceClassCollection.FIELD_ORDER_NUMBER, orderNr2);
-    int amount2 = 5;
-    invoiceItem2Obj.setIntValue(InvoiceClassCollection.FIELD_AMOUNT, amount2);
-    invoiceItem2Obj.setIntValue(InvoiceClassCollection.FIELD_ITEM_POSITION, 2);
-    //inverse list to test sorting on loading!!!
-    List<BaseObject> invoiceItemList = Arrays.asList(invoiceItem2Obj, invoiceItem1Obj);
-    invoiceDoc.setXObjects(getInvoiceClasses().getInvoiceItemClassRef(
-        getContext().getDatabase()), invoiceItemList);
-    expect(xwiki.getDocument(eq(invoiceDocRef), same(context))).andReturn(invoiceDoc
-        ).atLeastOnce();
+    invoiceDoc.addXObject(getInvoiceItemObj(1));
+    invoiceDoc.addXObject(getInvoiceItemObj(2));
+    Function<Object, Object> mock = createMock(Function.class);
+    invoiceStore.storeExtenderMap.put("test", new TestInvoiceStoreExtender(mock));
+    
+    expectInvoiceDoc();
+    expect(mock.apply(eq("load"))).andReturn(true).once();
+    expect(mock.apply(same(invoiceDoc))).andReturn(true).once();
+    expect(mock.apply(isA(IInvoice.class))).andReturn(true).once();
+    
     replayDefault();
-    IInvoice invoice = invoiceStore.loadInvoiceByInvoiceNumber(invoiceNumber);
+    IInvoice invoice = invoiceStore.loadInvoice(invoiceDocRef);
+    verifyDefault();
+    
     assertNotNull(invoice);
     assertEquals(invoiceNumber, invoice.getInvoiceNumber());
     List<IInvoiceItem> invoiceItemsList = invoice.getInvoiceItems();
     assertFalse("expecting NOT empty invoiceItems list.", invoiceItemsList.isEmpty());
     assertEquals("expecting 2 invoice itmes in list.", 2, invoiceItemsList.size());
-    IInvoiceItem firstItem = invoiceItemsList.get(0);
-    assertEquals(articleNr1, firstItem.getArticleNr());
-    assertEquals(amount1, firstItem.getAmount());
-    assertEquals(orderNr1, firstItem.getOrderNr());
-    IInvoiceItem secondItem = invoiceItemsList.get(1);
-    assertEquals(amount2, secondItem.getAmount());
-    assertEquals(articleNr2, secondItem.getArticleNr());
-    assertEquals(orderNr2, secondItem.getOrderNr());
+    assertInvoiceItem(invoiceItemsList.get(0), 1);
+    assertInvoiceItem(invoiceItemsList.get(1), 2);
+  }
+  
+  @Test
+  public void testLoadInvoiceItem_notExists() throws Exception {    
+    int pos = 1;
+    expect(xwiki.exists(eq(invoiceDocRef), same(context))).andReturn(false);
+    
+    replayDefault();
+    assertNull(invoiceStore.loadInvoiceItem(invoiceDocRef, pos));
     verifyDefault();
+  }
+  
+  @Test
+  public void testLoadInvoiceItem_Exception() throws Exception {
+    int pos = 1;
+    invoiceDoc.addXObject(getInvoiceItemObj(pos));
+    
+    expect(xwiki.exists(eq(invoiceDocRef), same(context))).andReturn(true);
+    expect(xwiki.getDocument(eq(invoiceDocRef), same(context))).andThrow(
+        new XWikiException()).once();
+    
+    replayDefault();
+    assertNull(invoiceStore.loadInvoiceItem(invoiceDocRef, pos));
+    verifyDefault();
+  }
+  
+  @Test
+  public void testLoadInvoiceItem_notAnInvoiceDoc() throws Exception {
+    int pos = 1;
+    expectInvoiceDoc();
+    
+    replayDefault();
+    assertNull(invoiceStore.loadInvoiceItem(invoiceDocRef, pos));
+    verifyDefault();
+  }
+  
+  @Test
+  public void testLoadInvoiceItem_noItemForPos() throws Exception {
+    int pos = 1;
+    invoiceDoc.addXObject(getInvoiceItemObj(pos + 1));
+    expectInvoiceDoc();
+    
+    replayDefault();
+    assertNull(invoiceStore.loadInvoiceItem(invoiceDocRef, pos));
+    verifyDefault();
+  }
+  
+  @Test
+  public void testLoadInvoiceItem_emptyItem() throws Exception {
+    int pos = 1;
+    BaseObject obj = new BaseObject();
+    obj.setXClassReference(getInvoiceClasses().getInvoiceItemClassRef(
+        getContext().getDatabase()));
+    obj.setIntValue(InvoiceClassCollection.FIELD_ITEM_POSITION, pos);
+    invoiceDoc.addXObject(obj);
+    
+    expectInvoiceDoc();
+    
+    replayDefault();
+    IInvoiceItem ret = invoiceStore.loadInvoiceItem(invoiceDocRef, pos);
+    verifyDefault();
+    
+    assertNotNull(ret);
+    assertEquals("", ret.getName());
+    assertEquals(0, ret.getAmount());
+  }
+  
+  @Test
+  public void testLoadInvoiceItem() throws Exception {
+    int pos = 1;
+    invoiceDoc.addXObject(getInvoiceItemObj(pos));
+    
+    expectInvoiceDoc();
+    
+    replayDefault();
+    IInvoiceItem ret = invoiceStore.loadInvoiceItem(invoiceDocRef, pos);
+    verifyDefault();
+    
+    assertInvoiceItem(ret, pos);
+  }
+  
+  @Test
+  @SuppressWarnings("unchecked")
+  public void testLoadInvoiceItem_extended() throws Exception {
+    int pos = 1;
+    invoiceDoc.addXObject(getInvoiceItemObj(pos));
+    Function<Object, Object> mock = createMock(Function.class);
+    invoiceStore.storeExtenderMap.put("test", new TestInvoiceStoreExtender(mock));
+    
+    expectInvoiceDoc();
+    expect(mock.apply(eq("load"))).andReturn(true).once();
+    expect(mock.apply(same(invoiceDoc))).andReturn(true).once();
+    expect(mock.apply(isA(IInvoiceItem.class))).andReturn(true).once();
+    
+    replayDefault(mock);
+    IInvoiceItem ret = invoiceStore.loadInvoiceItem(invoiceDocRef, pos);
+    verifyDefault(mock);
+    
+    assertInvoiceItem(ret, pos);
+  }
+
+  private BaseObject getInvoiceItemObj(int pos) {
+    BaseObject obj = new BaseObject();
+    obj.setXClassReference(getInvoiceClasses().getInvoiceItemClassRef(
+        getContext().getDatabase()));
+    obj.setIntValue(InvoiceClassCollection.FIELD_AMOUNT, 2 + pos);
+    obj.setStringValue(InvoiceClassCollection.FIELD_UNIT_OF_MEASURE, "UnitMeasure" + pos);
+    obj.setIntValue(InvoiceClassCollection.FIELD_UNIT_PRICE, 3 + pos);
+    obj.setFloatValue(InvoiceClassCollection.FIELD_UNIT_OF_PRICE, 1.1f + pos);
+    obj.setIntValue(InvoiceClassCollection.FIELD_VAT_CODE, 4 + pos);
+    obj.setFloatValue(InvoiceClassCollection.FIELD_VAT_VALUE, 2.3f + pos);
+    obj.setStringValue(InvoiceClassCollection.FIELD_ITEM_DESCRIPTION, "Descr" + pos);
+    obj.setIntValue(InvoiceClassCollection.FIELD_ITEM_POSITION, pos);
+    obj.setStringValue(InvoiceClassCollection.FIELD_ARTICLE_NR, "ArticleNr" + pos);
+    obj.setStringValue(InvoiceClassCollection.FIELD_ORDER_NUMBER, "OrderNr" + pos);
+    return obj;
+  }
+  
+  private void assertInvoiceItem(IInvoiceItem item, int pos) {
+    assertNotNull(item);
+    assertEquals("Descr" + pos, item.getName());
+    assertEquals(2 + pos, item.getAmount());
+    assertEquals("UnitMeasure" + pos, item.getUnitOfMeasure());
+    assertEquals(3 + pos, item.getUnitPrice());
+    assertEquals(1.1f + pos, item.getUnitOfPrice(), 0);
+    assertEquals(4 + pos, item.getVATCode());
+    assertEquals(2.3f + pos, item.getVATValue(), 0);
+    assertEquals("ArticleNr" + pos, item.getArticleNr());
+    assertEquals("OrderNr"+ pos, item.getOrderNr());
   }
 
   private InvoiceClassCollection getInvoiceClasses() {

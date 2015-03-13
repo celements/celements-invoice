@@ -10,6 +10,7 @@ import com.celements.common.classes.IClassCollectionRole;
 import com.celements.invoice.InvoiceClassCollection;
 import com.celements.invoice.builder.IBillingAddress;
 import com.celements.invoice.builder.IInvoice;
+import com.celements.invoice.builder.IInvoiceItem;
 import com.xpn.xwiki.XWikiContext;
 import com.xpn.xwiki.XWikiException;
 import com.xpn.xwiki.doc.XWikiDocument;
@@ -68,6 +69,10 @@ public class XObjectBillingAddressStore implements IInvoiceStoreExtenderRole {
           InvoiceClassCollection.FIELD_ADDRESS_PHONE));
       invoice.setBillingAddress(billingAddress);
     }
+  }
+
+  @Override
+  public void loadInvoiceItem(XWikiDocument invoiceDoc, IInvoiceItem invoiceItem) {
   }
 
   public void storeInvoice(IInvoice theInvoice, XWikiDocument invoiceDoc) {

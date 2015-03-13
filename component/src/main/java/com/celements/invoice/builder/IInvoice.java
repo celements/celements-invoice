@@ -8,6 +8,7 @@ import org.xwiki.component.annotation.ComponentRole;
 
 @ComponentRole
 public interface IInvoice {
+
   public String getDocumentNameHint();
   public void setDocumentNameHint(String documentNameHint);
 
@@ -56,5 +57,8 @@ public interface IInvoice {
 
   public boolean isCancelled();
   public void setCancelled(boolean isCancelled);
+
+  public String getCustomerId();
+  public void setCustomerId(String customerId);
   
 }

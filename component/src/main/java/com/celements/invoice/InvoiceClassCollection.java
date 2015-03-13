@@ -52,6 +52,7 @@ public class InvoiceClassCollection extends AbstractClassCollection {
   public static final String FIELD_TOTAL_VAT_FULL = "totalVATfull";
   public static final String FIELD_INVOICE_STATUS = "status";
   public static final String FIELD_INVOICE_CANCELLED = "cancelled";
+  public static final String FIELD_CUSTOMER_ID = "customerId";
 
   public static final String INVOICE_SUBSCRIPTION_ITEM_CLASS_DOC =
     "SubscriptionItemClass";
@@ -124,7 +125,7 @@ public class InvoiceClassCollection extends AbstractClassCollection {
     
     BaseClass bclass = doc.getXClass();
     bclass.setDocumentReference(classRef);
-    
+
     needsUpdate |= bclass.addTextField(FIELD_INVOICE_NUMBER, "Invoice Number", 30);
     needsUpdate |= bclass.addTextField(FIELD_INVOICE_SUBJECT, "Subject", 30);
     needsUpdate |= bclass.addTextField(FIELD_INVOICE_CURRENCY, "Currency (iso4217)", 30);
@@ -152,6 +153,7 @@ public class InvoiceClassCollection extends AbstractClassCollection {
       bclass.addField(FIELD_INVOICE_CANCELLED, element);
       needsUpdate = true;
     }
+    needsUpdate |= bclass.addTextField(FIELD_CUSTOMER_ID, "Customer ID", 30);
     
     if(!"internal".equals(bclass.getCustomMapping())){
       needsUpdate = true;

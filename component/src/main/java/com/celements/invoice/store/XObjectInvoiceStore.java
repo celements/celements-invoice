@@ -111,6 +111,8 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
         InvoiceClassCollection.FIELD_INVOICE_CANCELLED, 0) == 1));
     invoice.setStatus(EInvoiceStatus.parse(invoiceObj.getStringValue(
         InvoiceClassCollection.FIELD_INVOICE_STATUS)));
+    invoice.setCustomerId(invoiceObj.getStringValue(
+        InvoiceClassCollection.FIELD_CUSTOMER_ID));
     return invoice;
   }
 
@@ -294,6 +296,8 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
     } else {
       invoiceObj.setIntValue(InvoiceClassCollection.FIELD_INVOICE_CANCELLED, 0);
     }
+    invoiceObj.setStringValue(InvoiceClassCollection.FIELD_CUSTOMER_ID, 
+        theInvoice.getCustomerId());
   }
 
   void convertInvoiceItemTo(IInvoiceItem invoiceItem, BaseObject invoiceItemObj,

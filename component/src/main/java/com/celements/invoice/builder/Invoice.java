@@ -30,6 +30,7 @@ public class Invoice implements IInvoice {
   private int totalVatReduced;
   private EInvoiceStatus status = EInvoiceStatus.isNew;
   private boolean cancelled = false;
+  private String customerId;
 
   @Override
   public String getDocumentNameHint() {
@@ -211,6 +212,16 @@ public class Invoice implements IInvoice {
   @Override
   public void setCancelled(boolean isCancelled) {
     this.cancelled = isCancelled;
+  }
+
+  @Override
+  public String getCustomerId() {
+    return customerId;
+  }
+
+  @Override
+  public void setCustomerId(String customerId) {
+    this.customerId = customerId;
   }
 
 }

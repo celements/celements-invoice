@@ -64,6 +64,7 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
     int vatFull = 4560;
     String invoiceStatus = "printed";
     int invoiceCancelled = 1;
+    String customerId = "Customer1234";
     BaseObject invoiceObj = new BaseObject();
     invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_NUMBER, invoiceNumber);
     invoiceObj.setStringValue(InvoiceClassCollection.FIELD_ORDER_NUMBER, orderNr);
@@ -78,6 +79,7 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
     invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_STATUS, invoiceStatus);
     invoiceObj.setIntValue(InvoiceClassCollection.FIELD_INVOICE_CANCELLED,
         invoiceCancelled);
+    invoiceObj.setStringValue(InvoiceClassCollection.FIELD_CUSTOMER_ID, customerId);
     replayDefault();
     IInvoice invoice = invoiceStore.convertToInvoice(invoiceObj);
     assertEquals(invoiceNumber, invoice.getInvoiceNumber());
@@ -92,6 +94,7 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
     assertEquals(vatFull, invoice.getTotalVATFull());
     assertEquals(EInvoiceStatus.isPrinted, invoice.getStatus());
     assertTrue(invoice.isCancelled());
+    assertEquals(customerId, invoice.getCustomerId());
     verifyDefault();
   }
 

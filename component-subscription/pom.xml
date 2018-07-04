@@ -55,7 +55,7 @@
     <dependency>
       <groupId>com.celements</groupId>
       <artifactId>celements-invoice</artifactId>
-      <version>3.0-SNAPSHOT</version>
+      <version>3.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>

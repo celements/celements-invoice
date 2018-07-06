@@ -1,12 +1,12 @@
 package com.celements.invoice.store;
 
-import groovy.lang.Singleton;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
+
+import javax.inject.Singleton;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,12 +27,11 @@ import com.xpn.xwiki.doc.XWikiDocument;
 import com.xpn.xwiki.objects.BaseObject;
 import com.xpn.xwiki.web.Utils;
 
-@Component("xobject")
 @Singleton
+@Component("xobject")
 public class XObjectInvoiceStore implements IInvoiceStoreRole {
 
-  private static Log LOGGER = LogFactory.getFactory().getInstance(
-      XObjectInvoiceStore.class);
+  private static Log LOGGER = LogFactory.getFactory().getInstance(XObjectInvoiceStore.class);
 
   @Requirement("xobject")
   IInvoiceServiceRole invoiceService;
@@ -59,10 +58,9 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
     IInvoice invoice = null;
     if (getContext().getWiki().exists(invoiceDocRef, getContext())) {
       try {
-        XWikiDocument invoiceDoc = getContext().getWiki().getDocument(invoiceDocRef,
-            getContext());
-        BaseObject invoiceObj = invoiceDoc.getXObject(getInvoiceClasses(
-            ).getInvoiceClassRef(getWikiName()));
+        XWikiDocument invoiceDoc = getContext().getWiki().getDocument(invoiceDocRef, getContext());
+        BaseObject invoiceObj = invoiceDoc.getXObject(getInvoiceClasses().getInvoiceClassRef(
+            getWikiName()));
         if (invoiceObj != null) {
           invoice = convertToInvoice(invoiceObj);
           callLoadInvoiceExtender(invoiceDoc, invoice);
@@ -90,42 +88,33 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
     IInvoice invoice = Utils.getComponent(IInvoice.class);
     invoice.setInvoiceNumber(invoiceObj.getStringValue(
         InvoiceClassCollection.FIELD_INVOICE_NUMBER));
-    invoice.setOrderNr(invoiceObj.getStringValue(
-        InvoiceClassCollection.FIELD_ORDER_NUMBER));
-    invoice.setName(invoiceObj.getStringValue(
-        InvoiceClassCollection.FIELD_INVOICE_SUBJECT));
-    invoice.setCurrency(invoiceObj.getStringValue(
-        InvoiceClassCollection.FIELD_INVOICE_CURRENCY));
-    invoice.setComment(invoiceObj.getStringValue(
-        InvoiceClassCollection.FIELD_INVOICE_COMMENT));
-    invoice.setInvoiceDate(invoiceObj.getDateValue(
-        InvoiceClassCollection.FIELD_INVOICE_DATE));
+    invoice.setOrderNr(invoiceObj.getStringValue(InvoiceClassCollection.FIELD_ORDER_NUMBER));
+    invoice.setName(invoiceObj.getStringValue(InvoiceClassCollection.FIELD_INVOICE_SUBJECT));
+    invoice.setCurrency(invoiceObj.getStringValue(InvoiceClassCollection.FIELD_INVOICE_CURRENCY));
+    invoice.setComment(invoiceObj.getStringValue(InvoiceClassCollection.FIELD_INVOICE_COMMENT));
+    invoice.setInvoiceDate(invoiceObj.getDateValue(InvoiceClassCollection.FIELD_INVOICE_DATE));
     invoice.setPrice(invoiceObj.getIntValue(InvoiceClassCollection.FIELD_TOTAL_PRICE));
-    invoice.setTotalVATFree(invoiceObj.getIntValue(
-        InvoiceClassCollection.FIELD_TOTAL_VAT_FREE));
+    invoice.setTotalVATFree(invoiceObj.getIntValue(InvoiceClassCollection.FIELD_TOTAL_VAT_FREE));
     invoice.setTotalVATReduced(invoiceObj.getIntValue(
         InvoiceClassCollection.FIELD_TOTAL_VAT_REDUCED));
-    invoice.setTotalVATFull(invoiceObj.getIntValue(
-        InvoiceClassCollection.FIELD_TOTAL_VAT_FULL));
-    invoice.setCancelled((invoiceObj.getIntValue(
-        InvoiceClassCollection.FIELD_INVOICE_CANCELLED, 0) == 1));
+    invoice.setTotalVATFull(invoiceObj.getIntValue(InvoiceClassCollection.FIELD_TOTAL_VAT_FULL));
+    invoice.setCancelled((invoiceObj.getIntValue(InvoiceClassCollection.FIELD_INVOICE_CANCELLED,
+        0) == 1));
     invoice.setStatus(EInvoiceStatus.parse(invoiceObj.getStringValue(
         InvoiceClassCollection.FIELD_INVOICE_STATUS)));
-    invoice.setCustomerId(invoiceObj.getStringValue(
-        InvoiceClassCollection.FIELD_CUSTOMER_ID));
+    invoice.setCustomerId(invoiceObj.getStringValue(InvoiceClassCollection.FIELD_CUSTOMER_ID));
     return invoice;
   }
 
   private Collection<IInvoiceItem> getInvoiceItemList(XWikiDocument invoiceDoc) {
-    SortedMap<Integer, IInvoiceItem> itemMap = new TreeMap<Integer, IInvoiceItem>();
-    List<BaseObject> objList = invoiceDoc.getXObjects(getInvoiceClasses(
-        ).getInvoiceItemClassRef(getWikiName()));
+    SortedMap<Integer, IInvoiceItem> itemMap = new TreeMap<>();
+    List<BaseObject> objList = invoiceDoc.getXObjects(getInvoiceClasses().getInvoiceItemClassRef(
+        getWikiName()));
     if (objList != null) {
       for (BaseObject invoiceItemObj : objList) {
         IInvoiceItem item = loadInvoiceItem(invoiceDoc, invoiceItemObj);
         if (item != null) {
-          int pos = invoiceItemObj.getIntValue(InvoiceClassCollection.FIELD_ITEM_POSITION,
-              0);
+          int pos = invoiceItemObj.getIntValue(InvoiceClassCollection.FIELD_ITEM_POSITION, 0);
           while (itemMap.containsKey(pos)) {
             pos++;
           }
@@ -141,10 +130,9 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
     IInvoiceItem invoiceItem = null;
     if (getContext().getWiki().exists(invoiceDocRef, getContext())) {
       try {
-        XWikiDocument invoiceDoc = getContext().getWiki().getDocument(invoiceDocRef,
-            getContext());
+        XWikiDocument invoiceDoc = getContext().getWiki().getDocument(invoiceDocRef, getContext());
         invoiceItem = loadInvoiceItem(invoiceDoc, invoiceDoc.getXObject(
-            getInvoiceClasses().getInvoiceItemClassRef(getWikiName()), 
+            getInvoiceClasses().getInvoiceItemClassRef(getWikiName()),
             InvoiceClassCollection.FIELD_ITEM_POSITION, Integer.toString(position)));
       } catch (XWikiException exp) {
         LOGGER.error("Failed to load invoice document [" + invoiceDocRef + "].", exp);
@@ -153,18 +141,16 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
     return invoiceItem;
   }
 
-  private IInvoiceItem loadInvoiceItem(XWikiDocument invoiceDoc, 
-      BaseObject invoiceItemObj) {
+  private IInvoiceItem loadInvoiceItem(XWikiDocument invoiceDoc, BaseObject invoiceItemObj) {
     IInvoiceItem invoiceItem = null;
-      if (invoiceItemObj != null) {
-        invoiceItem = convertToInvoiceItem(invoiceItemObj);
-        callLoadInvoiceItemExtender(invoiceDoc, invoiceItem);
-      }
+    if (invoiceItemObj != null) {
+      invoiceItem = convertToInvoiceItem(invoiceItemObj);
+      callLoadInvoiceItemExtender(invoiceDoc, invoiceItem);
+    }
     return invoiceItem;
   }
 
-  private void callLoadInvoiceItemExtender(XWikiDocument invoiceDoc, 
-      IInvoiceItem invoiceItem) {
+  private void callLoadInvoiceItemExtender(XWikiDocument invoiceDoc, IInvoiceItem invoiceItem) {
     for (IInvoiceStoreExtenderRole storeExtender : storeExtenderMap.values()) {
       try {
         storeExtender.loadInvoiceItem(invoiceDoc, invoiceItem);
@@ -177,20 +163,16 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
 
   private IInvoiceItem convertToInvoiceItem(BaseObject invoiceItemObj) {
     IInvoiceItem invoiceItem = Utils.getComponent(IInvoiceItem.class);
-    invoiceItem.setAmount(invoiceItemObj.getIntValue(
-        InvoiceClassCollection.FIELD_AMOUNT, 0));
+    invoiceItem.setAmount(invoiceItemObj.getIntValue(InvoiceClassCollection.FIELD_AMOUNT, 0));
     invoiceItem.setArticleNr(invoiceItemObj.getStringValue(
         InvoiceClassCollection.FIELD_ARTICLE_NR));
     invoiceItem.setOrderNr(invoiceItemObj.getStringValue(
         InvoiceClassCollection.FIELD_ORDER_NUMBER));
-    invoiceItem.setUnitPrice(invoiceItemObj.getIntValue(
-        InvoiceClassCollection.FIELD_UNIT_PRICE));
+    invoiceItem.setUnitPrice(invoiceItemObj.getIntValue(InvoiceClassCollection.FIELD_UNIT_PRICE));
     invoiceItem.setUnitOfPrice(invoiceItemObj.getFloatValue(
         InvoiceClassCollection.FIELD_UNIT_OF_PRICE));
-    invoiceItem.setVATCode(invoiceItemObj.getIntValue(
-        InvoiceClassCollection.FIELD_VAT_CODE));
-    invoiceItem.setVATValue(invoiceItemObj.getFloatValue(
-        InvoiceClassCollection.FIELD_VAT_VALUE));
+    invoiceItem.setVATCode(invoiceItemObj.getIntValue(InvoiceClassCollection.FIELD_VAT_CODE));
+    invoiceItem.setVATValue(invoiceItemObj.getFloatValue(InvoiceClassCollection.FIELD_VAT_VALUE));
     invoiceItem.setName(invoiceItemObj.getStringValue(
         InvoiceClassCollection.FIELD_ITEM_DESCRIPTION));
     invoiceItem.setUnitOfMeasure(invoiceItemObj.getStringValue(
@@ -224,8 +206,7 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
       invoiceDocRef = invoiceService.getNewInvoiceDocRef(theInvoice);
     }
     try {
-      XWikiDocument invoiceDoc = getContext().getWiki().getDocument(invoiceDocRef,
-          getContext());
+      XWikiDocument invoiceDoc = getContext().getWiki().getDocument(invoiceDocRef, getContext());
       BaseObject invoiceObj = getOrCreateInvoiceObject(invoiceDoc);
       convertInvoiceTo(theInvoice, invoiceObj);
       DocumentReference invoiceItemClassRef = getInvoiceClasses().getInvoiceItemClassRef(
@@ -260,8 +241,8 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
     BaseObject invoiceObj = invoiceDoc.getXObject(getInvoiceClasses().getInvoiceClassRef(
         getWikiName()));
     if (invoiceObj == null) {
-      invoiceObj = invoiceDoc.newXObject(getInvoiceClasses().getInvoiceClassRef(
-          getWikiName()), getContext());
+      invoiceObj = invoiceDoc.newXObject(getInvoiceClasses().getInvoiceClassRef(getWikiName()),
+          getContext());
     }
     return invoiceObj;
   }
@@ -269,18 +250,14 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
   void convertInvoiceTo(IInvoice theInvoice, BaseObject invoiceObj) {
     invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_NUMBER,
         theInvoice.getInvoiceNumber());
-    invoiceObj.setStringValue(InvoiceClassCollection.FIELD_ORDER_NUMBER,
-        theInvoice.getOrderNr());
-    invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_SUBJECT,
-        theInvoice.getName());
+    invoiceObj.setStringValue(InvoiceClassCollection.FIELD_ORDER_NUMBER, theInvoice.getOrderNr());
+    invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_SUBJECT, theInvoice.getName());
     invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_CURRENCY,
         theInvoice.getCurrency());
     invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_COMMENT,
         theInvoice.getComment());
-    invoiceObj.setDateValue(InvoiceClassCollection.FIELD_INVOICE_DATE,
-        theInvoice.getInvoiceDate());
-    invoiceObj.setIntValue(InvoiceClassCollection.FIELD_TOTAL_PRICE,
-        theInvoice.getPrice());
+    invoiceObj.setDateValue(InvoiceClassCollection.FIELD_INVOICE_DATE, theInvoice.getInvoiceDate());
+    invoiceObj.setIntValue(InvoiceClassCollection.FIELD_TOTAL_PRICE, theInvoice.getPrice());
     invoiceObj.setIntValue(InvoiceClassCollection.FIELD_TOTAL_VAT_FREE,
         theInvoice.getTotalVATFree());
     invoiceObj.setIntValue(InvoiceClassCollection.FIELD_TOTAL_VAT_REDUCED,
@@ -288,7 +265,7 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
     invoiceObj.setIntValue(InvoiceClassCollection.FIELD_TOTAL_VAT_FULL,
         theInvoice.getTotalVATFull());
     if (theInvoice.getStatus() != null) {
-      invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_STATUS, 
+      invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_STATUS,
           theInvoice.getStatus().getStoredValue());
     }
     if (theInvoice.isCancelled()) {
@@ -296,27 +273,21 @@ public class XObjectInvoiceStore implements IInvoiceStoreRole {
     } else {
       invoiceObj.setIntValue(InvoiceClassCollection.FIELD_INVOICE_CANCELLED, 0);
     }
-    invoiceObj.setStringValue(InvoiceClassCollection.FIELD_CUSTOMER_ID, 
-        theInvoice.getCustomerId());
+    invoiceObj.setStringValue(InvoiceClassCollection.FIELD_CUSTOMER_ID, theInvoice.getCustomerId());
   }
 
-  void convertInvoiceItemTo(IInvoiceItem invoiceItem, BaseObject invoiceItemObj,
-      int position) {
+  void convertInvoiceItemTo(IInvoiceItem invoiceItem, BaseObject invoiceItemObj, int position) {
     invoiceItemObj.setIntValue(InvoiceClassCollection.FIELD_ITEM_POSITION, position);
-    invoiceItemObj.setIntValue(InvoiceClassCollection.FIELD_AMOUNT,
-        invoiceItem.getAmount());
+    invoiceItemObj.setIntValue(InvoiceClassCollection.FIELD_AMOUNT, invoiceItem.getAmount());
     invoiceItemObj.setStringValue(InvoiceClassCollection.FIELD_ARTICLE_NR,
         invoiceItem.getArticleNr());
     invoiceItemObj.setStringValue(InvoiceClassCollection.FIELD_ORDER_NUMBER,
         invoiceItem.getOrderNr());
-    invoiceItemObj.setIntValue(InvoiceClassCollection.FIELD_UNIT_PRICE,
-        invoiceItem.getUnitPrice());
+    invoiceItemObj.setIntValue(InvoiceClassCollection.FIELD_UNIT_PRICE, invoiceItem.getUnitPrice());
     invoiceItemObj.setFloatValue(InvoiceClassCollection.FIELD_UNIT_OF_PRICE,
         invoiceItem.getUnitOfPrice());
-    invoiceItemObj.setIntValue(InvoiceClassCollection.FIELD_VAT_CODE,
-        invoiceItem.getVATCode());
-    invoiceItemObj.setFloatValue(InvoiceClassCollection.FIELD_VAT_VALUE,
-        invoiceItem.getVATValue());
+    invoiceItemObj.setIntValue(InvoiceClassCollection.FIELD_VAT_CODE, invoiceItem.getVATCode());
+    invoiceItemObj.setFloatValue(InvoiceClassCollection.FIELD_VAT_VALUE, invoiceItem.getVATValue());
     invoiceItemObj.setStringValue(InvoiceClassCollection.FIELD_ITEM_DESCRIPTION,
         invoiceItem.getName());
     invoiceItemObj.setStringValue(InvoiceClassCollection.FIELD_UNIT_OF_MEASURE,

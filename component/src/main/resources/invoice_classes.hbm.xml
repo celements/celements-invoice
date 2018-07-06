@@ -4,7 +4,7 @@
 <hibernate-mapping>
 
   <class entity-name="InvoiceClasses.InvoiceClass" table="celinvoice_invoice">
-    <id name="id" type="integer" unsaved-value="undefined">
+    <id name="id" type="long" unsaved-value="undefined">
       <column name="CINV_ID" not-null="true" />
       <generator class="assigned" />
     </id>
@@ -44,7 +44,7 @@
   </class>
 
   <class entity-name="InvoiceClasses.SubscriptionItemClass" table="celinvoice_subscription_item">
-    <id name="id" type="integer" unsaved-value="undefined">
+    <id name="id" type="long" unsaved-value="undefined">
       <column name="CISP_ID" not-null="true" />
       <generator class="assigned" />
     </id>
@@ -60,7 +60,7 @@
   </class>
 
   <class entity-name="InvoiceClasses.InvoiceItemClass" table="celinvoice_item">
-    <id name="id" type="integer" unsaved-value="undefined">
+    <id name="id" type="long" unsaved-value="undefined">
       <column name="CII_ID" not-null="true" />
       <generator class="assigned" />
     </id>
@@ -97,7 +97,7 @@
   </class>
 
   <class entity-name="InvoiceClasses.AddressClass" table="celinvoice_address">
-    <id name="id" type="integer" unsaved-value="undefined">
+    <id name="id" type="long" unsaved-value="undefined">
       <column name="CIA_ID" not-null="true" />
       <generator class="assigned" />
     </id>

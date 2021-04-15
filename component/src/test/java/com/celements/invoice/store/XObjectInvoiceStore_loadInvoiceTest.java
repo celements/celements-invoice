@@ -1,5 +1,6 @@
 package com.celements.invoice.store;
 
+import static com.celements.common.test.CelementsTestUtils.*;
 import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
 
@@ -11,7 +12,7 @@ import org.junit.Test;
 import org.xwiki.model.reference.DocumentReference;
 
 import com.celements.common.classes.IClassCollectionRole;
-import com.celements.common.test.AbstractBridgedComponentTestCase;
+import com.celements.common.test.AbstractComponentTest;
 import com.celements.invoice.InvoiceClassCollection;
 import com.celements.invoice.builder.EInvoiceStatus;
 import com.celements.invoice.builder.IInvoice;
@@ -24,12 +25,12 @@ import com.xpn.xwiki.doc.XWikiDocument;
 import com.xpn.xwiki.objects.BaseObject;
 import com.xpn.xwiki.web.Utils;
 
-public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponentTestCase {
+public class XObjectInvoiceStore_loadInvoiceTest extends AbstractComponentTest {
 
   private XObjectInvoiceStore invoiceStore;
   private XWikiContext context;
   private XWiki xwiki;
-  
+
   private DocumentReference invoiceDocRef;
   private XWikiDocument invoiceDoc;
 
@@ -39,15 +40,14 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
     xwiki = getWikiMock();
     invoiceStore = (XObjectInvoiceStore) Utils.getComponent(IInvoiceStoreRole.class,
         "xobject");
-    invoiceDocRef = new DocumentReference(context.getDatabase(), "InvoicesSpace", 
+    invoiceDocRef = new DocumentReference(context.getDatabase(), "InvoicesSpace",
         "InvoiceDoc");
     invoiceDoc = new XWikiDocument(invoiceDocRef);
   }
-  
+
   private void expectInvoiceDoc() throws Exception {
     expect(xwiki.exists(eq(invoiceDocRef), same(context))).andReturn(true);
-    expect(xwiki.getDocument(eq(invoiceDocRef), same(context))).andReturn(invoiceDoc
-        ).once();
+    expect(xwiki.getDocument(eq(invoiceDocRef), same(context))).andReturn(invoiceDoc).once();
   }
 
   @Test
@@ -128,17 +128,17 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
   public void testLoadInvoice_emptyInvoice() throws Exception {
     String invoiceNumber = "A12758";
     BaseObject invoiceObj = new BaseObject();
-    invoiceObj.setXClassReference(getInvoiceClasses().getInvoiceClassRef(getContext(
-        ).getDatabase()));
+    invoiceObj
+        .setXClassReference(getInvoiceClasses().getInvoiceClassRef(getContext().getDatabase()));
     invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_NUMBER, invoiceNumber);
     invoiceDoc.addXObject(invoiceObj);
-    
+
     expectInvoiceDoc();
-    
+
     replayDefault();
     IInvoice invoice = invoiceStore.loadInvoice(invoiceDocRef);
     verifyDefault();
-    
+
     assertNotNull(invoice);
     assertEquals(invoiceNumber, invoice.getInvoiceNumber());
     assertTrue("expecting empty invoiceItems list.", invoice.getInvoiceItems().isEmpty());
@@ -148,19 +148,19 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
   public void testLoadInvoice() throws Exception {
     String invoiceNumber = "A12758";
     BaseObject invoiceObj = new BaseObject();
-    invoiceObj.setXClassReference(getInvoiceClasses().getInvoiceClassRef(getContext(
-        ).getDatabase()));
+    invoiceObj
+        .setXClassReference(getInvoiceClasses().getInvoiceClassRef(getContext().getDatabase()));
     invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_NUMBER, invoiceNumber);
     invoiceDoc.addXObject(invoiceObj);
     invoiceDoc.addXObject(getInvoiceItemObj(1));
     invoiceDoc.addXObject(getInvoiceItemObj(2));
-    
+
     expectInvoiceDoc();
-    
+
     replayDefault();
     IInvoice invoice = invoiceStore.loadInvoice(invoiceDocRef);
     verifyDefault();
-    
+
     assertNotNull(invoice);
     assertEquals(invoiceNumber, invoice.getInvoiceNumber());
     List<IInvoiceItem> invoiceItemsList = invoice.getInvoiceItems();
@@ -174,21 +174,21 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
   public void testLoadInvoice_ItemPosition() throws Exception {
     String invoiceNumber = "A12758";
     BaseObject invoiceObj = new BaseObject();
-    invoiceObj.setXClassReference(getInvoiceClasses().getInvoiceClassRef(getContext(
-        ).getDatabase()));
+    invoiceObj
+        .setXClassReference(getInvoiceClasses().getInvoiceClassRef(getContext().getDatabase()));
     invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_NUMBER, invoiceNumber);
     invoiceDoc.addXObject(invoiceObj);
 
-    //inverse adding order to test sorting on loading!!!
+    // inverse adding order to test sorting on loading!!!
     invoiceDoc.addXObject(getInvoiceItemObj(2));
     invoiceDoc.addXObject(getInvoiceItemObj(1));
 
     expectInvoiceDoc();
-    
+
     replayDefault();
     IInvoice invoice = invoiceStore.loadInvoice(invoiceDocRef);
     verifyDefault();
-    
+
     assertNotNull(invoice);
     assertEquals(invoiceNumber, invoice.getInvoiceNumber());
     List<IInvoiceItem> invoiceItemsList = invoice.getInvoiceItems();
@@ -197,30 +197,29 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
     assertInvoiceItem(invoiceItemsList.get(0), 1);
     assertInvoiceItem(invoiceItemsList.get(1), 2);
   }
-  
+
   @Test
-  @SuppressWarnings("unchecked")
   public void testLoadInvoice_extended() throws Exception {
     String invoiceNumber = "A12758";
     BaseObject invoiceObj = new BaseObject();
-    invoiceObj.setXClassReference(getInvoiceClasses().getInvoiceClassRef(getContext(
-        ).getDatabase()));
+    invoiceObj
+        .setXClassReference(getInvoiceClasses().getInvoiceClassRef(getContext().getDatabase()));
     invoiceObj.setStringValue(InvoiceClassCollection.FIELD_INVOICE_NUMBER, invoiceNumber);
     invoiceDoc.addXObject(invoiceObj);
     invoiceDoc.addXObject(getInvoiceItemObj(1));
     invoiceDoc.addXObject(getInvoiceItemObj(2));
     Function<Object, Object> mock = createMock(Function.class);
     invoiceStore.storeExtenderMap.put("test", new TestInvoiceStoreExtender(mock));
-    
+
     expectInvoiceDoc();
     expect(mock.apply(eq("load"))).andReturn(true).once();
     expect(mock.apply(same(invoiceDoc))).andReturn(true).once();
     expect(mock.apply(isA(IInvoice.class))).andReturn(true).once();
-    
+
     replayDefault();
     IInvoice invoice = invoiceStore.loadInvoice(invoiceDocRef);
     verifyDefault();
-    
+
     assertNotNull(invoice);
     assertEquals(invoiceNumber, invoice.getInvoiceNumber());
     List<IInvoiceItem> invoiceItemsList = invoice.getInvoiceItems();
@@ -229,52 +228,52 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
     assertInvoiceItem(invoiceItemsList.get(0), 1);
     assertInvoiceItem(invoiceItemsList.get(1), 2);
   }
-  
+
   @Test
-  public void testLoadInvoiceItem_notExists() throws Exception {    
+  public void testLoadInvoiceItem_notExists() throws Exception {
     int pos = 1;
     expect(xwiki.exists(eq(invoiceDocRef), same(context))).andReturn(false);
-    
+
     replayDefault();
     assertNull(invoiceStore.loadInvoiceItem(invoiceDocRef, pos));
     verifyDefault();
   }
-  
+
   @Test
   public void testLoadInvoiceItem_Exception() throws Exception {
     int pos = 1;
     invoiceDoc.addXObject(getInvoiceItemObj(pos));
-    
+
     expect(xwiki.exists(eq(invoiceDocRef), same(context))).andReturn(true);
     expect(xwiki.getDocument(eq(invoiceDocRef), same(context))).andThrow(
         new XWikiException()).once();
-    
+
     replayDefault();
     assertNull(invoiceStore.loadInvoiceItem(invoiceDocRef, pos));
     verifyDefault();
   }
-  
+
   @Test
   public void testLoadInvoiceItem_notAnInvoiceDoc() throws Exception {
     int pos = 1;
     expectInvoiceDoc();
-    
+
     replayDefault();
     assertNull(invoiceStore.loadInvoiceItem(invoiceDocRef, pos));
     verifyDefault();
   }
-  
+
   @Test
   public void testLoadInvoiceItem_noItemForPos() throws Exception {
     int pos = 1;
     invoiceDoc.addXObject(getInvoiceItemObj(pos + 1));
     expectInvoiceDoc();
-    
+
     replayDefault();
     assertNull(invoiceStore.loadInvoiceItem(invoiceDocRef, pos));
     verifyDefault();
   }
-  
+
   @Test
   public void testLoadInvoiceItem_emptyItem() throws Exception {
     int pos = 1;
@@ -283,49 +282,48 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
         getContext().getDatabase()));
     obj.setIntValue(InvoiceClassCollection.FIELD_ITEM_POSITION, pos);
     invoiceDoc.addXObject(obj);
-    
+
     expectInvoiceDoc();
-    
+
     replayDefault();
     IInvoiceItem ret = invoiceStore.loadInvoiceItem(invoiceDocRef, pos);
     verifyDefault();
-    
+
     assertNotNull(ret);
     assertEquals("", ret.getName());
     assertEquals(0, ret.getAmount());
   }
-  
+
   @Test
   public void testLoadInvoiceItem() throws Exception {
     int pos = 1;
     invoiceDoc.addXObject(getInvoiceItemObj(pos));
-    
+
     expectInvoiceDoc();
-    
+
     replayDefault();
     IInvoiceItem ret = invoiceStore.loadInvoiceItem(invoiceDocRef, pos);
     verifyDefault();
-    
+
     assertInvoiceItem(ret, pos);
   }
-  
+
   @Test
-  @SuppressWarnings("unchecked")
   public void testLoadInvoiceItem_extended() throws Exception {
     int pos = 1;
     invoiceDoc.addXObject(getInvoiceItemObj(pos));
     Function<Object, Object> mock = createMock(Function.class);
     invoiceStore.storeExtenderMap.put("test", new TestInvoiceStoreExtender(mock));
-    
+
     expectInvoiceDoc();
     expect(mock.apply(eq("load"))).andReturn(true).once();
     expect(mock.apply(same(invoiceDoc))).andReturn(true).once();
     expect(mock.apply(isA(IInvoiceItem.class))).andReturn(true).once();
-    
+
     replayDefault(mock);
     IInvoiceItem ret = invoiceStore.loadInvoiceItem(invoiceDocRef, pos);
     verifyDefault(mock);
-    
+
     assertInvoiceItem(ret, pos);
   }
 
@@ -345,7 +343,7 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
     obj.setStringValue(InvoiceClassCollection.FIELD_ORDER_NUMBER, "OrderNr" + pos);
     return obj;
   }
-  
+
   private void assertInvoiceItem(IInvoiceItem item, int pos) {
     assertNotNull(item);
     assertEquals("Descr" + pos, item.getName());
@@ -356,7 +354,7 @@ public class XObjectInvoiceStore_loadInvoiceTest extends AbstractBridgedComponen
     assertEquals(4 + pos, item.getVATCode());
     assertEquals(2.3f + pos, item.getVATValue(), 0);
     assertEquals("ArticleNr" + pos, item.getArticleNr());
-    assertEquals("OrderNr"+ pos, item.getOrderNr());
+    assertEquals("OrderNr" + pos, item.getOrderNr());
   }
 
   private InvoiceClassCollection getInvoiceClasses() {

@@ -1,5 +1,6 @@
 package com.celements.invoice.store;
 
+import static com.celements.common.test.CelementsTestUtils.*;
 import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
 
@@ -12,7 +13,7 @@ import org.junit.Test;
 import org.xwiki.model.reference.DocumentReference;
 
 import com.celements.common.classes.IClassCollectionRole;
-import com.celements.common.test.AbstractBridgedComponentTestCase;
+import com.celements.common.test.AbstractComponentTest;
 import com.celements.invoice.InvoiceClassCollection;
 import com.celements.invoice.builder.EInvoiceStatus;
 import com.celements.invoice.builder.IInvoice;
@@ -26,7 +27,7 @@ import com.xpn.xwiki.objects.BaseObject;
 import com.xpn.xwiki.objects.classes.BaseClass;
 import com.xpn.xwiki.web.Utils;
 
-public class XObjectInvoiceStore_storeInvoiceTest extends AbstractBridgedComponentTestCase {
+public class XObjectInvoiceStore_storeInvoiceTest extends AbstractComponentTest {
 
   private XObjectInvoiceStore invoiceStore;
   private IInvoiceServiceRole invoiceServiceMock;
@@ -206,8 +207,8 @@ public class XObjectInvoiceStore_storeInvoiceTest extends AbstractBridgedCompone
     theInvoice.setInvoiceNumber(invoiceNumber);
     DocumentReference invoiceDocRef = new DocumentReference(context.getDatabase(),
         "InvoicesSpace", invoiceNumber);
-    expect(invoiceServiceMock.getInvoiceDocRefForInvoiceNumber(eq(invoiceNumber))
-        ).andReturn(invoiceDocRef).anyTimes();
+    expect(invoiceServiceMock.getInvoiceDocRefForInvoiceNumber(eq(invoiceNumber)))
+        .andReturn(invoiceDocRef).anyTimes();
     DocumentReference invoiceClassRef = getInvoiceClasses().getInvoiceClassRef(
         context.getDatabase());
     XWikiDocument invoiceDoc = new XWikiDocument(invoiceDocRef);
@@ -216,9 +217,8 @@ public class XObjectInvoiceStore_storeInvoiceTest extends AbstractBridgedCompone
     invoiceDoc.addXObject(invoiceObject);
     // do not call getDocument more than once otherwise you will get different
     // java objects.
-    expect(xwiki.getDocument(eq(invoiceDocRef), same(context))).andReturn(invoiceDoc
-        ).once();
-    Capture<XWikiDocument> capturedInvoiceDoc = new Capture<XWikiDocument>();
+    expect(xwiki.getDocument(eq(invoiceDocRef), same(context))).andReturn(invoiceDoc).once();
+    Capture<XWikiDocument> capturedInvoiceDoc = newCapture();
     xwiki.saveDocument(capture(capturedInvoiceDoc), eq(""), eq(false), same(context));
     expectLastCall().once();
     replayDefault();
@@ -248,8 +248,8 @@ public class XObjectInvoiceStore_storeInvoiceTest extends AbstractBridgedCompone
     theInvoice.addInvoiceItem(item2);
     DocumentReference invoiceDocRef = new DocumentReference(context.getDatabase(),
         "InvoicesSpace", invoiceNumber);
-    expect(invoiceServiceMock.getInvoiceDocRefForInvoiceNumber(eq(invoiceNumber))
-        ).andReturn(invoiceDocRef).anyTimes();
+    expect(invoiceServiceMock.getInvoiceDocRefForInvoiceNumber(eq(invoiceNumber)))
+        .andReturn(invoiceDocRef).anyTimes();
     DocumentReference invoiceClassRef = getInvoiceClasses().getInvoiceClassRef(
         context.getDatabase());
     XWikiDocument invoiceDoc = new XWikiDocument(invoiceDocRef);
@@ -258,13 +258,12 @@ public class XObjectInvoiceStore_storeInvoiceTest extends AbstractBridgedCompone
     invoiceDoc.addXObject(invoiceObject);
     // do not call getDocument more than once otherwise you will get different
     // java objects.
-    expect(xwiki.getDocument(eq(invoiceDocRef), same(context))).andReturn(invoiceDoc
-        ).once();
-    Capture<XWikiDocument> capturedInvoiceDoc = new Capture<XWikiDocument>();
+    expect(xwiki.getDocument(eq(invoiceDocRef), same(context))).andReturn(invoiceDoc).once();
+    Capture<XWikiDocument> capturedInvoiceDoc = newCapture();
     xwiki.saveDocument(capture(capturedInvoiceDoc), eq(""), eq(false), same(context));
     expectLastCall().once();
-    DocumentReference invoiceItemClassRef = getInvoiceClasses(
-        ).getInvoiceItemClassRef(context.getDatabase());
+    DocumentReference invoiceItemClassRef = getInvoiceClasses()
+        .getInvoiceItemClassRef(context.getDatabase());
     BaseClass invItemClassMock = createMockAndAddToDefault(BaseClass.class);
     expect(xwiki.getXClass(eq(invoiceItemClassRef), same(context))).andReturn(
         invItemClassMock).atLeastOnce();

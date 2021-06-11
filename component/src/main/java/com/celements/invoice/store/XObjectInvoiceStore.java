@@ -8,8 +8,8 @@ import java.util.TreeMap;
 
 import javax.inject.Singleton;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.component.annotation.Requirement;
 import org.xwiki.context.Execution;
@@ -31,7 +31,7 @@ import com.xpn.xwiki.web.Utils;
 @Component("xobject")
 public class XObjectInvoiceStore implements IInvoiceStoreRole {
 
-  private static Log LOGGER = LogFactory.getFactory().getInstance(XObjectInvoiceStore.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(XObjectInvoiceStore.class);
 
   @Requirement("xobject")
   IInvoiceServiceRole invoiceService;

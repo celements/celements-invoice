@@ -2,8 +2,8 @@ package com.celements.invoice.subscription.store;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.component.annotation.Requirement;
 import org.xwiki.context.Execution;
@@ -24,7 +24,7 @@ import com.xpn.xwiki.web.Utils;
 @Component("celInvoiceSubscr.xobject")
 public class XObjectInvoiceSubscrStore implements IInvoiceStoreExtenderRole {
 
-  private static Log LOGGER = LogFactory.getFactory().getInstance(
+  private static final Logger LOGGER = LoggerFactory.getLogger(
       XObjectInvoiceSubscrStore.class);
 
   @Requirement("com.celements.invoice.classcollection")

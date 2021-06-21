@@ -1,7 +1,7 @@
 package com.celements.invoice.migrations;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.model.reference.DocumentReference;
 
@@ -20,7 +20,7 @@ import com.xpn.xwiki.web.Utils;
 @Component("ChangeUnitOfPriceToFloat")
 public class ChangeUnitOfPriceToFloat extends AbstractCelementsHibernateMigrator {
 
-  private static Log LOGGER = LogFactory.getFactory().getInstance(
+  private static final Logger LOGGER = LoggerFactory.getLogger(
       ChangeUnitOfPriceToFloat.class);
 
   @Override

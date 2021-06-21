@@ -24,8 +24,8 @@ import java.util.List;
 import javax.inject.Singleton;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.component.annotation.Requirement;
 import org.xwiki.context.Execution;
@@ -47,7 +47,7 @@ public class InvoiceService implements IInvoiceServiceRole {
   public static final String XWIKICFG_MIN_INVOICE_NUMBER = "com.celements.invoice.minInvoiceNumber";
   public static final String PREF_MIN_INVOICE_NUMBER = "minInvoiceNumber";
 
-  private static Log LOGGER = LogFactory.getFactory().getInstance(InvoiceService.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(InvoiceService.class);
 
   @Requirement
   QueryManager queryManager;

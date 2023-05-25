@@ -1,5 +1,6 @@
 package com.celements.invoice.subscription.store;
 
+import static com.celements.common.test.CelementsTestUtils.*;
 import static junit.framework.Assert.*;
 import static org.easymock.EasyMock.*;
 
@@ -11,7 +12,7 @@ import org.junit.Test;
 import org.xwiki.model.reference.DocumentReference;
 
 import com.celements.common.classes.IClassCollectionRole;
-import com.celements.common.test.AbstractBridgedComponentTestCase;
+import com.celements.common.test.AbstractComponentTest;
 import com.celements.invoice.InvoiceClassCollection;
 import com.celements.invoice.builder.IInvoice;
 import com.celements.invoice.builder.IInvoiceReferenceDocument;
@@ -25,7 +26,7 @@ import com.xpn.xwiki.objects.classes.BaseClass;
 import com.xpn.xwiki.web.Utils;
 
 public class XObjectInvoiceSubscrStore_storeInvoiceTest
-    extends AbstractBridgedComponentTestCase {
+    extends AbstractComponentTest {
 
   private XObjectInvoiceSubscrStore invoiceSubscrStore;
   private XWikiContext context;
@@ -58,7 +59,7 @@ public class XObjectInvoiceSubscrStore_storeInvoiceTest
     DocumentReference invoiceDocRef = new DocumentReference(context.getDatabase(),
         "Invoices", "Invoice1");
     IInvoice invoice = Utils.getComponent(IInvoice.class);
-    IInvoiceReferenceDocument invoiceRefDoc = createMockAndAddToDefault(
+    IInvoiceReferenceDocument invoiceRefDoc = createDefaultMock(
         IInvoiceReferenceDocument.class);
     invoice.addInvoiceReferenceDocument(invoiceRefDoc);
     XWikiDocument invoiceDoc = new XWikiDocument(invoiceDocRef);
@@ -90,7 +91,7 @@ public class XObjectInvoiceSubscrStore_storeInvoiceTest
     assertFalse("Precondition failure 'to maynot equal from'", to.equals(from));
     DocumentReference subscrItemClassRef = getInvoiceClasses(
         ).getSubscriptionItemClassRef(context.getDatabase());
-    BaseClass invClassMock = createMockAndAddToDefault(BaseClass.class);
+    BaseClass invClassMock = createDefaultMock(BaseClass.class);
     expect(xwiki.getXClass(eq(subscrItemClassRef), same(context))).andReturn(invClassMock);
     expect(invClassMock.newCustomClassInstance(same(context))).andReturn(
         new BaseObject()).once();

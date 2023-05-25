@@ -4,9 +4,9 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import com.celements.common.test.AbstractBridgedComponentTestCase;
+import com.celements.common.test.AbstractComponentTest;
 
-public class BillingAddressTest extends AbstractBridgedComponentTestCase {
+public class BillingAddressTest extends AbstractComponentTest {
 
   @Test
   public void testCompany() {

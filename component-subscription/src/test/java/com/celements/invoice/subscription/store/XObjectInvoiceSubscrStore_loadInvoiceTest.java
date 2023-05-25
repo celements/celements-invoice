@@ -1,5 +1,6 @@
 package com.celements.invoice.subscription.store;
 
+import static com.celements.common.test.CelementsTestUtils.*;
 import static junit.framework.Assert.*;
 
 import java.util.Calendar;
@@ -10,7 +11,7 @@ import org.junit.Test;
 import org.xwiki.model.reference.DocumentReference;
 
 import com.celements.common.classes.IClassCollectionRole;
-import com.celements.common.test.AbstractBridgedComponentTestCase;
+import com.celements.common.test.AbstractComponentTest;
 import com.celements.invoice.InvoiceClassCollection;
 import com.celements.invoice.builder.IInvoice;
 import com.celements.invoice.store.IInvoiceStoreExtenderRole;
@@ -21,7 +22,7 @@ import com.xpn.xwiki.objects.BaseObject;
 import com.xpn.xwiki.web.Utils;
 
 public class XObjectInvoiceSubscrStore_loadInvoiceTest
-    extends AbstractBridgedComponentTestCase {
+    extends AbstractComponentTest {
 
   private XObjectInvoiceSubscrStore invoiceSubscrStore;
   private XWikiContext context;

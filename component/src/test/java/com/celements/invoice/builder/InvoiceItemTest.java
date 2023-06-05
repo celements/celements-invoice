@@ -5,10 +5,10 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.celements.common.test.AbstractBridgedComponentTestCase;
+import com.celements.common.test.AbstractComponentTest;
 import com.xpn.xwiki.web.Utils;
 
-public class InvoiceItemTest extends AbstractBridgedComponentTestCase {
+public class InvoiceItemTest extends AbstractComponentTest {
   private final String NAME = "item name";
   private final int AMOUNT = 3;
   private final int VAT_CODE = 2;

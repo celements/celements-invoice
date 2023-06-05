@@ -40,7 +40,7 @@ public class XObjectInvoiceStore_storeInvoiceTest extends AbstractComponentTest 
     xwiki = getWikiMock();
     invoiceStore = (XObjectInvoiceStore) Utils.getComponent(IInvoiceStoreRole.class,
         "xobject");
-    invoiceServiceMock = createMockAndAddToDefault(IInvoiceServiceRole.class);
+    invoiceServiceMock = createDefaultMock(IInvoiceServiceRole.class);
     invoiceStore.invoiceService = invoiceServiceMock;
   }
 
@@ -160,7 +160,7 @@ public class XObjectInvoiceStore_storeInvoiceTest extends AbstractComponentTest 
     XWikiDocument invoiceDoc = new XWikiDocument(invoiceDocRef);
     DocumentReference invoiceClassRef = getInvoiceClasses().getInvoiceClassRef(
         context.getDatabase());
-    BaseClass invClassMock = createMockAndAddToDefault(BaseClass.class);
+    BaseClass invClassMock = createDefaultMock(BaseClass.class);
     expect(xwiki.getXClass(eq(invoiceClassRef), same(context))).andReturn(invClassMock);
     expect(invClassMock.newCustomClassInstance(same(context))).andReturn(
         new BaseObject()).once();
@@ -264,7 +264,7 @@ public class XObjectInvoiceStore_storeInvoiceTest extends AbstractComponentTest 
     expectLastCall().once();
     DocumentReference invoiceItemClassRef = getInvoiceClasses()
         .getInvoiceItemClassRef(context.getDatabase());
-    BaseClass invItemClassMock = createMockAndAddToDefault(BaseClass.class);
+    BaseClass invItemClassMock = createDefaultMock(BaseClass.class);
     expect(xwiki.getXClass(eq(invoiceItemClassRef), same(context))).andReturn(
         invItemClassMock).atLeastOnce();
     expect(invItemClassMock.newCustomClassInstance(same(context))).andReturn(

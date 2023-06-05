@@ -7,10 +7,10 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.celements.common.test.AbstractBridgedComponentTestCase;
+import com.celements.common.test.AbstractComponentTest;
 import com.xpn.xwiki.web.Utils;
 
-public class InvoiceTest extends AbstractBridgedComponentTestCase {
+public class InvoiceTest extends AbstractComponentTest {
   private final String NAME = "invoice name";
   private final int PRICE = 2640;
   private final String CURRENCY = "CHF";

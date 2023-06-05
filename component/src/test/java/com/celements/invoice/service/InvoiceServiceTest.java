@@ -1,5 +1,6 @@
 package com.celements.invoice.service;
 
+import static com.celements.common.test.CelementsTestUtils.*;
 import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
 
@@ -14,14 +15,14 @@ import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.query.Query;
 import org.xwiki.query.QueryManager;
 
-import com.celements.common.test.AbstractBridgedComponentTestCase;
+import com.celements.common.test.AbstractComponentTest;
 import com.celements.invoice.builder.IInvoice;
 import com.celements.nextfreedoc.INextFreeDocRole;
 import com.xpn.xwiki.XWiki;
 import com.xpn.xwiki.XWikiContext;
 import com.xpn.xwiki.web.Utils;
 
-public class InvoiceServiceTest extends AbstractBridgedComponentTestCase {
+public class InvoiceServiceTest extends AbstractComponentTest {
 
   private InvoiceService invoiceService;
   private XWikiContext context;
@@ -38,13 +39,13 @@ public class InvoiceServiceTest extends AbstractBridgedComponentTestCase {
     componentManager.release(defaultNextFreeDoc);
     ComponentDescriptor<INextFreeDocRole> nextFreeDocDesc =
         componentManager.getComponentDescriptor(INextFreeDocRole.class, "default");
-    nextFreeDocMock = createMockAndAddToDefault(INextFreeDocRole.class);
+    nextFreeDocMock = createDefaultMock(INextFreeDocRole.class);
     componentManager.registerComponent(nextFreeDocDesc, nextFreeDocMock);
     context = getContext();
     xwiki = getWikiMock();
     invoiceService = (InvoiceService) Utils.getComponent(IInvoiceServiceRole.class,
         "xobject");
-    queryManagerMock = createMockAndAddToDefault(QueryManager.class);
+    queryManagerMock = createDefaultMock(QueryManager.class);
     invoiceService.queryManager = queryManagerMock;
   }
 
@@ -60,7 +61,7 @@ public class InvoiceServiceTest extends AbstractBridgedComponentTestCase {
   public void testGetNewInvoiceNumber() throws Exception {
     String invoiceNumber = "12758";
     String lastMaxInvoiceNumber = "12757";
-    Query mockQuery = createMockAndAddToDefault(Query.class);
+    Query mockQuery = createDefaultMock(Query.class);
     expect(queryManagerMock.createQuery(isA(String.class), eq(Query.HQL))).andReturn(
         mockQuery).once();
     expect(mockQuery.<String>execute()).andReturn(Arrays.<String>asList(

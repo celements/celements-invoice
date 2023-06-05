@@ -1,5 +1,6 @@
 package com.celements.invoice.store;
 
+import static com.celements.common.test.CelementsTestUtils.*;
 import static junit.framework.Assert.*;
 import static org.easymock.EasyMock.*;
 
@@ -8,7 +9,7 @@ import org.junit.Test;
 import org.xwiki.model.reference.DocumentReference;
 
 import com.celements.common.classes.IClassCollectionRole;
-import com.celements.common.test.AbstractBridgedComponentTestCase;
+import com.celements.common.test.AbstractComponentTest;
 import com.celements.invoice.InvoiceClassCollection;
 import com.celements.invoice.builder.IBillingAddress;
 import com.celements.invoice.builder.IInvoice;
@@ -20,7 +21,7 @@ import com.xpn.xwiki.objects.classes.BaseClass;
 import com.xpn.xwiki.web.Utils;
 
 public class XObjectBillingAddressStore_storeInvoiceTest
-    extends AbstractBridgedComponentTestCase {
+    extends AbstractComponentTest {
 
   private XObjectBillingAddressStore billingAddressStore;
   private XWikiContext context;
@@ -83,7 +84,7 @@ public class XObjectBillingAddressStore_storeInvoiceTest
     XWikiDocument invoiceDoc = new XWikiDocument(invoiceDocRef);
     DocumentReference addressClassRef = getInvoiceClasses().getInoviceAddressClassRef(
         context.getDatabase());
-    BaseClass invClassMock = createMockAndAddToDefault(BaseClass.class);
+    BaseClass invClassMock = createDefaultMock(BaseClass.class);
     expect(xwiki.getXClass(eq(addressClassRef), same(context))).andReturn(
         invClassMock);
     expect(invClassMock.newCustomClassInstance(same(context))).andReturn(new BaseObject()
@@ -160,7 +161,7 @@ public class XObjectBillingAddressStore_storeInvoiceTest
     currentAddressObject.setStringValue(InvoiceClassCollection.FIELD_ADDRESS_TYPE,
         "Shipping");
     invoiceDoc.addXObject(currentAddressObject);
-    BaseClass invClassMock = createMockAndAddToDefault(BaseClass.class);
+    BaseClass invClassMock = createDefaultMock(BaseClass.class);
     expect(xwiki.getXClass(eq(addressClassRef), same(context))).andReturn(
         invClassMock);
     expect(invClassMock.newCustomClassInstance(same(context))).andReturn(new BaseObject()

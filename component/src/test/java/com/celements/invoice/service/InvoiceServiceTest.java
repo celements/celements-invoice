@@ -1,16 +1,12 @@
 package com.celements.invoice.service;
 
-import static com.celements.common.test.CelementsTestUtils.*;
 import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.xwiki.component.descriptor.ComponentDescriptor;
-import org.xwiki.component.manager.ComponentManager;
 import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.query.Query;
 import org.xwiki.query.QueryManager;
@@ -29,32 +25,14 @@ public class InvoiceServiceTest extends AbstractComponentTest {
   private XWiki xwiki;
   private QueryManager queryManagerMock;
   private INextFreeDocRole nextFreeDocMock;
-  private INextFreeDocRole defaultNextFreeDoc;
-  private ComponentManager componentManager;
 
   @Before
-  public void setUp_XObjectInvoiceStoreTest() throws Exception {
-    componentManager = Utils.getComponentManager();
-    defaultNextFreeDoc = componentManager.lookup(INextFreeDocRole.class);
-    componentManager.release(defaultNextFreeDoc);
-    ComponentDescriptor<INextFreeDocRole> nextFreeDocDesc =
-        componentManager.getComponentDescriptor(INextFreeDocRole.class, "default");
-    nextFreeDocMock = createDefaultMock(INextFreeDocRole.class);
-    componentManager.registerComponent(nextFreeDocDesc, nextFreeDocMock);
-    context = getContext();
-    xwiki = getWikiMock();
-    invoiceService = (InvoiceService) Utils.getComponent(IInvoiceServiceRole.class,
-        "xobject");
-    queryManagerMock = createDefaultMock(QueryManager.class);
-    invoiceService.queryManager = queryManagerMock;
-  }
-
-  @After
-  public void tearDown_XObjectInvoiceStoreTest() throws Exception {
-    componentManager.release(nextFreeDocMock);
-    ComponentDescriptor<INextFreeDocRole> nextFreeDocDesc =
-        componentManager.getComponentDescriptor(INextFreeDocRole.class, "default");
-    componentManager.registerComponent(nextFreeDocDesc, defaultNextFreeDoc);
+  public void setUp() throws Exception {
+    nextFreeDocMock = registerComponentMock(INextFreeDocRole.class);
+    queryManagerMock = registerComponentMock(QueryManager.class);
+    context = getXContext();
+    xwiki = getMock(XWiki.class);
+    invoiceService = (InvoiceService) Utils.getComponent(IInvoiceServiceRole.class, "xobject");
   }
 
   @Test
@@ -105,9 +83,9 @@ public class InvoiceServiceTest extends AbstractComponentTest {
   @Test
   public void testGetNewInvoiceDocRef() throws Exception {
     IInvoice invoice = Utils.getComponent(IInvoice.class);
-    DocumentReference expDocRef = new DocumentReference(context.getDatabase(), "Invoices", 
+    DocumentReference expDocRef = new DocumentReference(context.getDatabase(), "Invoices",
         "Invoice1");
-    expect(nextFreeDocMock.getNextTitledPageDocRef(eq(expDocRef.getLastSpaceReference()), 
+    expect(nextFreeDocMock.getNextTitledPageDocRef(eq(expDocRef.getLastSpaceReference()),
         eq("Invoice"))).andReturn(expDocRef).once();
     replayDefault();
     assertEquals(expDocRef, invoiceService.getNewInvoiceDocRef(invoice));
@@ -120,7 +98,7 @@ public class InvoiceServiceTest extends AbstractComponentTest {
     invoice.setDocumentNameHint("test");
     DocumentReference expDocRef = new DocumentReference(context.getDatabase(),
         "test-Invoices", "Invoice1");
-    expect(nextFreeDocMock.getNextTitledPageDocRef(eq(expDocRef.getLastSpaceReference()), 
+    expect(nextFreeDocMock.getNextTitledPageDocRef(eq(expDocRef.getLastSpaceReference()),
         eq("Invoice"))).andReturn(expDocRef).once();
     replayDefault();
     assertEquals(expDocRef, invoiceService.getNewInvoiceDocRef(invoice));

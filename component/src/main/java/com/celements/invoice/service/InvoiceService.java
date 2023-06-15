@@ -50,7 +50,7 @@ public class InvoiceService implements IInvoiceServiceRole {
   private static final Logger LOGGER = LoggerFactory.getLogger(InvoiceService.class);
 
   @Requirement
-  QueryManager queryManager;
+  private QueryManager queryManager;
 
   @Requirement
   private INextFreeDocRole nextFreeDocService;
